@@ -59,7 +59,10 @@ updateActiveNav();
 navLinks.forEach(a => {
   a.addEventListener('click', e => {
     e.preventDefault();
-    document.querySelector(a.getAttribute('href'))?.scrollIntoView({ behavior: 'smooth' });
+    document.querySelector(a.getAttribute('href'))?.scrollIntoView({
+      behavior: 'smooth',
+      block: 'start',
+    });
   });
 });
 
@@ -289,7 +292,7 @@ async function loadBoard() {
     const lead = vh * 0.4;
     const firstStart = stepSections[0].offsetTop - lead;
     const lastSec = stepSections[stepSections.length - 1];
-    const lastEnd = lastSec.offsetTop + lastSec.offsetHeight;
+    const lastEnd = lastSec.offsetTop;
 
     // Fade the board in slightly before step 0 starts revealing, so the
     // chassis is present (blending into the bg) before components light up.

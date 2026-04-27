@@ -10,6 +10,7 @@
 }
 html{scroll-behavior:smooth}
 body{background:var(--bg);color:var(--text);font-family:var(--sans);font-size:16.5px;line-height:1.65;font-weight:300;-webkit-font-smoothing:antialiased;overflow-x:hidden}
+body{padding-bottom:100vh}
 
 .bg-grid{
   position:fixed;inset:0;z-index:0;pointer-events:none;
