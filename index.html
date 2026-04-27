@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Tilen Pokorn — CV</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Geist+Mono:wght@400;500&family=Geist:wght@300;400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+<div class="bg-grid" id="bgGrid"></div>
+
+<div class="board-bg" id="boardBg" aria-hidden="true"></div>
+
+<nav>
+  <div class="nav-logo"><span>Tilen Pokorn</span> <span data-i18n="nav.logoSuffix">/ cs</span></div>
+  <div class="nav-links">
+    <a href="#hero" data-i18n="nav.home">home</a>
+    <a href="#about" data-i18n="nav.about">about</a>
+    <a href="#skills" data-i18n="nav.skills">skills</a>
+    <a href="#education" data-i18n="nav.education">education</a>
+    <a href="#lab" data-i18n="nav.lab">lab</a>
+    <a href="#contact" data-i18n="nav.contact">contact</a>
+    <button class="lang-toggle" data-i18n-toggle type="button">SL</button>
+  </div>
+</nav>
+
+<div class="page-wrap">
+
+  <section id="hero">
+    <div class="hero-tag fade-in" data-i18n="hero.tag">computer science student</div>
+    <h1 class="fade-in d1"><span data-i18n="hero.firstName">Tilen</span><br><em data-i18n="hero.lastName">Pokorn</em></h1>
+    <p class="hero-sub fade-in d2" data-i18n="hero.sub">
+      CS student building things at the intersection of systems, software, and hardware.
+      Currently tinkering with home infrastructure and whatever seems interesting this week.
+    </p>
+    <div class="hero-links fade-in d3">
+      <a href="#contact" class="btn" data-i18n="hero.cta">get in touch ↓</a>
+      <a href="https://github.com/yourusername" class="btn btn-ghost" data-i18n="hero.github">github</a>
+      <a href="/cv.pdf" class="btn btn-ghost" data-i18n="hero.resume">résumé ↗</a>
+    </div>
+  </section>
+
+  <section id="about" data-board-step="0">
+    <div class="section-label" data-i18n="about.label">01 — about</div>
+    <h2 class="fade-in" data-i18n="about.title">Who I am</h2>
+    <div class="about-text fade-in d1">
+      <p data-i18n-html="about.p1">I'm a <strong>computer science student</strong> with a genuine interest in how systems work — from operating systems and networking all the way down to the hardware underneath.</p>
+      <p data-i18n-html="about.p2">I know my way around a breadboard as well as a terminal. I've debugged circuits and kernel panics in the same afternoon and found both equally satisfying.</p>
+      <p data-i18n-html="about.p3">Outside of coursework I run a small <strong>home lab</strong> on Proxmox — self-hosted services, containerised apps, networking experiments — and I treat it as a learning environment that's permanently one config mistake away from being interesting.</p>
+    </div>
+  </section>
+
+  <section id="skills" data-board-step="1">
+    <div class="section-label" data-i18n="skills.label">02 — skills</div>
+    <h2 class="fade-in" data-i18n="skills.title">What I work with</h2>
+    <div class="skills-grid fade-in d1">
+      <div class="skill-item"><span class="skill-name">Python</span><span class="skill-cat" data-i18n="skills.cats.language">language</span></div>
+      <div class="skill-item"><span class="skill-name">C / C++</span><span class="skill-cat" data-i18n="skills.cats.language">language</span></div>
+      <div class="skill-item"><span class="skill-name">Java</span><span class="skill-cat" data-i18n="skills.cats.language">language</span></div>
+      <div class="skill-item"><span class="skill-name">JavaScript</span><span class="skill-cat" data-i18n="skills.cats.language">language</span></div>
+      <div class="skill-item"><span class="skill-name">Linux</span><span class="skill-cat" data-i18n="skills.cats.systems">systems</span></div>
+      <div class="skill-item"><span class="skill-name">Docker</span><span class="skill-cat" data-i18n="skills.cats.infra">infra</span></div>
+      <div class="skill-item"><span class="skill-name">Proxmox</span><span class="skill-cat" data-i18n="skills.cats.infra">infra</span></div>
+      <div class="skill-item"><span class="skill-name">Nginx / NPM</span><span class="skill-cat" data-i18n="skills.cats.infra">infra</span></div>
+      <div class="skill-item"><span class="skill-name">Networking</span><span class="skill-cat" data-i18n="skills.cats.systems">systems</span></div>
+      <div class="skill-item"><span class="skill-name">Git</span><span class="skill-cat" data-i18n="skills.cats.tooling">tooling</span></div>
+      <div class="skill-item"><span class="skill-name">Bash</span><span class="skill-cat" data-i18n="skills.cats.scripting">scripting</span></div>
+      <div class="skill-item"><span class="skill-name">SQL</span><span class="skill-cat" data-i18n="skills.cats.data">data</span></div>
+      <div class="skill-item"><span class="skill-name">GPIO / SBC</span><span class="skill-cat" data-i18n="skills.cats.hardware">hardware</span></div>
+      <div class="skill-item"><span class="skill-name">PCB basics</span><span class="skill-cat" data-i18n="skills.cats.hardware">hardware</span></div>
+      <div class="skill-item"><span class="skill-name">HW debugging</span><span class="skill-cat" data-i18n="skills.cats.hardware">hardware</span></div>
+      <div class="skill-item"><span class="skill-name">Raspberry Pi</span><span class="skill-cat" data-i18n="skills.cats.hardware">hardware</span></div>
+    </div>
+  </section>
+
+  <section id="education" data-board-step="2">
+    <div class="section-label" data-i18n="education.label">03 — education</div>
+    <h2 class="fade-in" data-i18n="education.title">Background</h2>
+    <div class="fade-in d1">
+      <div class="edu-item">
+        <div>
+          <div class="edu-school" data-i18n="education.uniSchool">University of Ljubljana</div>
+          <div class="edu-degree" data-i18n="education.uniDegree">BSc Computer Science</div>
+        </div>
+        <div class="edu-year" data-i18n="education.uniYears">2023 — present</div>
+      </div>
+      <div class="edu-item">
+        <div>
+          <div class="edu-school" data-i18n="education.gymSchool">Škofja Loka Gymnasium</div>
+          <div class="edu-degree" data-i18n="education.gymDegree">General Matura</div>
+        </div>
+        <div class="edu-year" data-i18n="education.gymYears">2019 — 2023</div>
+      </div>
+    </div>
+  </section>
+
+  <section id="lab" data-board-step="3">
+    <div class="section-label" data-i18n="lab.label">04 — lab</div>
+    <h2 class="fade-in" data-i18n="lab.title">Things I run & tinker with</h2>
+    <div class="lab-grid fade-in d1">
+      <div class="lab-item">
+        <div class="lab-icon">srv</div>
+        <div>
+          <div class="lab-title" data-i18n="lab.server.title">Home server</div>
+          <div class="lab-desc" data-i18n="lab.server.desc">Proxmox node with Debian LXC containers. Reverse-proxied via Nginx Proxy Manager, mesh-networked over Tailscale. Hosts this CV and several self-hosted apps.</div>
+          <div class="lab-tags"><span class="tag">proxmox</span><span class="tag">lxc</span><span class="tag">npm</span><span class="tag">tailscale</span></div>
+        </div>
+      </div>
+      <div class="lab-item">
+        <div class="lab-icon">pi</div>
+        <div>
+          <div class="lab-title" data-i18n="lab.pi.title">Raspberry Pi experiments</div>
+          <div class="lab-desc" data-i18n="lab.pi.desc">Pi-hole, sensor data logging, GPIO automation. Mostly excuses to understand hardware interfaces and embedded Linux at a lower level.</div>
+          <div class="lab-tags"><span class="tag">raspberry pi</span><span class="tag">pi-hole</span><span class="tag">gpio</span><span class="tag">python</span></div>
+        </div>
+      </div>
+      <div class="lab-item">
+        <div class="lab-icon">app</div>
+        <div>
+          <div class="lab-title" data-i18n="lab.app.title">Self-hosted stack</div>
+          <div class="lab-desc" data-i18n="lab.app.desc">Vaultwarden, Gitea, Uptime Kuma and others. A permanent learning environment for deployment, monitoring, and keeping things actually running.</div>
+          <div class="lab-tags"><span class="tag">vaultwarden</span><span class="tag">gitea</span><span class="tag">docker</span><span class="tag">monitoring</span></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="contact" data-board-step="4">
+    <div class="section-label" data-i18n="contact.label">05 — contact</div>
+    <h2 class="fade-in" data-i18n="contact.title">Get in touch</h2>
+    <div class="contact-links fade-in d1">
+      <a href="mailto:you@example.com" class="contact-link">
+        <div class="contact-link-left"><span class="contact-platform" data-i18n="contact.email">email</span><span class="contact-value">you@example.com</span></div>
+        <span class="contact-arrow">→</span>
+      </a>
+      <a href="https://github.com/yourusername" class="contact-link">
+        <div class="contact-link-left"><span class="contact-platform" data-i18n="contact.github">github</span><span class="contact-value">github.com/yourusername</span></div>
+        <span class="contact-arrow">→</span>
+      </a>
+      <a href="https://linkedin.com/in/yourusername" class="contact-link">
+        <div class="contact-link-left"><span class="contact-platform" data-i18n="contact.linkedin">linkedin</span><span class="contact-value">linkedin.com/in/yourusername</span></div>
+        <span class="contact-arrow">→</span>
+      </a>
+    </div>
+  </section>
+
+</div>
+
+<footer>
+  <span class="footer-text">tilen pokorn — <span id="year"></span></span>
+  <span class="footer-text" data-i18n="footer.tagline">self-hosted · proxmox · lxc</span>
+</footer>
+
+<script type="module" src="script.js"></script>
+</body>
+</html>
