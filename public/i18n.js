@@ -47,6 +47,15 @@ export const languageItems = [
   { key: 'de', cert: '',      bars: 2.1  },
 ];
 
+// Projects. Add entries here as projects come online; an empty array
+// renders the section's empty-state message instead of cards.
+// `key` is the lookup id into messages.{en,sl}.projects.items.
+// `year` (optional) shows in the mono badge column. `href` (optional)
+// makes the card clickable. `tags` (optional) are non-translatable.
+export const projectItems = [
+  // { key: 'homelab', year: '2025', href: 'https://github.com/tilnp/homelab', tags: ['proxmox','docker'] },
+];
+
 // Keys + tags don't translate; title/desc do.
 // key is used for item icon
 export const experienceItems = [
@@ -54,7 +63,6 @@ export const experienceItems = [
   { key: 'net', tags: ['https', 'firewall', 'ssl', 'dns'] },
   { key: 'srv', tags: ['apt', 'conf', 'status', 'monitoring'] },
   { key: 'adm', tags: ['admin', 'linux', 'shell', 'log'] },
-  { key: 'dev', tags: ['build', 'v4.2', 'run', 'uptime'] },
 ];
 
 // Email/URL don't translate; the platform label does (email → e-pošta).
@@ -70,10 +78,11 @@ export const messages = {
       logoSuffix: '/ cs',
       home: 'home',
       about: 'about',
-      skills: 'skills',
       education: 'education',
-      languages: 'languages',
+      skills: 'skills',
+      projects: 'projects',
       experience: 'experience',
+      languages: 'languages',
       contact: 'contact',
     },
     home: {
@@ -95,7 +104,7 @@ export const messages = {
       p3: 'Outside of coursework I run a small <strong>home lab</strong> on Proxmox where I experiment with self-hosted services, containerised applications, and networking setups. I treat it as a hands-on learning environment, regularly building, breaking, and improving systems.',
     },
     skills: {
-      label: '02 — skills',
+      label: '03 — skills',
       title: 'Technical knowledge',
       lead: '',
       cats: {
@@ -109,7 +118,7 @@ export const messages = {
       },
     },
     education: {
-      label: '03 — education',
+      label: '02 — education',
       title: 'Background',
       lead: '',
       present: 'present',
@@ -136,7 +145,7 @@ export const messages = {
       },
     },
     languages: {
-      label: '04 — languages',
+      label: '06 — languages',
       title: 'Language Skills',
       lead: '',
       items: {
@@ -164,6 +173,18 @@ export const messages = {
         },
       },
     },
+    projects: {
+      label: '04 — projects',
+      title: 'Selected work',
+      lead: '',
+      empty: 'More projects coming soon. In the meantime, see github.com/tilnp.',
+      items: {
+        // homelab: {
+        //   title: 'Home lab',
+        //   desc: 'Self-hosted infrastructure on Proxmox running ~12 services behind Nginx Proxy Manager.',
+        // },
+      },
+    },
     experience: {
       label: '05 — experience',
       title: 'Practical Experience',
@@ -175,7 +196,7 @@ export const messages = {
         },
         net: {
           title: 'Networking & services',
-          desc: 'Configuring network services including reverse proxying (Nginx Proxy Manager), private DNS server, firewall rules, and internal service exposure.'
+          desc: 'Configuring network services including reverse proxy (Nginx Proxy Manager), private DNS server, firewall rules, and internal service exposure.'
         },
         srv: {
           title: 'Service deployment',
@@ -185,14 +206,10 @@ export const messages = {
           title: 'System administration',
           desc: 'Working in Linux environments using the terminal for system configuration, debugging, package management, and routine maintenance tasks.'
         },
-        dev: {
-          title: 'Iterative development',
-          desc: 'Building and refining systems in a self-managed environment, focusing on reliability and practical problem-solving.'
-        },
       },
     },
     contact: {
-      label: '06 — contact',
+      label: '07 — contact',
       title: 'Get in touch',
       lead: '',
       platforms: {
@@ -214,10 +231,11 @@ export const messages = {
       logoSuffix: '/ cs',
       home: 'domov',
       about: 'o meni',
-      skills: 'veščine',
       education: 'izobrazba',
-      languages: 'jeziki',
+      skills: 'veščine',
+      projects: 'projekti',
       experience: 'izkušnje',
+      languages: 'jeziki',
       contact: 'kontakt',
     },
     home: {
@@ -239,7 +257,7 @@ export const messages = {
       p3: 'Poleg študija upravljam manjši <strong>home lab</strong> na Proxmoxu, kjer eksperimentiram s samogostovanjem storitev, kontejnerskimi aplikacijami in omrežnimi nastavitvami. Nanj gledam kot na praktično učno okolje, kjer redno postavljam, preizkušam in izboljšujem sisteme.',
     },
     skills: {
-      label: '02 — veščine',
+      label: '03 — veščine',
       title: 'Tehnična znanja',
       lead: '',
       cats: {
@@ -253,7 +271,7 @@ export const messages = {
       },
     },
     education: {
-      label: '03 — izobrazba',
+      label: '02 — izobrazba',
       title: 'Ozadje',
       lead: '',
       present: 'danes',
@@ -280,7 +298,7 @@ export const messages = {
       },
     },
     languages: {
-      label: '04 — jeziki',
+      label: '06 — jeziki',
       title: 'Jezikovne kompetence',
       lead: '',
       items: {
@@ -308,6 +326,15 @@ export const messages = {
         },
       },
     },
+    projects: {
+      label: '04 — projekti',
+      title: 'Izbrano delo',
+      lead: '',
+      empty: 'Več projektov sledi kmalu. Do takrat si oglejte github.com/tilnp.',
+      items: {
+        // Per-locale overrides go here; keys default to en values.
+      },
+    },
     experience: {
       label: '05 — izkušnje',
       title: 'Praktične izkušnje',
@@ -330,14 +357,10 @@ export const messages = {
           title: 'Sistemska administracija',
           desc: 'Delo v Linux okoljih z uporabo terminala za sistemsko konfiguracijo, odpravljanje napak, upravljanje paketov in redna vzdrževalna opravila.'
         },
-        dev: {
-          title: 'Iterativni razvoj',
-          desc: 'Gradnja in izboljševanje sistemov v samoupravljanem okolju, s poudarkom na zanesljivosti in praktičnem reševanju težav.'
-        },
       },
     },
     contact: {
-      label: '06 — kontakt',
+      label: '07 — kontakt',
       title: 'Stopi v stik',
       lead: '',
       platforms: {
@@ -439,6 +462,33 @@ const RENDERERS = {
           </div>
         </div>
       `;
+    }).join('');
+  },
+  projects(el, dict) {
+    const t = dict.projects?.items || {};
+    if (!projectItems.length) {
+      const empty = dict.projects?.empty || '';
+      el.innerHTML = empty
+        ? `<div class="proj-empty">${esc(empty)}</div>`
+        : '';
+      return;
+    }
+    el.innerHTML = projectItems.map(p => {
+      const tx = t[p.key] || {};
+      const tagsHtml = p.tags?.length
+        ? `<div class="proj-tags">${p.tags.map(x => `<span class="tag">${esc(x)}</span>`).join('')}</div>`
+        : '';
+      const inner = `
+        ${p.year ? `<div class="proj-year">${esc(p.year)}</div>` : ''}
+        <div class="proj-body">
+          <div class="proj-title">${esc(tx.title)}${p.href ? ' <span class="proj-arrow">↗</span>' : ''}</div>
+          <div class="proj-desc">${esc(tx.desc)}</div>
+          ${tagsHtml}
+        </div>
+      `;
+      return p.href
+        ? `<a class="proj-item" href="${esc(p.href)}" target="_blank" rel="noopener">${inner}</a>`
+        : `<div class="proj-item">${inner}</div>`;
     }).join('');
   },
   experience(el, dict) {

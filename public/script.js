@@ -119,23 +119,26 @@ if (nextBtn) {
 // direct child of the components layer and append any leftover (unlabeled or
 // future-added) groups to the last chunk so nothing is ever skipped.
 const REVEAL_CHUNKS = [
-  // step 0 — about: just the CPU and the two top chips.
+  // step 0 — about
   ['cpu','chip-1-top-left','chip-2-top-right'],
 
-  // step 1 — skills: center, top-right, both bottom-left chips, etc.
-  ['ram','chip-7-bottom-left','sd-card-reader','chip-4-bottom-right'],
+  // step 1 — education
+  ['ram','chip-3-top-right','capacitor-top-right','gpio-chip-bottom','gpio-bottom','chip-6-bottom-left'],
 
-  // step 2 — education: chip-5-bottom-middle replaces the usb-c that
-  ['power-button-top-left','gpio-top-big','chip-5-bottom-middle','hdmi-1','gpio-chip-bottom','capacitor-top-right','hdmi-2','chip-6-bottom-left','chip-3-top-right'],
+  // step 2 — skills
+  ['power-button-top-left','sd-card-reader','chip-4-bottom-right','gpio-chip-top-2','hdmi-2'],
 
-  // step 3 — languages: a short, varied chunk (TR + BL + top + BL)
-  ['connector-top-right','chip-7-capacitors-bottom-left','gpio-chip-top-1','connector-bottom-left','eth-port'],
+  // step 3 — projects
+  ['gpio-top-big','capacitors-top-left-1','gpio-chip-top-3','usbc-bottom-left','capacitors-bottom-right'],
 
-  // step 4 — experience: remaining GPIO headers + connectors, ending on
-  ['gpio-bottom','gpio-top-small','connector-bottom-middle-2','gpio-chip-top-2','usb-30'],
+  // step 4 — experience
+  ['hdmi-1','chip-5-bottom-middle','chip-7-bottom-left','gpio-top-small','usb-30'],
 
-  // step 5 — contact: fine detail around the board with usb-20 closing
-  ['capacitors-top-left-1','gpio-chip-top-3','usbc-bottom-left','capacitors-bottom-right','gpio-chip-top-4','connector-bottom-middle-1','capacitors-top-left-2','usb-20', 'screw-holes'],
+  // step 5 — languages
+  ['connector-top-right','chip-7-capacitors-bottom-left','gpio-chip-top-1','connector-bottom-middle-1','eth-port'],
+
+  // step 6 — contact
+  ['connector-bottom-middle-2','gpio-chip-top-4','connector-bottom-left','capacitors-top-left-2','usb-20','screw-holes'],
 ];
 
 // Big components with clean outlines get a soft glow. Dense pin-clusters
