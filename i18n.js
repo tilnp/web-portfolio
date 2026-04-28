@@ -12,34 +12,43 @@ export const STORAGE_KEY = 'lang';
 // ─────────────────────────────────────────────────────────────────────────────
 
 export const skills = [
-  { name: 'Python',        cat: 'language' },
-  { name: 'C / C++',       cat: 'language' },
-  { name: 'Java',          cat: 'language' },
-  { name: 'JavaScript',    cat: 'language' },
-  { name: 'Linux',         cat: 'systems'  },
-  { name: 'Docker',        cat: 'infra'    },
-  { name: 'Proxmox',       cat: 'infra'    },
-  { name: 'Nginx / NPM',   cat: 'infra'    },
-  { name: 'Networking',    cat: 'systems'  },
-  { name: 'Git',           cat: 'tooling'  },
-  { name: 'Bash',          cat: 'scripting'},
-  { name: 'SQL',           cat: 'data'     },
-  { name: 'GPIO / SBC',    cat: 'hardware' },
-  { name: 'PCB basics',    cat: 'hardware' },
-  { name: 'HW debugging',  cat: 'hardware' },
-  { name: 'Raspberry Pi',  cat: 'hardware' },
+  { name: 'C',                cat: 'language' },
+  { name: 'C++',              cat: 'language' },
+  { name: 'Python',           cat: 'language' },
+  { name: 'Java',             cat: 'language' },
+  { name: 'HTML / CSS / JS',  cat: 'language' },
+  { name: 'Linux',            cat: 'systems'  },
+  { name: 'Windows',          cat: 'systems'  },
+  { name: 'Networking',       cat: 'systems'  },
+  { name: 'Proxmox',          cat: 'infra'    },
+  { name: 'Docker',           cat: 'infra'    },
+  { name: 'Nginx / NPM',      cat: 'infra'    },
+  { name: 'Git',              cat: 'tooling'  },
+  { name: 'Bash',             cat: 'scripting'},
+  { name: 'SQL',              cat: 'data'     },
+  { name: 'Embedded Systems' ,cat: 'hardware' },
+  { name: 'PC Assembly',      cat: 'hardware' },
 ];
 
 // Each entry's `key` is the lookup id into messages.{en,sl}.education.items.
+// `start` / `end` are calendar years; use end:0 to mean "still ongoing"
+// (rendered as the locale's "present" word).
 export const educationItems = [
-  { key: 'uni' },
-  { key: 'gym' },
+  { key: 'uni', start: 2024, end: 0    },
+  { key: 'gym', start: 2020, end: 2024 },
+];
+
+// Spoken languages. Same key-driven shape as education — name + level
+export const languageItems = [
+  { key: 'sl' },
+  { key: 'en', cert: '' },
+  { key: 'de', cert: '' },
 ];
 
 // Icons + tags don't translate; title/desc do.
 export const experienceItems = [
   { key: 'vm',  icon: 'vms',  tags: ['proxmox', 'lxc', 'vm', 'docker'] },
-  { key: 'net', icon: 'net', tags: ['npm', 'firewall', 'certificate', 'dns'] },
+  { key: 'net', icon: 'net', tags: ['https', 'firewall', 'ssl', 'dns'] },
   { key: 'srv', icon: 'srv', tags: ['apt', 'conf', 'status', 'monitoring'] },
   { key: 'adm', icon: 'adm', tags: ['admin', 'linux', 'shell', 'log'] },
   { key: 'dev', icon: 'dev', tags: ['build', 'v4.2', 'run', 'uptime'] },
@@ -60,6 +69,7 @@ export const messages = {
       about: 'about',
       skills: 'skills',
       education: 'education',
+      languages: 'languages',
       experience: 'experience',
       contact: 'contact',
     },
@@ -76,7 +86,7 @@ export const messages = {
       label: '01 — about',
       title: 'Who I am',
       p1: 'I\'m a <strong>computer science student</strong> with a strong interest in how systems work — from operating systems and networking down to the underlying hardware.',
-      p2: 'I’m comfortable working across both software and hardware: using Linux environments, troubleshooting system issues, working in the terminal, and understanding how components interact at a low level. I focus on practical problem-solving rather than just theory.',
+      p2: 'I’m comfortable working across both <strong>software and hardware</strong>: using Linux environments, troubleshooting system issues, working in the terminal, and understanding how components interact at a low level. I focus on practical problem-solving rather than just theory.',
       p3: 'Outside of coursework I run a small <strong>home lab</strong> on Proxmox where I experiment with self-hosted services, containerised applications, and networking setups. I treat it as a hands-on learning environment, regularly building, breaking, and improving systems.',
     },
     skills: {
@@ -95,13 +105,23 @@ export const messages = {
     education: {
       label: '03 — education',
       title: 'Background',
+      present: 'present',
       items: {
-        uni: { school: 'University of Ljubljana', degree: 'BSc Computer Science', years: '2024 — present' },
-        gym: { school: 'Škofja Loka Gymnasium',   degree: 'General Matura',       years: '2020 — 2024'    },
+        uni: { school: 'University of Ljubljana', degree: 'BSc Computer Science' },
+        gym: { school: 'Škofja Loka Gymnasium',   degree: 'General Matura'       },
+      },
+    },
+    languages: {
+      label: '04 — languages',
+      title: 'Languages I speak',
+      items: {
+        sl: { name: 'Slovenian', level: 'Native' },
+        en: { name: 'English',   level: 'Fluent' },
+        de: { name: 'German',    level: 'Conversational' },
       },
     },
     experience: {
-      label: '04 — experience',
+      label: '05 — experience',
       title: 'Practical Experience',
       items: {
         vm: {
@@ -110,15 +130,15 @@ export const messages = {
         },
         net: {
           title: 'Networking & services',
-          desc: 'Configure reverse proxying (Nginx Proxy Manager), private DNS, and internal service exposure.'
+          desc: 'Configure network services including reverse proxying (Nginx Proxy Manager), private DNS, firewall rules, and internal service exposure.'
         },
         srv: {
           title: 'Service deployment',
-          desc: 'Install, configure, and maintain self-hosted applications (Home Assistant, PhotoPrism, FileBrowser, Uptime Kuma), including updates and monitoring.'
+          desc: 'Install, configure, and maintain self-hosted applications (Home Assistant, PhotoPrism, FileBrowser, Uptime Kuma, etc.), including updates and monitoring.'
         },
         adm: { 
           title: 'System administration',
-          desc: 'Work in Linux environments using the terminal for system configuration, debugging, and maintenance.'
+          desc: 'Work in Linux environments using the terminal for system configuration, debugging, package management, and routine maintenance tasks.'
         },
         dev: {
           title: 'Iterative development',
@@ -127,7 +147,7 @@ export const messages = {
       },
     },
     contact: {
-      label: '05 — contact',
+      label: '06 — contact',
       title: 'Get in touch',
       platforms: {
         email:    'email',
@@ -150,6 +170,7 @@ export const messages = {
       about: 'o meni',
       skills: 'veščine',
       education: 'izobrazba',
+      languages: 'jeziki',
       experience: 'izkušnje',
       contact: 'kontakt',
     },
@@ -185,13 +206,23 @@ export const messages = {
     education: {
       label: '03 — izobrazba',
       title: 'Ozadje',
+      present: 'danes',
       items: {
-        uni: { school: 'Univerza v Ljubljani',  degree: 'Računalništvo in informatika (UN)', years: '2024 — danes' },
-        gym: { school: 'Gimnazija Škofja Loka', degree: 'Splošna matura',                    years: '2020 — 2024'  },
+        uni: { school: 'Univerza v Ljubljani',  degree: 'Računalništvo in informatika (UN)' },
+        gym: { school: 'Gimnazija Škofja Loka', degree: 'Splošna matura'                    },
+      },
+    },
+    languages: {
+      label: '04 — jeziki',
+      title: 'Jeziki, ki jih govorim',
+      items: {
+        sl: { name: 'slovenščina', level: 'materni jezik' },
+        en: { name: 'angleščina',  level: 'tekoče' },
+        de: { name: 'nemščina',    level: 'pogovorno' },
       },
     },
     experience: {
-      label: '04 — izkušnje',
+      label: '05 — izkušnje',
       title: 'Praktične izkušnje',
       // Any key omitted here falls back to its en counterpart automatically.
       items: {
@@ -203,7 +234,7 @@ export const messages = {
       },
     },
     contact: {
-      label: '05 — kontakt',
+      label: '06 — kontakt',
       title: 'Stopi v stik',
       platforms: {
         email:    'e-pošta',
@@ -253,15 +284,32 @@ const RENDERERS = {
   },
   education(el, dict) {
     const t = dict.education?.items || {};
+    const present = dict.education?.present || '';
     el.innerHTML = educationItems.map(e => {
       const tx = t[e.key] || {};
+      const years = `${e.start} — ${e.end === 0 ? present : e.end}`;
       return `
         <div class="edu-item">
           <div>
             <div class="edu-school">${esc(tx.school)}</div>
             <div class="edu-degree">${esc(tx.degree)}</div>
           </div>
-          <div class="edu-year">${esc(tx.years)}</div>
+          <div class="edu-year">${esc(years)}</div>
+        </div>
+      `;
+    }).join('');
+  },
+  languages(el, dict) {
+    const t = dict.languages?.items || {};
+    el.innerHTML = languageItems.map(l => {
+      const tx = t[l.key] || {};
+      return `
+        <div class="lang-row">
+          <div class="lang-name">${esc(tx.name)}</div>
+          <div class="lang-meta">
+            <span class="lang-level">${esc(tx.level)}</span>
+            ${l.cert ? `<span class="lang-cert">${esc(l.cert)}</span>` : ''}
+          </div>
         </div>
       `;
     }).join('');

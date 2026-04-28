@@ -345,15 +345,15 @@ h2{
 
 .skills-grid{
   display:grid;
-  grid-template-columns:repeat(auto-fill,minmax(160px,1fr));
+  grid-template-columns:repeat(auto-fill,minmax(200px,1fr));
   gap:1px;
 }
 .skill-item{
-  padding:.95rem 1.1rem;
+  padding:1.3rem 1.5rem;
   background:rgba(17,17,19,.62);
   display:flex;
   flex-direction:column;
-  gap:.3rem;
+  gap:.4rem;
   transition:background .2s;
   border:1px solid var(--border);
   backdrop-filter:blur(18px) saturate(130%);
@@ -363,20 +363,21 @@ h2{
   background:rgba(24,24,27,.78);
 }
 .skill-name{
-  font-size:15px;
+  font-size:16.5px;
   color:var(--text);
   font-weight:400;
 }
 .skill-cat{
   font-family:var(--mono);
-  font-size:11.5px;
+  font-size:12.5px;
   color:var(--muted2);
   letter-spacing:.06em;
 }
 
-/* Education list wrapper: same glass panel + green-stripe treatment as
+/* Education + Languages: same glass panel + left-stripe treatment as
    .about-text. Inner items keep hairline dividers but no per-item box. */
-[data-render="education"]{
+[data-render="education"],
+[data-render="languages"]{
   background:linear-gradient(180deg,rgba(17,17,19,.5),rgba(17,17,19,.3));
   border:1px solid var(--border);
   border-left:2px solid rgba(255, 255, 255, 0.35);
@@ -408,6 +409,43 @@ h2{
   font-size:12.5px;
   color:var(--muted2);
   padding-top:3px;
+}
+
+/* Languages list rows: same row-shape as .edu-item — language name on
+   the left, fluency level on the right in mono. */
+.lang-row{
+  display:grid;
+  grid-template-columns:1fr auto;
+  align-items:center;
+  padding:1.1rem 1.65rem;
+  border-bottom:1px solid var(--border);
+}
+.lang-row:last-child{
+  border-bottom:none;
+}
+.lang-name{
+  font-size:16px;
+  color:var(--text);
+  font-weight:400;
+}
+.lang-meta{
+  display:flex;
+  flex-direction:column;
+  align-items:flex-end;
+  gap:.2rem;
+  text-align:right;
+}
+.lang-level{
+  font-family:var(--mono);
+  font-size:12.5px;
+  color:var(--muted2);
+  letter-spacing:.04em;
+}
+.lang-cert{
+  font-family:var(--mono);
+  font-size:11px;
+  color:var(--muted);
+  letter-spacing:.04em;
 }
 
 .lab-grid{

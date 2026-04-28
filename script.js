@@ -83,7 +83,14 @@ if (nextBtn) {
   });
   let nextTicking = false;
   const updateNextBtn = () => {
-    nextBtn.classList.toggle('hidden', findNext() === null);
+    // Hide when there's no further section, or when we're effectively at
+    // the bottom of the page (the page's max-scroll can fall a few px
+    // short of contact.offsetTop on narrow viewports because the footer
+    // padding shrinks — the absolute scroll position is the safer test).
+    const maxScroll = Math.max(0,
+      document.documentElement.scrollHeight - window.innerHeight);
+    const atBottom = window.scrollY >= maxScroll - 16;
+    nextBtn.classList.toggle('hidden', findNext() === null || atBottom);
   };
   window.addEventListener('scroll', () => {
     if (nextTicking) return;
@@ -112,19 +119,26 @@ if (nextBtn) {
 // direct child of the components layer and append any leftover (unlabeled or
 // future-added) groups to the last chunk so nothing is ever skipped.
 const REVEAL_CHUNKS = [
-  // step 0 — about: just the CPU and the two top chips, so the about
+  // step 0 — about: just the CPU and the two top chips.
   ['cpu','chip-1-top-left','chip-2-top-right'],
 
-  // step 1 — skills: center, top-right, both bottom-left chips, the
-  ['ram','chip-7-bottom-left','chip-3-top-right','sd-card-reader','chip-4-bottom-right','chip-6-bottom-left','screw-holes'],
+  // step 1 — skills: center, top-right, both bottom-left chips, etc.
+  ['ram','chip-7-bottom-left','sd-card-reader','chip-4-bottom-right','screw-holes'],
 
   // step 2 — education: chip-5-bottom-middle replaces the usb-c that
-  ['power-button-top-left','eth-port','gpio-top-big','chip-5-bottom-middle','hdmi-1','gpio-chip-bottom','capacitor-top-right','hdmi-2'],
+  // moved to skills; gpio-top-big mid-step.
+  ['power-button-top-left','gpio-top-big','chip-5-bottom-middle','hdmi-1','gpio-chip-bottom','capacitor-top-right','hdmi-2','chip-6-bottom-left','chip-3-top-right'],
 
-  // step 3 — experience: connectors + remaining GPIO headers,
-  ['chip-7-capacitors-bottom-left', 'connector-top-right','gpio-chip-top-1','connector-bottom-left','gpio-bottom','gpio-top-small','connector-bottom-middle-2','gpio-chip-top-2','usb-30'],
+  // step 3 — languages: a short, varied chunk (TR + BL + top + BL)
+  // pulled from the front of the old experience chunk.
+  ['connector-top-right','chip-7-capacitors-bottom-left','gpio-chip-top-1','connector-bottom-left','eth-port'],
 
-  // step 4 — contact: fine detail dotted around the board, with
+  // step 4 — experience: remaining GPIO headers + connectors, ending on
+  // usb-30 so the right edge starts firing before the contact finale.
+  ['gpio-bottom','gpio-top-small','connector-bottom-middle-2','gpio-chip-top-2','usb-30'],
+
+  // step 5 — contact: fine detail around the board with usb-20 closing
+  // out the right edge.
   ['capacitors-top-left-1','gpio-chip-top-3','usbc-bottom-left','capacitors-bottom-right','gpio-chip-top-4','connector-bottom-middle-1','capacitors-top-left-2','usb-20'],
 ];
 
