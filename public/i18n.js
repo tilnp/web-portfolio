@@ -96,7 +96,7 @@ export const messages = {
     },
     skills: {
       label: '02 — skills',
-      title: 'What I work with',
+      title: 'Technical knowledge',
       lead: '',
       cats: {
         language: 'language',
@@ -137,7 +137,7 @@ export const messages = {
     },
     languages: {
       label: '04 — languages',
-      title: 'Languages I speak',
+      title: 'Language Skills',
       lead: '',
       items: {
         sl: {
@@ -175,7 +175,7 @@ export const messages = {
         },
         net: {
           title: 'Networking & services',
-          desc: 'Configuring network services including reverse proxying (Nginx Proxy Manager), private DNS, firewall rules, and internal service exposure.'
+          desc: 'Configuring network services including reverse proxying (Nginx Proxy Manager), private DNS server, firewall rules, and internal service exposure.'
         },
         srv: {
           title: 'Service deployment',
@@ -234,13 +234,13 @@ export const messages = {
       label: '01 — o meni',
       title: 'Kdo sem',
       lead: '',
-      p1: 'Sem <strong>študent računalništva in informatike</strong> s pristnim zanimanjem za delovanje sistemov — od operacijskih sistemov in omrežij vse do strojne opreme na dnu.',
-      p2: 'Znajdem se s strojno opremo enako dobro kot s terminalom.',
-      p3: 'Izven študija upravljam manjši <strong>domači laboratorij</strong> na Proxmoxu — samogostovane storitve, kontejnerizirane aplikacije, omrežni poskusi — in ga jemljem kot učno okolje, ki je vedno samo eno konfiguracijsko napako stran od pozne noči.',
+      p1: 'Sem <strong>študent računalništva in informatike</strong> s pristnim zanimanjem za delovanje sistemov — od operacijskih sistemov in omrežij vse do strojne opreme, ki vse to poganja.',
+      p2: 'Znajdem se tako pri <strong>programski</strong> kot <strong>strojni opremi</strong>: uporaba Linux okolij, odpravljanje sistemskih težav, delo v terminalu in razumevanje interakcije komponent na nizki ravni. Osredotočam se na praktično reševanje problemov in ne le na teorijo.',
+      p3: 'Poleg študija upravljam manjši <strong>home lab</strong> na Proxmoxu, kjer eksperimentiram s samogostovanjem storitev, kontejnerskimi aplikacijami in omrežnimi nastavitvami. Nanj gledam kot na praktično učno okolje, kjer redno postavljam, preizkušam in izboljšujem sisteme.',
     },
     skills: {
       label: '02 — veščine',
-      title: 'S čim delam',
+      title: 'Tehnična znanja',
       lead: '',
       cats: {
         language: 'jezik',
@@ -263,11 +263,10 @@ export const messages = {
           degree: 'Računalništvo in informatika (UN)',
           details: [
             'Programiranje (Java, C, C++, Python)',
-            'Algoritmi, podatkovne strukture in teorija računalništva.',
-            'Computer systems, operating systems, and architecture.',
-            'Računalniški sistemi, operacijski sistemi in arhitektura.',
-            'Podatkovne baze, omrežja in informacijski sistemi.',
-            'Matematika in statistika za računalništvo.',
+            'Algoritmi, podatkovne strukture in teorija računalništva',
+            'Računalniški sistemi in njihova arhitektura, operacijski sistemi',
+            'Podatkovne baze, omrežja in informacijski sistemi',
+            'Matematika in statistika za računalništvo',
           ],
         },
         gym: {
@@ -282,7 +281,7 @@ export const messages = {
     },
     languages: {
       label: '04 — jeziki',
-      title: 'Jeziki, ki jih govorim',
+      title: 'Jezikovne kompetence',
       lead: '',
       items: {
         sl: {
@@ -297,7 +296,7 @@ export const messages = {
           level: 'tekoče',
           details: [
             'Glavni jezik za tehnične vsebine',
-            'Uporaba pri dokumentaciji in sodelovanju pri projektih.',
+            'Uporaba pri dokumentaciji in sodelovanju pri projektih',
           ],
         },
         de: {
@@ -321,19 +320,19 @@ export const messages = {
         },
         net: {
           title: 'Omrežje in storitve',
-          desc: 'Nastavitev reverznega proxyja (Nginx Proxy Manager), zasebnega DNS in izpostavljanja notranjih storitev.'
+          desc: 'Vzpostavitev reverznega proxyja (Nginx Proxy Manager), zasebnega DNS strežnika in izpostavljanja notranjih storitev.'
         },
         srv: {
           title:'Postavitev storitev',
-          desc: 'Namestitev, konfiguracija in vzdrževanje samogostovanih aplikacij (Home Assistant, PhotoPrism, FileBrowser, Uptime Kuma), vključno s posodobitvami in nadzorom.'
+          desc: 'Namestitev, konfiguracija in vzdrževanje samogostovanih aplikacij (Home Assistant, PhotoPrism, FileBrowser, Uptime Kuma, itd.), vključno s posodobitvami in nadzorovanjem.'
         },
         adm: {
           title: 'Sistemska administracija',
-          desc: 'Delo v Linux okoljih preko terminala za sistemsko konfiguracijo, razhroščevanje in vzdrževanje.'
+          desc: 'Delo v Linux okoljih preko terminala za sistemsko konfiguracijo, odpravljanje napak, upravljanje paketov in redna vzdrževalna opravila.'
         },
         dev: {
           title: 'Iterativni razvoj',
-          desc: 'Gradnja, lomljenje in izboljševanje sistemov v samoupravljanem okolju, s poudarkom na zanesljivosti in praktičnem reševanju težav.'
+          desc: 'Gradnja in izboljševanje sistemov v samoupravljanem okolju, s poudarkom na zanesljivosti in praktičnem reševanju težav.'
         },
       },
     },

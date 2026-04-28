@@ -15,7 +15,7 @@
   --accent-dim:rgba(228,228,231,0.05);
   --green:#22c55e;
   --green-soft:#1a3d1a;
-  --green-glow:rgba(34,197,94,0.55);
+  --green-glow:rgba(28,197,94,0.55);
   --pcb:#0a1a0a;
   --mono:'Geist Mono',monospace;
   --sans:'Geist',system-ui,sans-serif;
@@ -697,7 +697,7 @@ footer{
   filter:blur(0);
 }
 .glow-comp.lit{
-  filter:blur(0) drop-shadow(0 0 6px var(--green-glow)) drop-shadow(0 0 12px var(--green-glow));
+  filter:blur(0) drop-shadow(0 0 2px var(--green-glow)) drop-shadow(0 0 4px var(--green-glow));
 }
 
 /* Wires: progressive draw along the path. Direction is set per wire at init
