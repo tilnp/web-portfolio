@@ -2,6 +2,56 @@ export const SUPPORTED_LOCALES = ['en', 'sl'];
 export const DEFAULT_LOCALE = 'en';
 export const STORAGE_KEY = 'lang';
 
+// ─── Architecture ────────────────────────────────────────────────────────────
+// Structural data (item order, ids, hrefs, icons, tags, skill names) lives
+// at module scope as plain exports — single source of truth, edit once.
+// Translatable text (titles, descriptions, category labels) lives inside
+// `messages.{en,sl}` keyed by the same id. applyLocale deep-merges the active
+// locale onto `en`, so any field missing from sl falls back to its en value
+// without rendering blank.
+// ─────────────────────────────────────────────────────────────────────────────
+
+export const skills = [
+  { name: 'Python',        cat: 'language' },
+  { name: 'C / C++',       cat: 'language' },
+  { name: 'Java',          cat: 'language' },
+  { name: 'JavaScript',    cat: 'language' },
+  { name: 'Linux',         cat: 'systems'  },
+  { name: 'Docker',        cat: 'infra'    },
+  { name: 'Proxmox',       cat: 'infra'    },
+  { name: 'Nginx / NPM',   cat: 'infra'    },
+  { name: 'Networking',    cat: 'systems'  },
+  { name: 'Git',           cat: 'tooling'  },
+  { name: 'Bash',          cat: 'scripting'},
+  { name: 'SQL',           cat: 'data'     },
+  { name: 'GPIO / SBC',    cat: 'hardware' },
+  { name: 'PCB basics',    cat: 'hardware' },
+  { name: 'HW debugging',  cat: 'hardware' },
+  { name: 'Raspberry Pi',  cat: 'hardware' },
+];
+
+// Each entry's `key` is the lookup id into messages.{en,sl}.education.items.
+export const educationItems = [
+  { key: 'uni' },
+  { key: 'gym' },
+];
+
+// Icons + tags don't translate; title/desc do.
+export const experienceItems = [
+  { key: 'vm',  icon: 'vms',  tags: ['proxmox', 'lxc', 'vm', 'docker'] },
+  { key: 'net', icon: 'net', tags: ['npm', 'firewall', 'certificate', 'dns'] },
+  { key: 'srv', icon: 'srv', tags: ['apt', 'conf', 'status', 'monitoring'] },
+  { key: 'adm', icon: 'adm', tags: ['admin', 'linux', 'shell', 'log'] },
+  { key: 'dev', icon: 'dev', tags: ['build', 'v4.2', 'run', 'uptime'] },
+];
+
+// Email/URL don't translate; the platform label does (email → e-pošta).
+export const contactLinks = [
+  { key: 'email',  value: 'tilen@pokorn.si',  href: 'mailto:tilen@pokorn.si' },
+  { key: 'github', value: 'github.com/tilnp', href: 'https://github.com/tilnp' },
+  // { key: 'linkedin', value: 'linkedin.com/in/yourusername', href: 'https://linkedin.com/in/yourusername' },
+];
+
 export const messages = {
   en: {
     nav: {
@@ -10,7 +60,7 @@ export const messages = {
       about: 'about',
       skills: 'skills',
       education: 'education',
-      lab: 'lab',
+      experience: 'experience',
       contact: 'contact',
     },
     hero: {
@@ -25,9 +75,9 @@ export const messages = {
     about: {
       label: '01 — about',
       title: 'Who I am',
-      p1: 'I\'m a <strong>computer science student</strong> with a genuine interest in how systems work — from operating systems and networking all the way down to the hardware underneath.',
-      p2: 'I know my way around hardware as well as a terminal.',
-      p3: 'Outside of coursework I run a small <strong>home lab</strong> on Proxmox — self-hosted services, containerised apps, networking experiments — and I treat it as a learning environment that\'s permanently one config mistake away from going to sleep late.',
+      p1: 'I\'m a <strong>computer science student</strong> with a strong interest in how systems work — from operating systems and networking down to the underlying hardware.',
+      p2: 'I’m comfortable working across both software and hardware: using Linux environments, troubleshooting system issues, working in the terminal, and understanding how components interact at a low level. I focus on practical problem-solving rather than just theory.',
+      p3: 'Outside of coursework I run a small <strong>home lab</strong> on Proxmox where I experiment with self-hosted services, containerised applications, and networking setups. I treat it as a hands-on learning environment, regularly building, breaking, and improving systems.',
     },
     skills: {
       label: '02 — skills',
@@ -45,35 +95,45 @@ export const messages = {
     education: {
       label: '03 — education',
       title: 'Background',
-      uniSchool: 'University of Ljubljana',
-      uniDegree: 'BSc Computer Science',
-      uniYears: '2024 — present',
-      gymSchool: 'Škofja Loka Gymnasium',
-      gymDegree: 'General Matura',
-      gymYears: '2020 — 2024',
+      items: {
+        uni: { school: 'University of Ljubljana', degree: 'BSc Computer Science', years: '2024 — present' },
+        gym: { school: 'Škofja Loka Gymnasium',   degree: 'General Matura',       years: '2020 — 2024'    },
+      },
     },
-    lab: {
-      label: '04 — lab',
-      title: 'Things I run & tinker with',
-      server: {
-        title: 'Home server',
-        desc: 'Self-built Proxmox node with Debian LXC containers and virtual machines. Reverse-proxied via Nginx Proxy Manager. Hosts this CV and several self-hosted apps.',
-      },
-      pi: {
-        title: 'Raspberry Pi experiments',
-        desc: 'Pi-hole, OpenMediaVault.',
-      },
-      app: {
-        title: 'Self-hosted stack',
-        desc: 'Home Assistant, PhotoPrism, FileBrowser, Uptime Kuma and others. A permanent learning environment for deployment, monitoring, and keeping things actually running.',
+    experience: {
+      label: '04 — experience',
+      title: 'Practical Experience',
+      items: {
+        vm: {
+          title: 'Virtualization & containers',
+          desc: 'Deploy and manage LXC containers and virtual machines on Proxmox, including system setup, configuration, and troubleshooting.' 
+        },
+        net: {
+          title: 'Networking & services',
+          desc: 'Configure reverse proxying (Nginx Proxy Manager), private DNS, and internal service exposure.'
+        },
+        srv: {
+          title: 'Service deployment',
+          desc: 'Install, configure, and maintain self-hosted applications (Home Assistant, PhotoPrism, FileBrowser, Uptime Kuma), including updates and monitoring.'
+        },
+        adm: { 
+          title: 'System administration',
+          desc: 'Work in Linux environments using the terminal for system configuration, debugging, and maintenance.'
+        },
+        dev: {
+          title: 'Iterative development',
+          desc: 'Build, break, and refine systems in a self-managed environment, focusing on reliability and practical problem-solving.'
+        },
       },
     },
     contact: {
       label: '05 — contact',
       title: 'Get in touch',
-      email: 'email',
-      github: 'github',
-      linkedin: 'linkedin',
+      platforms: {
+        email:    'email',
+        github:   'github',
+        linkedin: 'linkedin',
+      },
     },
     footer: {
       tagline: 'self-hosted · Node.js',
@@ -90,7 +150,7 @@ export const messages = {
       about: 'o meni',
       skills: 'veščine',
       education: 'izobrazba',
-      lab: 'laboratorij',
+      experience: 'izkušnje',
       contact: 'kontakt',
     },
     hero: {
@@ -125,35 +185,31 @@ export const messages = {
     education: {
       label: '03 — izobrazba',
       title: 'Ozadje',
-      uniSchool: 'Univerza v Ljubljani',
-      uniDegree: 'Računalništvo in informatika (UN)',
-      uniYears: '2024 — danes',
-      gymSchool: 'Gimnazija Škofja Loka',
-      gymDegree: 'Splošna matura',
-      gymYears: '2020 — 2024',
+      items: {
+        uni: { school: 'Univerza v Ljubljani',  degree: 'Računalništvo in informatika (UN)', years: '2024 — danes' },
+        gym: { school: 'Gimnazija Škofja Loka', degree: 'Splošna matura',                    years: '2020 — 2024'  },
+      },
     },
-    lab: {
-      label: '04 — laboratorij',
-      title: 'Kaj poganjam in po čem brkljam',
-      server: {
-        title: 'Domači strežnik',
-        desc: 'Lastnoročno postavljeno Proxmox vozlišče z Debian LXC kontejnerji in virtualnimi stroji. Reverzni proxy preko Nginx Proxy Managerja. Gosti ta CV in več samogostovanih aplikacij.',
-      },
-      pi: {
-        title: 'Eksperimenti z Raspberry Pi',
-        desc: 'Pi-hole, OpenMediaVault.',
-      },
-      app: {
-        title: 'Samogostovane storitve',
-        desc: 'Home Assistant, PhotoPrism, FileBrowser, Uptime Kuma in druge. Stalno učno okolje za uvajanje, nadzor in držanje stvari dejansko v teku.',
+    experience: {
+      label: '04 — izkušnje',
+      title: 'Praktične izkušnje',
+      // Any key omitted here falls back to its en counterpart automatically.
+      items: {
+        vm:  { title: 'Virtualizacija in kontejnerji', desc: 'Postavljanje in upravljanje LXC kontejnerjev in virtualnih strojev na Proxmoxu, vključno z nastavitvijo, konfiguracijo in odpravljanjem težav.' },
+        net: { title: 'Omrežje in storitve',           desc: 'Nastavitev reverznega proxyja (Nginx Proxy Manager), zasebnega DNS in izpostavljanja notranjih storitev.' },
+        srv: { title: 'Postavitev storitev',           desc: 'Namestitev, konfiguracija in vzdrževanje samogostovanih aplikacij (Home Assistant, PhotoPrism, FileBrowser, Uptime Kuma), vključno s posodobitvami in nadzorom.' },
+        adm: { title: 'Sistemska administracija',      desc: 'Delo v Linux okoljih preko terminala za sistemsko konfiguracijo, razhroščevanje in vzdrževanje.' },
+        dev: { title: 'Iterativni razvoj',             desc: 'Gradnja, lomljenje in izboljševanje sistemov v samoupravljanem okolju, s poudarkom na zanesljivosti in praktičnem reševanju težav.' },
       },
     },
     contact: {
       label: '05 — kontakt',
       title: 'Stopi v stik',
-      email: 'e-pošta',
-      github: 'github',
-      linkedin: 'linkedin',
+      platforms: {
+        email:    'e-pošta',
+        github:   'github',
+        linkedin: 'linkedin',
+      },
     },
     footer: {
       tagline: 'self-hosted · Node.js',
@@ -168,6 +224,78 @@ function get(obj, path) {
   return path.split('.').reduce((o, k) => (o == null ? undefined : o[k]), obj);
 }
 
+// Recursive merge: `over` wins where defined, `base` fills the rest. Arrays
+// and primitives replace wholesale (no element-wise merging) — that matches
+// intuition for cases like "sl.experience.items.vm = {...}" overriding en's vm entry.
+function deepMerge(base, over) {
+  if (over === undefined) return base;
+  if (over === null || typeof over !== 'object' || Array.isArray(over)) return over;
+  if (base === null || typeof base !== 'object' || Array.isArray(base)) return over;
+  const out = { ...base };
+  for (const k of Object.keys(over)) out[k] = deepMerge(base[k], over[k]);
+  return out;
+}
+
+const ESC_MAP = { '&':'&amp;', '<':'&lt;', '>':'&gt;', '"':'&quot;', "'":'&#39;' };
+const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ESC_MAP[c]);
+
+// Renderers combine shared structure (module-scope arrays) with active-locale
+// text (passed in via dict). Each renderer owns the inner DOM of its target.
+const RENDERERS = {
+  skills(el, dict) {
+    const cats = dict.skills?.cats || {};
+    el.innerHTML = skills.map(s => `
+      <div class="skill-item">
+        <span class="skill-name">${esc(s.name)}</span>
+        <span class="skill-cat">${esc(cats[s.cat] || s.cat)}</span>
+      </div>
+    `).join('');
+  },
+  education(el, dict) {
+    const t = dict.education?.items || {};
+    el.innerHTML = educationItems.map(e => {
+      const tx = t[e.key] || {};
+      return `
+        <div class="edu-item">
+          <div>
+            <div class="edu-school">${esc(tx.school)}</div>
+            <div class="edu-degree">${esc(tx.degree)}</div>
+          </div>
+          <div class="edu-year">${esc(tx.years)}</div>
+        </div>
+      `;
+    }).join('');
+  },
+  experience(el, dict) {
+    const t = dict.experience?.items || {};
+    el.innerHTML = experienceItems.map(l => {
+      const tx = t[l.key] || {};
+      return `
+        <div class="lab-item">
+          <div class="lab-icon">${esc(l.icon)}</div>
+          <div>
+            <div class="lab-title">${esc(tx.title)}</div>
+            <div class="lab-desc">${esc(tx.desc)}</div>
+            ${(l.tags?.length ? `<div class="lab-tags">${l.tags.map(t => `<span class="tag">${esc(t)}</span>`).join('')}</div>` : '')}
+          </div>
+        </div>
+      `;
+    }).join('');
+  },
+  contact(el, dict) {
+    const platforms = dict.contact?.platforms || {};
+    el.innerHTML = contactLinks.map(c => `
+      <a href="${esc(c.href)}" class="contact-link">
+        <div class="contact-link-left">
+          <span class="contact-platform">${esc(platforms[c.key] || c.key)}</span>
+          <span class="contact-value">${esc(c.value)}</span>
+        </div>
+        <span class="contact-arrow">→</span>
+      </a>
+    `).join('');
+  },
+};
+
 export function detectLocale() {
   const url = new URL(window.location.href);
   const param = url.searchParams.get('lang');
@@ -180,8 +308,15 @@ export function detectLocale() {
 
 export function applyLocale(lang) {
   if (!SUPPORTED_LOCALES.includes(lang)) lang = DEFAULT_LOCALE;
-  const dict = messages[lang];
+  const dict = lang === DEFAULT_LOCALE
+    ? messages[DEFAULT_LOCALE]
+    : deepMerge(messages[DEFAULT_LOCALE], messages[lang]);
   document.documentElement.lang = lang;
+
+  document.querySelectorAll('[data-render]').forEach(el => {
+    const fn = RENDERERS[el.dataset.render];
+    if (fn) fn(el, dict);
+  });
 
   document.querySelectorAll('[data-i18n]').forEach(el => {
     const v = get(dict, el.dataset.i18n);

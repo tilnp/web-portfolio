@@ -90,15 +90,17 @@ const REVEAL_CHUNKS = [
   ['cpu','chip-1-top-left','chip-2-top-right','chip-5-bottom-middle'],
   // step 1 — skills (7): center, both top corners, both bottom corners, edges.
   ['ram','chip-3-top-right','chip-6-bottom-left','chip-4-bottom-right','chip-7-bottom-left','sd-card-reader','screw-holes'],
-  // step 2 — education (7): two TL items, two BL items, two BR items, one TR.
-  ['power-button-top-left','eth-port','usbc-bottom-left','gpio-chip-bottom','hdmi-1','hdmi-2','capacitor-top-right'],
-  // step 3 — lab (9): connectors spread around the board + GPIO HEADERS
-  // (one step before USB) + a couple of small top chips.
-  ['connector-top-right','connector-bottom-left','connector-bottom-middle-1','connector-bottom-middle-2','gpio-top-big','gpio-top-small','gpio-bottom','gpio-chip-top-1','gpio-chip-top-2'],
-  // step 4 — contact (8): fine detail dotted around the board, then the
-  // USB ports as the final two reveals — the dramatic click that
-  // completes the right edge.
-  ['gpio-chip-top-3','gpio-chip-top-4','capacitors-top-left-1','capacitors-top-left-2','capacitors-bottom-right','chip-7-capacitors-bottom-left','usb-20','usb-30'],
+  // step 2 — education (8): gpio-top-big lands mid-step — the big top
+  // strip arrives earlier than the GPIO headers around it. Adjacent items
+  // alternate edges so no two top/right reveals fire back-to-back.
+  ['power-button-top-left','eth-port','gpio-top-big','usbc-bottom-left','hdmi-1','gpio-chip-bottom','capacitor-top-right','hdmi-2'],
+  // step 3 — lab (7): connectors + remaining GPIO headers, interleaved
+  // top↔bottom so the cluster of top-edge chips doesn't fire as a group.
+  ['connector-top-right','gpio-chip-top-1','connector-bottom-left','gpio-bottom','gpio-top-small','connector-bottom-middle-2','gpio-chip-top-2'],
+  // step 4 — contact (9): fine detail dotted around the board, with
+  // connector-bottom-middle-1 lighting up the central bottom edge just
+  // before the USB ports — the dramatic finale on the right edge.
+  ['capacitors-top-left-1','gpio-chip-top-3','chip-7-capacitors-bottom-left','capacitors-bottom-right','gpio-chip-top-4','connector-bottom-middle-1','capacitors-top-left-2','usb-20','usb-30'],
 ];
 
 // Big components with clean outlines get a soft glow. Dense pin-clusters
