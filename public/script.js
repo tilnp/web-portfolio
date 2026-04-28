@@ -123,7 +123,7 @@ const REVEAL_CHUNKS = [
   ['cpu','chip-1-top-left','chip-2-top-right'],
 
   // step 1 — skills: center, top-right, both bottom-left chips, etc.
-  ['ram','chip-7-bottom-left','sd-card-reader','chip-4-bottom-right','screw-holes'],
+  ['ram','chip-7-bottom-left','sd-card-reader','chip-4-bottom-right'],
 
   // step 2 — education: chip-5-bottom-middle replaces the usb-c that
   ['power-button-top-left','gpio-top-big','chip-5-bottom-middle','hdmi-1','gpio-chip-bottom','capacitor-top-right','hdmi-2','chip-6-bottom-left','chip-3-top-right'],
@@ -135,7 +135,7 @@ const REVEAL_CHUNKS = [
   ['gpio-bottom','gpio-top-small','connector-bottom-middle-2','gpio-chip-top-2','usb-30'],
 
   // step 5 — contact: fine detail around the board with usb-20 closing
-  ['capacitors-top-left-1','gpio-chip-top-3','usbc-bottom-left','capacitors-bottom-right','gpio-chip-top-4','connector-bottom-middle-1','capacitors-top-left-2','usb-20'],
+  ['capacitors-top-left-1','gpio-chip-top-3','usbc-bottom-left','capacitors-bottom-right','gpio-chip-top-4','connector-bottom-middle-1','capacitors-top-left-2','usb-20', 'screw-holes'],
 ];
 
 // Big components with clean outlines get a soft glow. Dense pin-clusters
@@ -166,6 +166,11 @@ async function loadBoard() {
   const svg = container.querySelector('svg');
   if (!svg) return;
   svg.setAttribute('preserveAspectRatio', 'xMidYMid meet');
+
+  // Find the SVG element that represents the board background/chassis
+  // so we can adjust only its opacity as sections reveal. Prefer a
+  // class or id, fall back to an inkscape label if present.
+  const pcbBase = svg.querySelector('.pcb-base') || svg.querySelector('#pcb-base') || svg.querySelector('[inkscape\\:label="pcb-base"]');
 
   // Discover every direct child of the components layer. inkscape:label is
   // preferred (semantic), id is the documented fallback. Any group missing
@@ -335,6 +340,29 @@ async function loadBoard() {
     let fade = sy / Math.max(1, fadeEnd);
     fade = Math.min(1, Math.max(0, fade));
     container.style.opacity = String(fade);
+
+    // Adjust only the board background element's opacity based on which
+    // section we're currently approaching. Start at 0.06 at the first
+    // section and increase by 0.01 per step, capped at 0.11.
+    try {
+      let stepIndex = 0;
+      if (sy <= 0) {
+        stepIndex = 0;
+      } else if (sy >= lastEnd) {
+        stepIndex = Math.max(0, stepSections.length - 1);
+      } else {
+        for (let i = 0; i < stepSections.length; i++) {
+          const start = i === 0 ? 0 : stepSections[i - 1].offsetTop;
+          const end = stepSections[i].offsetTop;
+          if (sy < end) { stepIndex = i; break; }
+        }
+      }
+      const baseOpacity = 0.08;
+      const bgOpacity = Math.min(0.38, baseOpacity + 0.06 * stepIndex);
+      if (pcbBase) pcbBase.style.opacity = String(bgOpacity);
+    } catch (e) {
+      // defensive: never throw from rendering logic
+    }
 
     // Find which step the viewport currently sits in and how far through it
     // we are. idx accumulates: 0 at firstStart, totalComps at lastEnd.

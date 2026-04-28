@@ -71,17 +71,17 @@ body{
   pointer-events:none;
   opacity:0;
   transition:opacity .6s ease;
+  /* Vignette fade: inset box-shadow fades edges to dark without clipping
+     SVG drop-shadows. The radial gradient effect is applied via the shadow
+     layering: innermost is tight, outermost is large and subtle. */
+  box-shadow:inset 0 0 120px rgba(0,0,0,.35), inset 0 0 200px rgba(0,0,0,.15);
 }
 .board-bg svg{
   width:min(1280px,96vw);
   height:auto;
   max-height:95vh;
+  overflow:visible;
   opacity:.45;
-  /* Wide vignette: only the inner ~40% stays fully solid, then everything
-     (chassis, chips, wires alike) gradually dissolves into the page bg.
-     Applied to the SVG root so every layer is masked. */
-  -webkit-mask-image:radial-gradient(ellipse 95% 95% at 50% 50%,#000 0%,#000 40%,rgba(0,0,0,.65) 72%,transparent 100%);
-  mask-image:radial-gradient(ellipse 95% 95% at 50% 50%,#000 0%,#000 40%,rgba(0,0,0,.65) 72%,transparent 100%);
 }
 /* PCB chassis: the only rectangular silhouette in the SVG. Stripping its
    stroke removes the visible "board border", and a low opacity lets the
@@ -89,7 +89,7 @@ body{
    than reading as a hard panel. The vignette above further softens the
    corners so no straight edge survives. */
 .board-bg .pcb-base{
-  opacity:.12;
+  opacity:.08;
   stroke:none;
 }
 
@@ -697,7 +697,7 @@ footer{
   filter:blur(0);
 }
 .glow-comp.lit{
-  filter:blur(0) drop-shadow(0 0 4px var(--green-glow)) drop-shadow(0 0 8px var(--green-glow));
+  filter:blur(0) drop-shadow(0 0 6px var(--green-glow)) drop-shadow(0 0 12px var(--green-glow));
 }
 
 /* Wires: progressive draw along the path. Direction is set per wire at init
