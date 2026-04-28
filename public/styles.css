@@ -77,7 +77,7 @@ body{
   opacity:.45;
   /* Wide vignette: only the inner ~40% stays fully solid, then everything
      (chassis, chips, wires alike) gradually dissolves into the page bg.
-     Applied to the SVG root so every layer is masked, not just .pcb-base. */
+     Applied to the SVG root so every layer is masked. */
   -webkit-mask-image:radial-gradient(ellipse 95% 95% at 50% 50%,#000 0%,#000 40%,rgba(0,0,0,.65) 72%,transparent 100%);
   mask-image:radial-gradient(ellipse 95% 95% at 50% 50%,#000 0%,#000 40%,rgba(0,0,0,.65) 72%,transparent 100%);
 }
@@ -87,7 +87,7 @@ body{
    than reading as a hard panel. The vignette above further softens the
    corners so no straight edge survives. */
 .board-bg .pcb-base{
-  opacity:.22;
+  opacity:.12;
   stroke:none;
 }
 
@@ -315,12 +315,10 @@ h2{
   margin-bottom:1.4rem;
 }
 /* About + education sections wrap their content in a single glass panel
-   with a green left accent — deliberately different from the per-item
-   tile grids elsewhere. One container, not many cards. The vertical
-   gradient softens the panel into the board behind it; the green stripe
-   echoes the lit components without copying tile vocabulary. */
-/* Each paragraph is its own glass panel (same style as before, just
-   split per-<p>). Flex column + gap stacks them with breathing room. */
+   with a white left accent. The vertical gradient softens the panel into
+   the board behind it. */
+/* Each paragraph is its own glass panel (split per-<p>). 
+   Flex column + gap stacks them with breathing room. */
 .about-text{
   color:var(--muted2);
   line-height:1.8;

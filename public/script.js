@@ -126,19 +126,15 @@ const REVEAL_CHUNKS = [
   ['ram','chip-7-bottom-left','sd-card-reader','chip-4-bottom-right','screw-holes'],
 
   // step 2 — education: chip-5-bottom-middle replaces the usb-c that
-  // moved to skills; gpio-top-big mid-step.
   ['power-button-top-left','gpio-top-big','chip-5-bottom-middle','hdmi-1','gpio-chip-bottom','capacitor-top-right','hdmi-2','chip-6-bottom-left','chip-3-top-right'],
 
   // step 3 — languages: a short, varied chunk (TR + BL + top + BL)
-  // pulled from the front of the old experience chunk.
   ['connector-top-right','chip-7-capacitors-bottom-left','gpio-chip-top-1','connector-bottom-left','eth-port'],
 
   // step 4 — experience: remaining GPIO headers + connectors, ending on
-  // usb-30 so the right edge starts firing before the contact finale.
   ['gpio-bottom','gpio-top-small','connector-bottom-middle-2','gpio-chip-top-2','usb-30'],
 
   // step 5 — contact: fine detail around the board with usb-20 closing
-  // out the right edge.
   ['capacitors-top-left-1','gpio-chip-top-3','usbc-bottom-left','capacitors-bottom-right','gpio-chip-top-4','connector-bottom-middle-1','capacitors-top-left-2','usb-20'],
 ];
 
