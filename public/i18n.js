@@ -39,10 +39,12 @@ export const educationItems = [
 ];
 
 // Spoken languages. Same key-driven shape as education — name + level
+// translate per locale; `bars` (0–4, fractional OK) drives the proficiency
+// indicator.
 export const languageItems = [
-  { key: 'sl' },
-  { key: 'en', cert: '' },
-  { key: 'de', cert: '' },
+  { key: 'sl',              bars: 4    },
+  { key: 'en', cert: '',    bars: 3.25 },
+  { key: 'de', cert: '',    bars: 2.1  },
 ];
 
 // Icons + tags don't translate; title/desc do.
@@ -303,11 +305,18 @@ const RENDERERS = {
     const t = dict.languages?.items || {};
     el.innerHTML = languageItems.map(l => {
       const tx = t[l.key] || {};
+      const filled = Math.max(0, Math.min(4, l.bars ?? 0));
+      const bars = Array.from({ length: 4 }, (_, i) => {
+        const fill = Math.max(0, Math.min(1, filled - i));
+        const cls = fill > 0 ? 'bar filled' : 'bar';
+        return `<span class="${cls}" style="--fill:${(fill * 100).toFixed(2)}%"></span>`;
+      }).join('');
       return `
         <div class="lang-row">
           <div class="lang-name">${esc(tx.name)}</div>
           <div class="lang-meta">
             <span class="lang-level">${esc(tx.level)}</span>
+            <div class="lang-bars" aria-hidden="true">${bars}</div>
             ${l.cert ? `<span class="lang-cert">${esc(l.cert)}</span>` : ''}
           </div>
         </div>

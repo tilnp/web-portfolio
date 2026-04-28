@@ -324,7 +324,6 @@ h2{
 .about-text{
   color:var(--muted2);
   line-height:1.8;
-  max-width:680px;
   font-size:1.15rem;
   display:flex;
   flex-direction:column;
@@ -446,6 +445,47 @@ h2{
   font-size:11px;
   color:var(--muted);
   letter-spacing:.04em;
+}
+/* Proficiency bars: 4 pill-shaped segments stacked horizontally. The
+   `filled` count is set by the renderer from languageItems[i].bars.
+   Filled segments echo the board's PCB green with a soft halo; empty
+   ones are barely-there outlines. */
+.lang-bars{
+  display:flex;
+  gap:4px;
+  margin-top:.15rem;
+}
+.lang-bars .bar{
+  position:relative;
+  display:block;
+  width:22px;
+  height:6px;
+  border-radius:999px;
+  background:rgba(255,255,255,.06);
+  /* Inset shadow stands in for a 1px border so the padding-box (which
+     positions ::before) equals the visible bar — partial fills land on
+     the right pixel without border-related offsets. */
+  box-shadow:inset 0 0 0 1px rgba(255,255,255,.1);
+}
+/* Green fill is a separate pseudo-element. Its width is `--fill`
+   (0%–100%, set inline by the renderer per segment), so any fractional
+   value down to whatever precision is wanted (1/4 bar, percentage, etc.)
+   renders cleanly. The halo lives on this element, not the parent —
+   that keeps the glow tight around just the green portion instead of
+   bleeding around the empty right end. */
+.lang-bars .bar::before{
+  content:'';
+  position:absolute;
+  top:0;
+  left:0;
+  bottom:0;
+  width:var(--fill,0%);
+  border-radius:999px;
+  background:rgba(34,197,94,.55);
+  pointer-events:none;
+}
+.lang-bars .bar.filled::before{
+  box-shadow:0 0 6px rgba(34,197,94,.25);
 }
 
 .lab-grid{
