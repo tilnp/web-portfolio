@@ -90,8 +90,8 @@ export const messages = {
       label: '01 — about',
       title: 'Who I am',
       lead: '',
-      p1: 'I\'m a <strong>computer science student</strong> with a strong interest in how systems work — from operating systems and networking down to the underlying hardware.',
-      p2: 'I’m comfortable working across both <strong>software and hardware</strong>: using Linux environments, troubleshooting system issues, working in the terminal, and understanding how components interact at a low level. I focus on practical problem-solving rather than just theory.',
+      p1: 'I\'m a <strong>computer science student</strong> with a genuine interest in how systems work — from operating systems and networking down to the underlying hardware.',
+      p2: 'I’m comfortable working across both <strong>software and hardware</strong>: working in Linux environments, troubleshooting system issues, using the terminal, and understanding how components interact at a low level. I focus on practical problem-solving rather than just theory.',
       p3: 'Outside of coursework I run a small <strong>home lab</strong> on Proxmox where I experiment with self-hosted services, containerised applications, and networking setups. I treat it as a hands-on learning environment, regularly building, breaking, and improving systems.',
     },
     skills: {
@@ -119,18 +119,18 @@ export const messages = {
           degree: 'BSc Computer Science',
           details: [
             'Programming (Java, C, C++, Python)',
-            'Algorithms, data structures, and computational theory.',
-            'Computer systems, operating systems, and architecture.',
-            'Databases, networks, and information systems.',
-            'Mathematics and statistics for computing.',
+            'Algorithms, data structures, and computational theory',
+            'Computer systems, operating systems, and architecture',
+            'Databases, networks, and information systems',
+            'Mathematics and statistics for computing',
           ],
         },
         gym: {
           school: 'Škofja Loka Gymnasium',
           degree: 'General Matura',
           details: [
-            'General secondary education with strong math and science track.',
-            'Strong written and oral communication in Slovene and English.',
+            'General secondary education with strong math and science track',
+            'Strong written and verbal communication skills in Slovene and English',
           ],
         },
       },
@@ -152,7 +152,7 @@ export const messages = {
           level: 'Fluent',
           details: [
             'Primary language for technical content',
-            'Used for documentation and collaboration in software projects.',
+            'Used for documentation and collaboration in software projects',
           ],
         },
         de: {
@@ -273,8 +273,8 @@ export const messages = {
           school: 'Gimnazija Škofja Loka',
           degree: 'Splošna matura',
           details: [
-            'Splošno srednješolsko izobraževanje z močno matematčno in naravoslovno podlago.',
-            'Močna pisna in ustna komunikacija v slovenščini in angleščini.',
+            'Splošno srednješolsko izobraževanje z močno matematično in naravoslovno podlago',
+            'Močna pisna in ustna komunikacija v slovenščini in angleščini',
           ],
         },
       },
@@ -328,7 +328,7 @@ export const messages = {
         },
         adm: {
           title: 'Sistemska administracija',
-          desc: 'Delo v Linux okoljih preko terminala za sistemsko konfiguracijo, odpravljanje napak, upravljanje paketov in redna vzdrževalna opravila.'
+          desc: 'Delo v Linux okoljih z uporabo terminala za sistemsko konfiguracijo, odpravljanje napak, upravljanje paketov in redna vzdrževalna opravila.'
         },
         dev: {
           title: 'Iterativni razvoj',
