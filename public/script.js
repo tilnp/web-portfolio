@@ -345,8 +345,8 @@ async function loadBoard() {
     container.style.opacity = String(fade);
 
     // Adjust only the board background element's opacity based on which
-    // section we're currently approaching. Start at 0.06 at the first
-    // section and increase by 0.01 per step, capped at 0.11.
+    // section we're currently approaching. Start at 0.08 at the first
+    // section and increase by 0.08 per step, capped at 0.38.
     try {
       let stepIndex = 0;
       if (sy <= 0) {
@@ -361,7 +361,7 @@ async function loadBoard() {
         }
       }
       const baseOpacity = 0.08;
-      const bgOpacity = Math.min(0.38, baseOpacity + 0.06 * stepIndex);
+      const bgOpacity = Math.min(0.42, baseOpacity + 0.06 * stepIndex);
       if (pcbBase) pcbBase.style.opacity = String(bgOpacity);
     } catch (e) {
       // defensive: never throw from rendering logic

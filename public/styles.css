@@ -45,7 +45,7 @@ body{
   position:fixed;
   /* Extend the grid well beyond the viewport so the scroll-driven
      translate can keep moving without clipping the pattern at the edges. */
-  inset:-146vh 0;
+  inset:-175vh 0;
   z-index:0;
   pointer-events:none;
   background-image:
@@ -89,7 +89,8 @@ body{
    than reading as a hard panel. The vignette above further softens the
    corners so no straight edge survives. */
 .board-bg .pcb-base{
-  opacity:.08;
+  /* script handles the boardbase opacity */
+  /*opacity:.08;*/
   stroke:none;
 }
 
