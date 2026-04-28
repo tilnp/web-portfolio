@@ -67,7 +67,6 @@ export const experienceItems = [
   { key: 'net', tags: ['https', 'firewall', 'tls', 'dns'] },
   { key: 'adm', tags: ['admin', 'linux', 'shell', 'log'] },
   { key: 'emb', tags: ['STM32', 'GPIO', 'C/C++', 'embedded'] },
-  { key: 'web', tags: ['HTML', 'web', 'frontend', 'UI'] },
 ];
 
 // Email/URL don't translate; the platform label does (email → e-pošta).
@@ -223,10 +222,6 @@ export const messages = {
         emb: {
           title: 'Embedded systems',
           desc: 'Developing firmware for STM32 microcontrollers, focusing on hardware interfacing, sensor data acquisition, and real-time embedded system integration.',
-        },
-        web: {
-          title: 'Web development (AI-assisted)',
-          desc: 'Developing web-based user interfaces with focus on responsive design, data visualization, and interactive UI components.',
         },
       },
     },
@@ -393,10 +388,6 @@ export const messages = {
         emb: {
           title: 'Vgrajeni sistemi',
           desc: 'Razvoj firmware-a za mikrokrmilnike STM32 s poudarkom na strojni povezljivosti, zajemu podatkov iz senzorjev ter integraciji vgrajenih sistemov v realnem času.',
-        },
-        web: {
-          title: 'Spletni razvoj (s pomočjo AI)',
-          desc: 'Razvoj spletnih uporabniških vmesnikov s poudarkom na odzivnem dizajnu, vizualizaciji podatkov in interaktivnih UI komponentah.',
         },
       },
     },
