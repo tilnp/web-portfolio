@@ -19,8 +19,8 @@ export const skills = [
   { name: 'HTML / CSS / JS',  cat: 'language' },
   { name: 'Linux',            cat: 'systems'  },
   { name: 'Windows',          cat: 'systems'  },
-  { name: 'Networking',       cat: 'systems'  },
-  { name: 'Proxmox',          cat: 'infra'    },
+  { name: 'Networking',       cat: 'infra'    },
+  { name: 'Virtualization',   cat: 'infra'    },
   { name: 'Docker',           cat: 'infra'    },
   { name: 'Nginx / NPM',      cat: 'infra'    },
   { name: 'Git',              cat: 'tooling'  },
@@ -44,25 +44,30 @@ export const educationItems = [
 export const languageItems = [
   { key: 'sl',                bars: 4    },
   { key: 'en', cert: '',      bars: 3.25 },
-  { key: 'de', cert: '',      bars: 2.1  },
+  { key: 'de', cert: '',      bars: 2.25  },
 ];
 
 // Projects. Add entries here as projects come online; an empty array
 // renders the section's empty-state message instead of cards.
 // `key` is the lookup id into messages.{en,sl}.projects.items.
-// `year` (optional) shows in the mono badge column. `href` (optional)
-// makes the card clickable. `tags` (optional) are non-translatable.
+// `year` (optional) shows in the mono badge column.
+// `ongoing: true` appends a green "→" inside the year chip with a
+// localized "ongoing" tooltip — use this instead of writing " ->" by hand.
+// `href` (optional) makes the card clickable. `tags` (optional) are
+// non-translatable.
 export const projectItems = [
-  // { key: 'homelab', year: '2025', href: 'https://github.com/tilnp/homelab', tags: ['proxmox','docker'] },
+  { key: 'barkwatch', year: '2026',                  tags: ['hackathon', 'team', 'AI'] },
+  { key: 'stm32',     year: '2026', ongoing: true,   tags: ['STM32H750', 'embedded', 'CAN'] },
+  { key: 'homelab',   year: '2025', ongoing: true,   tags: ['proxmox', 'hardware', 'web'] },
 ];
 
 // Keys + tags don't translate; title/desc do.
 // key is used for item icon
 export const experienceItems = [
-  { key: 'vm',  tags: ['proxmox', 'lxc', 'vm', 'docker'] },
-  { key: 'net', tags: ['https', 'firewall', 'ssl', 'dns'] },
-  { key: 'srv', tags: ['apt', 'conf', 'status', 'monitoring'] },
+  { key: 'net', tags: ['https', 'firewall', 'tls', 'dns'] },
   { key: 'adm', tags: ['admin', 'linux', 'shell', 'log'] },
+  { key: 'emb', tags: ['STM32', 'GPIO', 'C/C++', 'embedded'] },
+  { key: 'web', tags: ['HTML', 'web', 'frontend', 'UI'] },
 ];
 
 // Email/URL don't translate; the platform label does (email → e-pošta).
@@ -99,9 +104,13 @@ export const messages = {
       label: '01 — about',
       title: 'Who I am',
       lead: '',
-      p1: 'I\'m a <strong>computer science student</strong> with a genuine interest in how systems work — from operating systems and networking down to the underlying hardware.',
-      p2: 'I’m comfortable working across both <strong>software and hardware</strong>: working in Linux environments, troubleshooting system issues, using the terminal, and understanding how components interact at a low level. I focus on practical problem-solving rather than just theory.',
-      p3: 'Outside of coursework I run a small <strong>home lab</strong> on Proxmox where I experiment with self-hosted services, containerised applications, and networking setups. I treat it as a hands-on learning environment, regularly building, breaking, and improving systems.',
+      p1: 'I\'m a <strong>computer science student</strong> with a genuine interest in how systems work — from operating systems and networking \
+           down to the underlying hardware.',
+      p2: 'I’m comfortable working across both <strong>software and hardware</strong>: working in Linux environments, troubleshooting system issues, \
+           using the terminal, and understanding how components interact at a low level. I focus on practical problem-solving rather than just theory.',
+      p3: 'Outside of coursework I run a small home lab on Proxmox where I experiment with systems and infrastructure projects. I also build small \
+           <strong>personal projects</strong> and tools to optimise my workflow, and occasionally work on design-related tasks, including the graphics \
+           used in this website. I treat all of this as a hands-on learning environment focused on continuous skill improvement.',
     },
     skills: {
       label: '03 — skills',
@@ -178,11 +187,24 @@ export const messages = {
       title: 'Selected work',
       lead: '',
       empty: 'More projects coming soon. In the meantime, see github.com/tilnp.',
+      ongoing: 'ongoing',
       items: {
-        // homelab: {
-        //   title: 'Home lab',
-        //   desc: 'Self-hosted infrastructure on Proxmox running ~12 services behind Nginx Proxy Manager.',
-        // },
+        barkwatch: {
+          title: 'BarkWatch — Arnes Hackathon 2026',
+          desc: 'AI-powered system for predicting bark beetle outbreaks in Slovenian forests, combining modeling with historical data visualization. \
+                 Developed as a team project, reaching the hackathon finals. Responsible for frontend development: an interactive MapLibre-based interface \
+                 for browsing forecasts and exploring data per forest sector.',
+        },
+        stm32: {
+          title: 'Vehicle Diagnostics System',
+          desc: 'Embedded system project using an STM32H750XBH6 Discovery board to interface with a vehicle via OBD-II over CAN bus. Implements data acquisition \
+                 from vehicle ECUs and real-time visualization on an integrated display or via UART.',
+        },
+        homelab: {
+          title: 'Home lab',
+          desc: 'Self-hosted Proxmox node for experimenting with virtualization, containers, networking, and self-hosted services. Planned and built the \
+                 underlying hardware system, which now hosts multiple services and web applications, including this portfolio site',
+        },
       },
     },
     experience: {
@@ -190,21 +212,21 @@ export const messages = {
       title: 'Practical Experience',
       lead: '',
       items: {
-        vm: {
-          title: 'Virtualization & containers',
-          desc: 'Deploying and managing LXC containers and virtual machines on Proxmox, including system setup, configuration, and troubleshooting.'
-        },
         net: {
           title: 'Networking & services',
-          desc: 'Configuring network services including reverse proxy (Nginx Proxy Manager), private DNS server, firewall rules, and internal service exposure.'
-        },
-        srv: {
-          title: 'Service deployment',
-          desc: 'Installing, configuring, and maintaining self-hosted applications (Home Assistant, PhotoPrism, FileBrowser, Uptime Kuma, etc.), including updates and monitoring.'
+          desc: 'Configuring network services including reverse proxy (Nginx Proxy Manager), private DNS server, firewall rules, and internal service deployment.'
         },
         adm: { 
           title: 'System administration',
           desc: 'Working in Linux environments using the terminal for system configuration, debugging, package management, and routine maintenance tasks.'
+        },
+        emb: {
+          title: 'Embedded systems',
+          desc: 'Developing firmware for STM32 microcontrollers, focusing on hardware interfacing, sensor data acquisition, and real-time embedded system integration.',
+        },
+        web: {
+          title: 'Web development (AI-assisted)',
+          desc: 'Developing web-based user interfaces with focus on responsive design, data visualization, and interactive UI components.',
         },
       },
     },
@@ -252,9 +274,13 @@ export const messages = {
       label: '01 — o meni',
       title: 'Kdo sem',
       lead: '',
-      p1: 'Sem <strong>študent računalništva in informatike</strong> s pristnim zanimanjem za delovanje sistemov — od operacijskih sistemov in omrežij vse do strojne opreme, ki vse to poganja.',
-      p2: 'Znajdem se tako pri <strong>programski</strong> kot <strong>strojni opremi</strong>: uporaba Linux okolij, odpravljanje sistemskih težav, delo v terminalu in razumevanje interakcije komponent na nizki ravni. Osredotočam se na praktično reševanje problemov in ne le na teorijo.',
-      p3: 'Poleg študija upravljam manjši <strong>home lab</strong> na Proxmoxu, kjer eksperimentiram s samogostovanjem storitev, kontejnerskimi aplikacijami in omrežnimi nastavitvami. Nanj gledam kot na praktično učno okolje, kjer redno postavljam, preizkušam in izboljšujem sisteme.',
+      p1: 'Sem <strong>študent računalništva in informatike</strong> s pristnim zanimanjem za delovanje sistemov — od operacijskih sistemov in omrežij vse do \
+           strojne opreme, ki vse to poganja.',
+      p2: 'Znajdem se tako pri <strong>programski</strong> kot <strong>strojni opremi</strong>: uporaba Linux okolij, odpravljanje sistemskih težav, delo v terminalu \
+           in razumevanje interakcije komponent na nizki ravni. Osredotočam se na praktično reševanje problemov in ne le na teorijo.',
+      p3: 'Poleg študijskih obveznosti upravljam manjši home lab na Proxmoxu, kjer eksperimentiram s sistemskimi in infrastrukturnimi projekti. Razvijam tudi manjše \
+           <strong>osebne projekte</strong> in orodja za optimizacijo svojega delovnega toka, občasno pa se ukvarjam tudi z oblikovalskimi nalogami, vključno z \
+           grafiko, uporabljeno na tej spletni strani. Vse to obravnavam kot praktično učno okolje, osredotočeno na stalno izboljševanje znanja in veščin.',
     },
     skills: {
       label: '03 — veščine',
@@ -328,34 +354,49 @@ export const messages = {
     },
     projects: {
       label: '04 — projekti',
-      title: 'Izbrano delo',
+      title: 'Izbrana dela',
       lead: '',
       empty: 'Več projektov sledi kmalu. Do takrat si oglejte github.com/tilnp.',
+      ongoing: 'v teku',
       items: {
-        // Per-locale overrides go here; keys default to en values.
+        barkwatch: {
+          title: 'BarkWatch — Arnes Hackathon 2026',
+          desc: 'Umetnointeligenčni sistem za napovedovanje izbruhov podlubnikov v slovenskih gozdovih, ki združuje modeliranje in vizualizacijo zgodovinskih \
+                 podatkov. Razvit kot skupinski projekt, ki se je uvrstil v finale hackathona. Odgovoren za razvoj frontend dela: interaktivni MapLibre vmesnik \
+                 za pregledovanje napovedi in raziskovanje podatkov po gozdnih sektorjih.',
+        },
+        stm32: {
+          title: 'Sistem za diagnostiko vozil',
+          desc: 'Vgrajeni sistemski projekt z uporabo STM32H750XBH6 Discovery plošče za povezavo z vozilom preko OBD-II prek CAN vodila. Omogoča zajem podatkov \
+                 iz ECU enot vozila ter njihov prikaz v realnem času na integriranem zaslonu ali prek protokola UART.',
+        },
+        homelab: {
+          title: 'Home lab',
+          desc: 'Samogostovano Proxmox vozlišče za eksperimentiranje z virtualizacijo, kontejnerji, omrežji in samogostovanimi storitvami. Načrtovan in zgrajen \
+                 je bil osnovni strojni sistem, ki zdaj poganja več storitev in spletnih aplikacij, vklučno s tem spletnim portfeljem.',
+        },
       },
     },
     experience: {
       label: '05 — izkušnje',
       title: 'Praktične izkušnje',
       lead: '',
-      // Any key omitted here falls back to its en counterpart automatically.
       items: {
-        vm: {
-          title: 'Virtualizacija in kontejnerji',
-          desc: 'Postavljanje in upravljanje LXC kontejnerjev in virtualnih strojev na Proxmoxu, vključno z nastavitvijo, konfiguracijo in odpravljanjem težav.'
-        },
         net: {
           title: 'Omrežje in storitve',
-          desc: 'Vzpostavitev reverznega proxyja (Nginx Proxy Manager), zasebnega DNS strežnika in izpostavljanja notranjih storitev.'
-        },
-        srv: {
-          title:'Postavitev storitev',
-          desc: 'Namestitev, konfiguracija in vzdrževanje samogostovanih aplikacij (Home Assistant, PhotoPrism, FileBrowser, Uptime Kuma, itd.), vključno s posodobitvami in nadzorovanjem.'
+          desc: 'Vzpostavitev reverznega proxyja (Nginx Proxy Manager), zasebnega DNS strežnika in notranjih storitev.'
         },
         adm: {
           title: 'Sistemska administracija',
           desc: 'Delo v Linux okoljih z uporabo terminala za sistemsko konfiguracijo, odpravljanje napak, upravljanje paketov in redna vzdrževalna opravila.'
+        },
+        emb: {
+          title: 'Vgrajeni sistemi',
+          desc: 'Razvoj firmware-a za mikrokrmilnike STM32 s poudarkom na strojni povezljivosti, zajemu podatkov iz senzorjev ter integraciji vgrajenih sistemov v realnem času.',
+        },
+        web: {
+          title: 'Spletni razvoj (s pomočjo AI)',
+          desc: 'Razvoj spletnih uporabniških vmesnikov s poudarkom na odzivnem dizajnu, vizualizaciji podatkov in interaktivnih UI komponentah.',
         },
       },
     },
@@ -473,13 +514,17 @@ const RENDERERS = {
         : '';
       return;
     }
+    const ongoingLabel = dict.projects?.ongoing || 'ongoing';
     el.innerHTML = projectItems.map(p => {
       const tx = t[p.key] || {};
       const tagsHtml = p.tags?.length
         ? `<div class="proj-tags">${p.tags.map(x => `<span class="tag">${esc(x)}</span>`).join('')}</div>`
         : '';
+      const yearInner = p.ongoing
+        ? `<abbr title="${esc(ongoingLabel)}" aria-label="${esc(ongoingLabel)}">${esc(p.year ?? '')}<span class="ongoing-mark" aria-hidden="true">→</span></abbr>`
+        : esc(p.year ?? '');
       const inner = `
-        ${p.year ? `<div class="proj-year">${esc(p.year)}</div>` : ''}
+        ${(p.year || p.ongoing) ? `<div class="proj-year">${yearInner}</div>` : ''}
         <div class="proj-body">
           <div class="proj-title">${esc(tx.title)}${p.href ? ' <span class="proj-arrow">↗</span>' : ''}</div>
           <div class="proj-desc">${esc(tx.desc)}</div>
