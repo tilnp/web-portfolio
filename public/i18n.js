@@ -26,7 +26,7 @@ export const skills = [
   { name: 'Git',              cat: 'tooling'  },
   { name: 'Bash',             cat: 'scripting'},
   { name: 'SQL',              cat: 'data'     },
-  { name: 'Embedded Systems' ,cat: 'hardware' },
+  { name: 'Embedded Systems', cat: 'hardware' },
   { name: 'PC Assembly',      cat: 'hardware' },
 ];
 
