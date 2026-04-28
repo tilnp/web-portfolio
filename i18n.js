@@ -67,7 +67,7 @@ export const messages = {
       tag: 'computer science student',
       firstName: 'Tilen',
       lastName: 'Pokorn',
-      sub: 'CS student building things at the intersection of systems, software, and hardware. Currently tinkering with whatever seems interesting this week.',
+      sub: 'CS student building things at the intersection of systems, software, and hardware. Tinkering with whatever seems interesting this week.',
       cta: 'get in touch ↓',
       github: 'github',
       resume: 'résumé ↗',

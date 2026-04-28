@@ -66,6 +66,34 @@ navLinks.forEach(a => {
   });
 });
 
+// Floating "↓" button — scroll to the next section's title. Hides itself
+// when there's nothing left below (i.e. the user is on the last section).
+const nextBtn = document.getElementById('nextBtn');
+if (nextBtn) {
+  const findNext = () => {
+    const sy = window.scrollY;
+    // 4px buffer so a section already pinned to the top isn't picked.
+    for (const s of navSections) {
+      if (s.offsetTop > sy + 4) return s;
+    }
+    return null;
+  };
+  nextBtn.addEventListener('click', () => {
+    findNext()?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  });
+  let nextTicking = false;
+  const updateNextBtn = () => {
+    nextBtn.classList.toggle('hidden', findNext() === null);
+  };
+  window.addEventListener('scroll', () => {
+    if (nextTicking) return;
+    nextTicking = true;
+    requestAnimationFrame(() => { updateNextBtn(); nextTicking = false; });
+  }, { passive: true });
+  window.addEventListener('resize', updateNextBtn, { passive: true });
+  updateNextBtn();
+}
+
 // Inline board SVG with scroll-driven progressive build.
 // Components are identified by direct-child lookup inside the components layer
 // using inkscape:label (id falls back to the same string when present).
@@ -74,33 +102,30 @@ navLinks.forEach(a => {
 //
 // REVEAL_CHUNKS is the curated, semantically-grouped order, split into 5
 // chunks that align 1:1 with the [data-board-step] page sections (about →
-// contact). Each chunk fills in as the user scrolls through that section,
-// regardless of section height — so reveal cadence stays even.
+// contact). Each chunk is fully lit by the moment its section's title
+// reaches the top of the viewport — so chunk[i] is revealed during the
+// scroll range *leading up to* section[i], not while the user is reading
+// section[i]. (Chunk 0 fills in over the hero; chunk 1 fills in while
+// scrolling out of #about toward #skills; and so on.)
 //
 // The list is a *preference*, not a gatekeeper: at runtime we discover every
 // direct child of the components layer and append any leftover (unlabeled or
 // future-added) groups to the last chunk so nothing is ever skipped.
-// Each step samples from across the whole board (center + each corner +
-// each edge) so the build always feels like the whole shape is filling
-// in, not a single cluster expanding. USB ports are reserved for the very
-// end of step 4, GPIO headers for step 3 — the rest is interleaved to
-// keep spatial diversity per step.
 const REVEAL_CHUNKS = [
-  // step 0 — about (4): center + top-left + top-right + bottom-center.
-  ['cpu','chip-1-top-left','chip-2-top-right','chip-5-bottom-middle'],
-  // step 1 — skills (7): center, both top corners, both bottom corners, edges.
-  ['ram','chip-3-top-right','chip-6-bottom-left','chip-4-bottom-right','chip-7-bottom-left','sd-card-reader','screw-holes'],
-  // step 2 — education (8): gpio-top-big lands mid-step — the big top
-  // strip arrives earlier than the GPIO headers around it. Adjacent items
-  // alternate edges so no two top/right reveals fire back-to-back.
-  ['power-button-top-left','eth-port','gpio-top-big','usbc-bottom-left','hdmi-1','gpio-chip-bottom','capacitor-top-right','hdmi-2'],
-  // step 3 — lab (7): connectors + remaining GPIO headers, interleaved
-  // top↔bottom so the cluster of top-edge chips doesn't fire as a group.
-  ['connector-top-right','gpio-chip-top-1','connector-bottom-left','gpio-bottom','gpio-top-small','connector-bottom-middle-2','gpio-chip-top-2'],
-  // step 4 — contact (9): fine detail dotted around the board, with
-  // connector-bottom-middle-1 lighting up the central bottom edge just
-  // before the USB ports — the dramatic finale on the right edge.
-  ['capacitors-top-left-1','gpio-chip-top-3','chip-7-capacitors-bottom-left','capacitors-bottom-right','gpio-chip-top-4','connector-bottom-middle-1','capacitors-top-left-2','usb-20','usb-30'],
+  // step 0 — about: just the CPU and the two top chips, so the about
+  ['cpu','chip-1-top-left','chip-2-top-right'],
+
+  // step 1 — skills: center, top-right, both bottom-left chips, the
+  ['ram','chip-7-bottom-left','chip-3-top-right','sd-card-reader','chip-4-bottom-right','chip-6-bottom-left','screw-holes'],
+
+  // step 2 — education: chip-5-bottom-middle replaces the usb-c that
+  ['power-button-top-left','eth-port','gpio-top-big','chip-5-bottom-middle','hdmi-1','gpio-chip-bottom','capacitor-top-right','hdmi-2'],
+
+  // step 3 — experience: connectors + remaining GPIO headers,
+  ['chip-7-capacitors-bottom-left', 'connector-top-right','gpio-chip-top-1','connector-bottom-left','gpio-bottom','gpio-top-small','connector-bottom-middle-2','gpio-chip-top-2','usb-30'],
+
+  // step 4 — contact: fine detail dotted around the board, with
+  ['capacitors-top-left-1','gpio-chip-top-3','usbc-bottom-left','capacitors-bottom-right','gpio-chip-top-4','connector-bottom-middle-1','capacitors-top-left-2','usb-20'],
 ];
 
 // Big components with clean outlines get a soft glow. Dense pin-clusters
@@ -285,22 +310,19 @@ async function loadBoard() {
   function update() {
     if (stepSections.length === 0) return;
     const sy = window.scrollY;
-    const vh = window.innerHeight;
 
-    // Pull every step's start LEFT by `lead` so step 0 begins late in the
-    // hero and the core (CPU + first chips) is already partly built by the
-    // time the user reaches #about. Steps still tile back-to-back, just
-    // shifted earlier as a whole — section heights still drive cadence.
-    const lead = vh * 0.4;
-    const firstStart = stepSections[0].offsetTop - lead;
-    const lastSec = stepSections[stepSections.length - 1];
-    const lastEnd = lastSec.offsetTop;
+    // Each chunk is fully lit by the time *its* section's title hits the
+    // top of the viewport — i.e. chunk[i] reveals over the scroll range
+    // ending at stepSections[i].offsetTop. The chunk for the first section
+    // reveals over the hero (start = 0); subsequent chunks reveal across
+    // the previous section's height.
+    const firstStart = 0;
+    const lastEnd = stepSections[stepSections.length - 1].offsetTop;
 
-    // Fade the board in slightly before step 0 starts revealing, so the
-    // chassis is present (blending into the bg) before components light up.
-    const fadeStart = firstStart - vh * 0.35;
-    const fadeEnd = firstStart + vh * 0.1;
-    let fade = (sy - fadeStart) / Math.max(1, fadeEnd - fadeStart);
+    // Fade the board in over the early portion of the hero, so the chassis
+    // is present before components start lighting up.
+    const fadeEnd = stepSections[0].offsetTop * 0.5;
+    let fade = sy / Math.max(1, fadeEnd);
     fade = Math.min(1, Math.max(0, fade));
     container.style.opacity = String(fade);
 
@@ -313,10 +335,8 @@ async function loadBoard() {
       idx = totalComps;
     } else {
       for (let i = 0; i < stepSections.length; i++) {
-        const start = stepSections[i].offsetTop - lead;
-        const end = (i + 1 < stepSections.length)
-          ? stepSections[i + 1].offsetTop - lead
-          : lastEnd;
+        const start = i === 0 ? 0 : stepSections[i - 1].offsetTop;
+        const end = stepSections[i].offsetTop;
         if (sy < end) {
           const local = (sy - start) / Math.max(1, end - start);
           const prev = i === 0 ? 0 : stepCumulative[i - 1];
