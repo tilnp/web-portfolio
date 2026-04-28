@@ -152,6 +152,29 @@ const GLOW = new Set([
   'eth-port','sd-card-reader',
 ]);
 
+// Wire→component mapping is structural (depends only on board.svg contents,
+// not viewport), so we cache it in localStorage keyed by a SHA-256 of the
+// fetched SVG text. On cache hit we skip ~71 getTotalLength/hit-test calls.
+const WIRE_CACHE_KEY = 'board.svg.wires.v1';
+
+async function sha256Hex(str) {
+  const buf = new TextEncoder().encode(str);
+  const digest = await crypto.subtle.digest('SHA-256', buf);
+  return [...new Uint8Array(digest)]
+    .map(b => b.toString(16).padStart(2, '0')).join('');
+}
+
+function readWireCache() {
+  try {
+    const raw = localStorage.getItem(WIRE_CACHE_KEY);
+    return raw ? JSON.parse(raw) : null;
+  } catch { return null; }
+}
+
+function writeWireCache(entry) {
+  try { localStorage.setItem(WIRE_CACHE_KEY, JSON.stringify(entry)); } catch {}
+}
+
 async function loadBoard() {
   const container = document.getElementById('boardBg');
   if (!container) return;
@@ -257,48 +280,78 @@ async function loadBoard() {
   };
 
   const traceEls = svg.querySelectorAll('.trace');
-  const wires = [];
-  const svgPoint = svg.createSVGPoint();
+
+  // Inkscape exports most paths with inline style="...stroke-dasharray:none..."
+  // which beats our CSS rule (.trace { stroke-dasharray:100 }) and turns the
+  // wire into a solid line that just fades opacity. Strip the inline dash
+  // properties so the CSS draw-on logic applies to every wire. Mutates the
+  // freshly-injected DOM, so it must run on every load (cache hit or miss).
   traceEls.forEach(t => {
-    // Inkscape exports most paths with inline style="...stroke-dasharray:none..."
-    // which beats our CSS rule (.trace { stroke-dasharray:100 }) and turns the
-    // wire into a solid line that just fades opacity. Strip the inline
-    // dash properties so the CSS draw-on logic applies to every wire.
     if (t.style) {
       t.style.removeProperty('stroke-dasharray');
       t.style.removeProperty('stroke-dashoffset');
     }
-    if (typeof t.getTotalLength !== 'function') return;
-    let len, p0, p1;
-    try {
-      len = t.getTotalLength();
-      p0 = t.getPointAtLength(0);
-      p1 = t.getPointAtLength(len);
-    } catch { return; }
-    const ctm = t.getScreenCTM();
-    if (!ctm) return;
-    svgPoint.x = p0.x; svgPoint.y = p0.y;
-    const s0 = svgPoint.matrixTransform(ctm);
-    svgPoint.x = p1.x; svgPoint.y = p1.y;
-    const s1 = svgPoint.matrixTransform(ctm);
-    const a = findComponentAtPoint(s0.x, s0.y);
-    const b = findComponentAtPoint(s1.x, s1.y);
-    if (a && b) wires.push({ el: t, a, b });
-    else if (a || b) wires.push({ el: t, a: a || b, b: a || b });
   });
 
-  // Direction of progressive draw: path goes from "a" (start) to "b" (end).
-  // We want the line to draw *from* the already-visible component *to* the
-  // newly-appearing one — i.e. originate at the earlier-revealed endpoint.
-  // .from-b flips the dash offset to -100 so the dash retracts off the
-  // path-end side instead of the path-start side.
-  const labelToIdx = new Map(components.map((c, i) => [c.label, i]));
-  for (const w of wires) {
-    const ai = labelToIdx.get(w.a);
-    const bi = labelToIdx.get(w.b);
-    if (ai != null && bi != null && bi < ai) {
-      w.el.classList.add('from-b');
+  const svgHash = await sha256Hex(svgText);
+  const cached = readWireCache();
+  const wires = [];
+
+  if (cached && cached.hash === svgHash && Array.isArray(cached.wires)) {
+    // Cache hit — re-link DOM elements by index and reapply the from-b flag.
+    cached.wires.forEach(w => {
+      const el = traceEls[w.i];
+      if (!el) return;
+      if (w.fromB) el.classList.add('from-b');
+      wires.push({ el, a: w.a, b: w.b });
+    });
+  } else {
+    // Cache miss — derive wire→component mapping by endpoint hit-testing in
+    // screen space, then persist the result keyed by the SVG hash.
+    const svgPoint = svg.createSVGPoint();
+    traceEls.forEach((t, i) => {
+      if (typeof t.getTotalLength !== 'function') return;
+      let len, p0, p1;
+      try {
+        len = t.getTotalLength();
+        p0 = t.getPointAtLength(0);
+        p1 = t.getPointAtLength(len);
+      } catch { return; }
+      const ctm = t.getScreenCTM();
+      if (!ctm) return;
+      svgPoint.x = p0.x; svgPoint.y = p0.y;
+      const s0 = svgPoint.matrixTransform(ctm);
+      svgPoint.x = p1.x; svgPoint.y = p1.y;
+      const s1 = svgPoint.matrixTransform(ctm);
+      const a = findComponentAtPoint(s0.x, s0.y);
+      const b = findComponentAtPoint(s1.x, s1.y);
+      if (a && b) wires.push({ el: t, i, a, b });
+      else if (a || b) wires.push({ el: t, i, a: a || b, b: a || b });
+    });
+
+    // Direction of progressive draw: path goes from "a" (start) to "b" (end).
+    // We want the line to draw *from* the already-visible component *to* the
+    // newly-appearing one — i.e. originate at the earlier-revealed endpoint.
+    // .from-b flips the dash offset to -100 so the dash retracts off the
+    // path-end side instead of the path-start side.
+    const labelToIdx = new Map(components.map((c, i) => [c.label, i]));
+    for (const w of wires) {
+      const ai = labelToIdx.get(w.a);
+      const bi = labelToIdx.get(w.b);
+      if (ai != null && bi != null && bi < ai) {
+        w.el.classList.add('from-b');
+      }
     }
+
+    writeWireCache({
+      hash: svgHash,
+      wires: wires.map(w => ({
+        i: w.i,
+        a: w.a,
+        b: w.b,
+        fromB: w.el.classList.contains('from-b'),
+      })),
+    });
   }
 
   // Recompute rects on resize (component bboxes shift with the page).
