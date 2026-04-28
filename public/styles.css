@@ -205,14 +205,14 @@ h1 em{
   font-style:normal;
   color:var(--muted2);
 }
-.hero-sub{
+.home-sub{
   font-size:1.2rem;
   color:var(--muted2);
   max-width:560px;
   line-height:1.75;
   margin-bottom:2.5rem;
 }
-.hero-tag{
+.home-tag{
   font-family:var(--mono);
   font-size:13.5px;
   color:var(--muted);
@@ -222,14 +222,14 @@ h1 em{
   align-items:center;
   gap:.6rem;
 }
-.hero-tag::before{
+.home-tag::before{
   content:'';
   display:block;
   width:20px;
   height:1px;
   background:var(--muted);
 }
-.hero-links{
+.home-links{
   display:flex;
   gap:.75rem;
   flex-wrap:wrap;
@@ -261,6 +261,10 @@ h1 em{
 }
 .btn-ghost:hover{
   color:var(--text);
+}
+/* delete once the resume is added */
+#btn-resume{
+  pointer-events: none;
 }
 
 /* Floating "next section" jump button. Styled in the board's PCB green so
@@ -313,6 +317,13 @@ h2{
   font-weight:400;
   letter-spacing:-.02em;
   margin-bottom:1.4rem;
+}
+.section-lead{
+  color:var(--muted2);
+  font-size:1.02rem;
+  line-height:1.7;
+  max-width:70ch;
+  margin:-.35rem 0 1.35rem;
 }
 /* About + education sections wrap their content in a single glass panel
    with a white left accent. The vertical gradient softens the panel into
@@ -401,6 +412,24 @@ h2{
   font-size:14.5px;
   color:var(--muted2);
 }
+.edu-detail{
+  margin-top:.35rem;
+  font-size:13.5px;
+  color:var(--muted);
+  line-height:1.6;
+  max-width:52ch;
+}
+.edu-details{
+  margin:.45rem 0 0 1.1rem;
+  padding:0;
+  color:var(--muted);
+  font-size:13.5px;
+  line-height:1.55;
+  max-width:56ch;
+}
+.edu-details li + li{
+  margin-top:.15rem;
+}
 .edu-year{
   font-family:var(--mono);
   font-size:12.5px;
@@ -424,6 +453,23 @@ h2{
   font-size:16px;
   color:var(--text);
   font-weight:400;
+}
+.lang-context{
+  margin-top:.35rem;
+  font-size:13px;
+  color:var(--muted);
+  line-height:1.5;
+}
+.lang-details{
+  margin:.45rem 0 0 1.1rem;
+  padding:0;
+  color:var(--muted);
+  font-size:13px;
+  line-height:1.5;
+  max-width:50ch;
+}
+.lang-details li + li{
+  margin-top:.12rem;
 }
 .lang-meta{
   display:flex;
@@ -628,7 +674,7 @@ footer{
   transition-delay:.32s;
 }
 
-/* Components: appear/disappear bidirectionally with scroll. Hero = empty.
+/* Components: appear/disappear bidirectionally with scroll. home = empty.
    We deliberately do NOT animate `transform` here: top-level component groups
    in the SVG carry their own `transform="translate(...)"`/matrix() attributes
    for positioning, and a CSS `transform` would override them and dislocate
@@ -745,7 +791,7 @@ footer{
   .nav-links a{
     font-size:11px;
   }
-  .nav-links a[href="#hero"]{
+  .nav-links a[href="#home"]{
     display:none;
   }
 }

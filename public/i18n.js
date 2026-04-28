@@ -31,7 +31,7 @@ export const skills = [
 ];
 
 // Each entry's `key` is the lookup id into messages.{en,sl}.education.items.
-// `start` / `end` are calendar years; use end:0 to mean "still ongoing"
+// `start` / `end` are calendar years; use end:0 for "still ongoing"
 // (rendered as the locale's "present" word).
 export const educationItems = [
   { key: 'uni', start: 2024, end: 0    },
@@ -42,18 +42,19 @@ export const educationItems = [
 // translate per locale; `bars` (0–4, fractional OK) drives the proficiency
 // indicator.
 export const languageItems = [
-  { key: 'sl',              bars: 4    },
-  { key: 'en', cert: '',    bars: 3.25 },
-  { key: 'de', cert: '',    bars: 2.1  },
+  { key: 'sl',                bars: 4    },
+  { key: 'en', cert: '',      bars: 3.25 },
+  { key: 'de', cert: '',      bars: 2.1  },
 ];
 
-// Icons + tags don't translate; title/desc do.
+// Keys + tags don't translate; title/desc do.
+// key is used for item icon
 export const experienceItems = [
-  { key: 'vm',  icon: 'vms',  tags: ['proxmox', 'lxc', 'vm', 'docker'] },
-  { key: 'net', icon: 'net', tags: ['https', 'firewall', 'ssl', 'dns'] },
-  { key: 'srv', icon: 'srv', tags: ['apt', 'conf', 'status', 'monitoring'] },
-  { key: 'adm', icon: 'adm', tags: ['admin', 'linux', 'shell', 'log'] },
-  { key: 'dev', icon: 'dev', tags: ['build', 'v4.2', 'run', 'uptime'] },
+  { key: 'vm',  tags: ['proxmox', 'lxc', 'vm', 'docker'] },
+  { key: 'net', tags: ['https', 'firewall', 'ssl', 'dns'] },
+  { key: 'srv', tags: ['apt', 'conf', 'status', 'monitoring'] },
+  { key: 'adm', tags: ['admin', 'linux', 'shell', 'log'] },
+  { key: 'dev', tags: ['build', 'v4.2', 'run', 'uptime'] },
 ];
 
 // Email/URL don't translate; the platform label does (email → e-pošta).
@@ -75,7 +76,8 @@ export const messages = {
       experience: 'experience',
       contact: 'contact',
     },
-    hero: {
+    home: {
+      lead: '',
       tag: 'computer science student',
       firstName: 'Tilen',
       lastName: 'Pokorn',
@@ -87,6 +89,7 @@ export const messages = {
     about: {
       label: '01 — about',
       title: 'Who I am',
+      lead: '',
       p1: 'I\'m a <strong>computer science student</strong> with a strong interest in how systems work — from operating systems and networking down to the underlying hardware.',
       p2: 'I’m comfortable working across both <strong>software and hardware</strong>: using Linux environments, troubleshooting system issues, working in the terminal, and understanding how components interact at a low level. I focus on practical problem-solving rather than just theory.',
       p3: 'Outside of coursework I run a small <strong>home lab</strong> on Proxmox where I experiment with self-hosted services, containerised applications, and networking setups. I treat it as a hands-on learning environment, regularly building, breaking, and improving systems.',
@@ -94,6 +97,7 @@ export const messages = {
     skills: {
       label: '02 — skills',
       title: 'What I work with',
+      lead: '',
       cats: {
         language: 'language',
         systems: 'systems',
@@ -107,50 +111,90 @@ export const messages = {
     education: {
       label: '03 — education',
       title: 'Background',
+      lead: '',
       present: 'present',
       items: {
-        uni: { school: 'University of Ljubljana', degree: 'BSc Computer Science' },
-        gym: { school: 'Škofja Loka Gymnasium',   degree: 'General Matura'       },
+        uni: {
+          school: 'University of Ljubljana',
+          degree: 'BSc Computer Science',
+          details: [
+            'Programming (Java, C, C++, Python)',
+            'Algorithms, data structures, and computational theory.',
+            'Computer systems, operating systems, and architecture.',
+            'Databases, networks, and information systems.',
+            'Mathematics and statistics for computing.',
+          ],
+        },
+        gym: {
+          school: 'Škofja Loka Gymnasium',
+          degree: 'General Matura',
+          details: [
+            'General secondary education with strong math and science track.',
+            'Strong written and oral communication in Slovene and English.',
+          ],
+        },
       },
     },
     languages: {
       label: '04 — languages',
       title: 'Languages I speak',
+      lead: '',
       items: {
-        sl: { name: 'Slovenian', level: 'Native' },
-        en: { name: 'English',   level: 'Fluent' },
-        de: { name: 'German',    level: 'Conversational' },
+        sl: {
+          name: 'Slovenian',
+          level: 'Native',
+          details: [
+            'Everyday and academic communication',
+          ],
+        },
+        en: {
+          name: 'English',
+          level: 'Fluent',
+          details: [
+            'Primary language for technical content',
+            'Used for documentation and collaboration in software projects.',
+          ],
+        },
+        de: {
+          name: 'German',
+          level: 'Conversational',
+          details: [
+            'Basic conversation and comprehension',
+          ],
+        },
       },
     },
     experience: {
       label: '05 — experience',
       title: 'Practical Experience',
+      lead: '',
       items: {
         vm: {
           title: 'Virtualization & containers',
-          desc: 'Deploy and manage LXC containers and virtual machines on Proxmox, including system setup, configuration, and troubleshooting.' 
+          desc: 'Deploying and managing LXC containers and virtual machines on Proxmox, including system setup, configuration, and troubleshooting.'
         },
         net: {
           title: 'Networking & services',
-          desc: 'Configure network services including reverse proxying (Nginx Proxy Manager), private DNS, firewall rules, and internal service exposure.'
+          desc: 'Configuring network services including reverse proxying (Nginx Proxy Manager), private DNS, firewall rules, and internal service exposure.'
         },
         srv: {
           title: 'Service deployment',
-          desc: 'Install, configure, and maintain self-hosted applications (Home Assistant, PhotoPrism, FileBrowser, Uptime Kuma, etc.), including updates and monitoring.'
+          desc: 'Installing, configuring, and maintaining self-hosted applications (Home Assistant, PhotoPrism, FileBrowser, Uptime Kuma, etc.), including updates and monitoring.'
         },
         adm: { 
           title: 'System administration',
-          desc: 'Work in Linux environments using the terminal for system configuration, debugging, package management, and routine maintenance tasks.'
+          desc: 'Working in Linux environments using the terminal for system configuration, debugging, package management, and routine maintenance tasks.'
         },
         dev: {
           title: 'Iterative development',
-          desc: 'Build, break, and refine systems in a self-managed environment, focusing on reliability and practical problem-solving.'
+          desc: 'Building and refining systems in a self-managed environment, focusing on reliability and practical problem-solving.'
         },
       },
     },
     contact: {
       label: '06 — contact',
       title: 'Get in touch',
+      lead: '',
       platforms: {
         email:    'email',
         github:   'github',
@@ -158,7 +202,7 @@ export const messages = {
       },
     },
     footer: {
-      tagline: 'self-hosted · Node.js',
+      tagline: 'self-hosted · Node.js®',
     },
     toggle: {
       switchTo: 'Switch language',
@@ -176,11 +220,12 @@ export const messages = {
       experience: 'izkušnje',
       contact: 'kontakt',
     },
-    hero: {
+    home: {
+      lead: '',
       tag: 'študent računalništva in informatike',
       firstName: 'Tilen',
       lastName: 'Pokorn',
-      sub: 'Študent računalništva, ki gradi stvari na presečišču sistemov, programske in strojne opreme. Trenutno brklja s čimerkoli, kar se ta teden zdi zanimivo.',
+      sub: 'Študent računalništva, ki gradi stvari na presečišču sistemov, programske in strojne opreme. Ukvarja se s tistim, kar se ta teden zdi zanimivo.',
       cta: 'stopi v stik ↓',
       github: 'github',
       resume: 'življenjepis ↗',
@@ -188,13 +233,15 @@ export const messages = {
     about: {
       label: '01 — o meni',
       title: 'Kdo sem',
-      p1: 'Sem <strong>študent računalništva</strong> s pristnim zanimanjem za delovanje sistemov — od operacijskih sistemov in omrežij vse do strojne opreme spodaj.',
+      lead: '',
+      p1: 'Sem <strong>študent računalništva in informatike</strong> s pristnim zanimanjem za delovanje sistemov — od operacijskih sistemov in omrežij vse do strojne opreme na dnu.',
       p2: 'Znajdem se s strojno opremo enako dobro kot s terminalom.',
       p3: 'Izven študija upravljam manjši <strong>domači laboratorij</strong> na Proxmoxu — samogostovane storitve, kontejnerizirane aplikacije, omrežni poskusi — in ga jemljem kot učno okolje, ki je vedno samo eno konfiguracijsko napako stran od pozne noči.',
     },
     skills: {
       label: '02 — veščine',
       title: 'S čim delam',
+      lead: '',
       cats: {
         language: 'jezik',
         systems: 'sistemi',
@@ -208,36 +255,92 @@ export const messages = {
     education: {
       label: '03 — izobrazba',
       title: 'Ozadje',
+      lead: '',
       present: 'danes',
       items: {
-        uni: { school: 'Univerza v Ljubljani',  degree: 'Računalništvo in informatika (UN)' },
-        gym: { school: 'Gimnazija Škofja Loka', degree: 'Splošna matura'                    },
+        uni: {
+          school: 'Univerza v Ljubljani',
+          degree: 'Računalništvo in informatika (UN)',
+          details: [
+            'Programiranje (Java, C, C++, Python)',
+            'Algoritmi, podatkovne strukture in teorija računalništva.',
+            'Computer systems, operating systems, and architecture.',
+            'Računalniški sistemi, operacijski sistemi in arhitektura.',
+            'Podatkovne baze, omrežja in informacijski sistemi.',
+            'Matematika in statistika za računalništvo.',
+          ],
+        },
+        gym: {
+          school: 'Gimnazija Škofja Loka',
+          degree: 'Splošna matura',
+          details: [
+            'Splošno srednješolsko izobraževanje z močno matematčno in naravoslovno podlago.',
+            'Močna pisna in ustna komunikacija v slovenščini in angleščini.',
+          ],
+        },
       },
     },
     languages: {
       label: '04 — jeziki',
       title: 'Jeziki, ki jih govorim',
+      lead: '',
       items: {
-        sl: { name: 'slovenščina', level: 'materni jezik' },
-        en: { name: 'angleščina',  level: 'tekoče' },
-        de: { name: 'nemščina',    level: 'pogovorno' },
+        sl: {
+          name: 'slovenščina',
+          level: 'materni jezik',
+          details: [
+            'Vsakodnevna in akademska komunikacija',
+          ],
+        },
+        en: {
+          name: 'angleščina',
+          level: 'tekoče',
+          details: [
+            'Glavni jezik za tehnične vsebine',
+            'Uporaba pri dokumentaciji in sodelovanju pri projektih.',
+          ],
+        },
+        de: {
+          name: 'nemščina',
+          level: 'pogovorno',
+          details: [
+            'Osnovni pogovor in razumevanje',
+          ],
+        },
       },
     },
     experience: {
       label: '05 — izkušnje',
       title: 'Praktične izkušnje',
+      lead: '',
       // Any key omitted here falls back to its en counterpart automatically.
       items: {
-        vm:  { title: 'Virtualizacija in kontejnerji', desc: 'Postavljanje in upravljanje LXC kontejnerjev in virtualnih strojev na Proxmoxu, vključno z nastavitvijo, konfiguracijo in odpravljanjem težav.' },
-        net: { title: 'Omrežje in storitve',           desc: 'Nastavitev reverznega proxyja (Nginx Proxy Manager), zasebnega DNS in izpostavljanja notranjih storitev.' },
-        srv: { title: 'Postavitev storitev',           desc: 'Namestitev, konfiguracija in vzdrževanje samogostovanih aplikacij (Home Assistant, PhotoPrism, FileBrowser, Uptime Kuma), vključno s posodobitvami in nadzorom.' },
-        adm: { title: 'Sistemska administracija',      desc: 'Delo v Linux okoljih preko terminala za sistemsko konfiguracijo, razhroščevanje in vzdrževanje.' },
-        dev: { title: 'Iterativni razvoj',             desc: 'Gradnja, lomljenje in izboljševanje sistemov v samoupravljanem okolju, s poudarkom na zanesljivosti in praktičnem reševanju težav.' },
+        vm: {
+          title: 'Virtualizacija in kontejnerji',
+          desc: 'Postavljanje in upravljanje LXC kontejnerjev in virtualnih strojev na Proxmoxu, vključno z nastavitvijo, konfiguracijo in odpravljanjem težav.'
+        },
+        net: {
+          title: 'Omrežje in storitve',
+          desc: 'Nastavitev reverznega proxyja (Nginx Proxy Manager), zasebnega DNS in izpostavljanja notranjih storitev.'
+        },
+        srv: {
+          title:'Postavitev storitev',
+          desc: 'Namestitev, konfiguracija in vzdrževanje samogostovanih aplikacij (Home Assistant, PhotoPrism, FileBrowser, Uptime Kuma), vključno s posodobitvami in nadzorom.'
+        },
+        adm: {
+          title: 'Sistemska administracija',
+          desc: 'Delo v Linux okoljih preko terminala za sistemsko konfiguracijo, razhroščevanje in vzdrževanje.'
+        },
+        dev: {
+          title: 'Iterativni razvoj',
+          desc: 'Gradnja, lomljenje in izboljševanje sistemov v samoupravljanem okolju, s poudarkom na zanesljivosti in praktičnem reševanju težav.'
+        },
       },
     },
     contact: {
       label: '06 — kontakt',
       title: 'Stopi v stik',
+      lead: '',
       platforms: {
         email:    'e-pošta',
         github:   'github',
@@ -245,7 +348,7 @@ export const messages = {
       },
     },
     footer: {
-      tagline: 'self-hosted · Node.js',
+      tagline: 'self-hosted · Node.js®',
     },
     toggle: {
       switchTo: 'Zamenjaj jezik',
@@ -271,6 +374,11 @@ function deepMerge(base, over) {
 
 const ESC_MAP = { '&':'&amp;', '<':'&lt;', '>':'&gt;', '"':'&quot;', "'":'&#39;' };
 const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ESC_MAP[c]);
+const toBulletItems = value => {
+  if (Array.isArray(value)) return value.filter(v => typeof v === 'string' && v.trim());
+  if (typeof value === 'string' && value.trim()) return [value];
+  return [];
+};
 
 // Renderers combine shared structure (module-scope arrays) with active-locale
 // text (passed in via dict). Each renderer owns the inner DOM of its target.
@@ -290,11 +398,15 @@ const RENDERERS = {
     el.innerHTML = educationItems.map(e => {
       const tx = t[e.key] || {};
       const years = `${e.start} — ${e.end === 0 ? present : e.end}`;
+      const details = toBulletItems(tx.details).length
+        ? toBulletItems(tx.details)
+        : toBulletItems(tx.detail);
       return `
         <div class="edu-item">
           <div>
             <div class="edu-school">${esc(tx.school)}</div>
             <div class="edu-degree">${esc(tx.degree)}</div>
+            ${details.length ? `<ul class="edu-details">${details.map(d => `<li>${esc(d)}</li>`).join('')}</ul>` : ''}
           </div>
           <div class="edu-year">${esc(years)}</div>
         </div>
@@ -311,13 +423,20 @@ const RENDERERS = {
         const cls = fill > 0 ? 'bar filled' : 'bar';
         return `<span class="${cls}" style="--fill:${(fill * 100).toFixed(2)}%"></span>`;
       }).join('');
+      const cert = l.cert || tx.cert || '';
+      const details = toBulletItems(tx.details).length
+        ? toBulletItems(tx.details)
+        : toBulletItems(tx.context);
       return `
         <div class="lang-row">
-          <div class="lang-name">${esc(tx.name)}</div>
+          <div>
+            <div class="lang-name">${esc(tx.name)}</div>
+            ${details.length ? `<ul class="lang-details">${details.map(d => `<li>${esc(d)}</li>`).join('')}</ul>` : ''}
+          </div>
           <div class="lang-meta">
             <span class="lang-level">${esc(tx.level)}</span>
             <div class="lang-bars" aria-hidden="true">${bars}</div>
-            ${l.cert ? `<span class="lang-cert">${esc(l.cert)}</span>` : ''}
+            ${cert ? `<span class="lang-cert">${esc(cert)}</span>` : ''}
           </div>
         </div>
       `;
@@ -329,7 +448,7 @@ const RENDERERS = {
       const tx = t[l.key] || {};
       return `
         <div class="lab-item">
-          <div class="lab-icon">${esc(l.icon)}</div>
+          <div class="lab-icon">${esc(l.key)}</div>
           <div>
             <div class="lab-title">${esc(tx.title)}</div>
             <div class="lab-desc">${esc(tx.desc)}</div>

@@ -112,7 +112,7 @@ if (nextBtn) {
 // contact). Each chunk is fully lit by the moment its section's title
 // reaches the top of the viewport — so chunk[i] is revealed during the
 // scroll range *leading up to* section[i], not while the user is reading
-// section[i]. (Chunk 0 fills in over the hero; chunk 1 fills in while
+// section[i]. (Chunk 0 fills in over the home; chunk 1 fills in while
 // scrolling out of #about toward #skills; and so on.)
 //
 // The list is a *preference*, not a gatekeeper: at runtime we discover every
@@ -324,12 +324,12 @@ async function loadBoard() {
     // Each chunk is fully lit by the time *its* section's title hits the
     // top of the viewport — i.e. chunk[i] reveals over the scroll range
     // ending at stepSections[i].offsetTop. The chunk for the first section
-    // reveals over the hero (start = 0); subsequent chunks reveal across
+    // reveals over the home (start = 0); subsequent chunks reveal across
     // the previous section's height.
     const firstStart = 0;
     const lastEnd = stepSections[stepSections.length - 1].offsetTop;
 
-    // Fade the board in over the early portion of the hero, so the chassis
+    // Fade the board in over the early portion of the home, so the chassis
     // is present before components start lighting up.
     const fadeEnd = stepSections[0].offsetTop * 0.5;
     let fade = sy / Math.max(1, fadeEnd);
