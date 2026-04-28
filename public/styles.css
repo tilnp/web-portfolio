@@ -610,7 +610,8 @@ footer{
 .fade-in{
   opacity:0;
   transform:translateY(14px);
-  transition:opacity .65s ease,transform .65s ease;
+  /* Opacity transitions much faster than the slide. */
+  transition:opacity .2s ease,transform .65s ease;
 }
 .fade-in.visible{
   opacity:1;
