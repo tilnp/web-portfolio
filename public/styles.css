@@ -43,20 +43,22 @@ body{
 
 .bg-grid{
   position:fixed;
-  inset:0;
+  /* Extend the grid well beyond the viewport so the scroll-driven
+     translate can keep moving without clipping the pattern at the edges. */
+  inset:-146vh 0;
   z-index:0;
   pointer-events:none;
   background-image:
-    linear-gradient(var(--border) 1px,transparent 1px),
-    linear-gradient(90deg,var(--border) 1px,transparent 1px);
+    linear-gradient(var(--border) 1.5px,transparent 1.5px),
+    linear-gradient(90deg,var(--border) 1.5px,transparent 1.5px);
   background-size:48px 48px;
+  background-repeat:repeat;
   will-change:transform;
-}
-.bg-grid::after{
-  content:'';
-  position:absolute;
-  inset:0;
-  background:radial-gradient(ellipse 60% 50% at 50% 40%,transparent 40%,var(--bg) 100%);
+  /* Fade grid to transparent at edges using a radial mask with many intermediate
+     stops so the grid lines smoothly blend into the plain background without
+     visible banding. */
+  -webkit-mask-image:radial-gradient(ellipse 85% 60% at 50% 50%,#000 0%,#000 40%,rgba(0,0,0,.85) 55%,rgba(0,0,0,.6) 65%,rgba(0,0,0,.3) 80%,transparent 100%);
+  mask-image:radial-gradient(ellipse 85% 60% at 50% 50%,#000 0%,#000 40%,rgba(0,0,0,.85) 55%,rgba(0,0,0,.6) 65%,rgba(0,0,0,.3) 80%,transparent 100%);
 }
 
 .board-bg{

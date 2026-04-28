@@ -101,7 +101,7 @@ export const messages = {
       cats: {
         language: 'language',
         systems: 'systems',
-        infra: 'infra',
+        infra: 'infrastructure',
         tooling: 'tooling',
         scripting: 'scripting',
         data: 'data',
@@ -245,7 +245,7 @@ export const messages = {
       cats: {
         language: 'jezik',
         systems: 'sistemi',
-        infra: 'infra',
+        infra: 'infrastruktura',
         tooling: 'orodja',
         scripting: 'skriptiranje',
         data: 'podatki',
