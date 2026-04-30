@@ -81,7 +81,7 @@ body{
   height:auto;
   max-height:95vh;
   overflow:visible;
-  /* opacity:.45 baked into board.svg fills via tools/bake-svg-opacity.py */
+  opacity:.45;
 }
 /* PCB chassis: the only rectangular silhouette in the SVG. Stripping its
    stroke removes the visible "board border", and a low opacity lets the
@@ -824,8 +824,7 @@ footer{
   .board-bg svg{
     width:min(95vh,140vw);
     max-height:95vw;
-    /* .45 baked × .89 ≈ .40 visible — matches the pre-bake mobile look */
-    opacity:.89;
+    opacity:.40;
     transform:rotate(90deg);
   }
   .page-wrap{
@@ -912,9 +911,8 @@ footer{
 /* Mobile / touch-device performance overrides. backdrop-filter and CSS
    filter()/drop-shadow() are the dominant GPU costs on phones; killing them
    here keeps the page smooth at the cost of some glass/glow ambience. */
-@media (max-width: 900px), (any-pointer: coarse) {
+@media (max-width: 900px) {
   nav,
-  .btn,
   .next-section,
   .about-text p,
   [data-render="education"],
