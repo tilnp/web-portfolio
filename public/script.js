@@ -11,18 +11,134 @@ document.querySelector('[data-i18n-toggle]')?.addEventListener('click', () => {
   setLocale(cur === 'en' ? 'sl' : 'en');
 });
 
-// Parallax background grid
+// Element refs
 const bgGrid = document.getElementById('bgGrid');
-let ticking = false;
-window.addEventListener('scroll', () => {
-  if (!ticking) {
-    requestAnimationFrame(() => {
-      bgGrid.style.transform = `translateY(${window.scrollY * 0.25}px)`;
-      ticking = false;
-    });
-    ticking = true;
+const navLinks = document.querySelectorAll('.nav-links a');
+const navSections = [...document.querySelectorAll('section[id]')];
+const nextBtn = document.getElementById('nextBtn');
+
+// Subscribers added by lazily-loaded modules (e.g. PCB SVG IIFE).
+// Iterated by the consolidated scroll listener; empty-array case is the
+// implicit null-guard for "fired before the IIFE resolved".
+const scrollSubscribers = [];
+
+// Resize-cached layout values — avoids per-frame getBoundingClientRect /
+// offsetTop / innerHeight reads that would otherwise force layout flushes
+// during scroll. Repopulated on resize (debounced) and after the PCB IIFE.
+let stepSections = [];
+let pcbFullyLit = false;
+const layout = {
+  innerHeight: 0,
+  maxScroll: 0,
+  navOffsets: [],
+  stepOffsets: [],
+  pcbStart: 0,
+  pcbEnd: 0,
+};
+function recomputeLayout() {
+  layout.innerHeight = window.innerHeight;
+  layout.maxScroll = Math.max(0,
+    document.documentElement.scrollHeight - layout.innerHeight);
+  layout.navOffsets = navSections.map(s => s.offsetTop);
+  layout.stepOffsets = stepSections.map(s => s.offsetTop);
+  layout.pcbStart = 0;
+  layout.pcbEnd = layout.stepOffsets.length
+    ? layout.stepOffsets[layout.stepOffsets.length - 1]
+    : 0;
+}
+
+// Pure update functions — take sy, read from `layout`, write only.
+function updateParallax(sy) {
+  bgGrid.style.transform = `translateY(${sy * 0.25}px)`;
+}
+
+let activeNavId = null;
+function updateActiveNav(sy) {
+  if (navSections.length === 0) return;
+  const trigger = layout.innerHeight * 0.28;
+  let active = navSections[0];
+  for (let i = 0; i < navSections.length; i++) {
+    // Equivalent to original getBoundingClientRect().top - trigger <= 0,
+    // since rect.top === offsetTop - scrollY for in-flow sections.
+    if (layout.navOffsets[i] - sy - trigger <= 0) active = navSections[i];
   }
+  if (active.id === activeNavId) return;
+  activeNavId = active.id;
+  navLinks.forEach(a => a.classList.toggle('active',
+    a.getAttribute('href') === '#' + active.id));
+}
+
+// 4px buffer so a section already pinned to the top isn't picked.
+function findNextSection(sy) {
+  for (let i = 0; i < navSections.length; i++) {
+    if (layout.navOffsets[i] > sy + 4) return navSections[i];
+  }
+  return null;
+}
+
+function updateNextBtn(sy) {
+  // Hide when there's no further section, or when we're effectively at
+  // the bottom of the page (the page's max-scroll can fall a few px
+  // short of contact.offsetTop on narrow viewports because the footer
+  // padding shrinks — the absolute scroll position is the safer test).
+  const atBottom = sy >= layout.maxScroll - 16;
+  nextBtn.classList.toggle('hidden', findNextSection(sy) === null || atBottom);
+}
+
+function runAllUpdates(sy) {
+  updateParallax(sy);
+  updateActiveNav(sy);
+  if (nextBtn) updateNextBtn(sy);
+  for (let i = 0; i < scrollSubscribers.length; i++) scrollSubscribers[i](sy);
+}
+
+// Single consolidated scroll listener — one rAF, one scrollY read, strict
+// read-then-write ordering across all features.
+let scrollTicking = false;
+window.addEventListener('scroll', () => {
+  if (scrollTicking) return;
+  scrollTicking = true;
+  requestAnimationFrame(() => {
+    runAllUpdates(window.scrollY);
+    scrollTicking = false;
+  });
 }, { passive: true });
+
+// Debounced resize — resize fires faster than layout actually settles, so
+// rAF-throttling still recomputes far more than needed. 150ms lets the
+// drag finish before paying for offsetTop reads. After recompute, read
+// scrollY fresh (the user may have scrolled during the debounce window).
+let resizeTimer = null;
+window.addEventListener('resize', () => {
+  if (resizeTimer) clearTimeout(resizeTimer);
+  resizeTimer = setTimeout(() => {
+    recomputeLayout();
+    pcbFullyLit = false;
+    runAllUpdates(window.scrollY);
+    resizeTimer = null;
+  }, 150);
+}, { passive: true });
+
+// Initial paint — recompute layout, then run all updates with current scroll.
+// Module scripts run after DOMContentLoaded but BEFORE webfonts swap in and
+// before images report their final dimensions, so this first measurement can
+// be stale. The follow-up triggers below catch those settle events.
+recomputeLayout();
+runAllUpdates(window.scrollY);
+
+// Re-measure once layout-affecting resources settle. Resetting `pcbFullyLit`
+// lets the PCB reveal resume if `pcbEnd` grew (e.g. webfont swap pushed
+// later sections further down the page) — otherwise the early-bail at
+// updatePCBReveal would freeze the reveal at the stale, too-low end.
+function settleRecompute() {
+  recomputeLayout();
+  pcbFullyLit = false;
+  runAllUpdates(window.scrollY);
+}
+window.addEventListener('load', settleRecompute);
+if (document.fonts && document.fonts.ready) {
+  document.fonts.ready.then(settleRecompute).catch(() => {});
+}
 
 // Fade-in observer (one-way for text content)
 const fadeObs = new IntersectionObserver(entries => {
@@ -30,32 +146,7 @@ const fadeObs = new IntersectionObserver(entries => {
 }, { threshold: 0.12 });
 document.querySelectorAll('.fade-in').forEach(el => fadeObs.observe(el));
 
-// Active nav link — frontier-style: highlight the section whose top
-// has crossed a line near the top of the viewport
-const navLinks = document.querySelectorAll('.nav-links a');
-const navSections = [...document.querySelectorAll('section[id]')];
-let navTicking = false;
-let activeNavId = null;
-
-function updateActiveNav() {
-  const trigger = window.innerHeight * 0.28;
-  let active = navSections[0];
-  for (const s of navSections) {
-    if (s.getBoundingClientRect().top - trigger <= 0) active = s;
-  }
-  if (active.id === activeNavId) return;
-  activeNavId = active.id;
-  navLinks.forEach(a => a.classList.toggle('active', a.getAttribute('href') === '#' + active.id));
-}
-window.addEventListener('scroll', () => {
-  if (!navTicking) {
-    requestAnimationFrame(() => { updateActiveNav(); navTicking = false; });
-    navTicking = true;
-  }
-}, { passive: true });
-window.addEventListener('resize', updateActiveNav, { passive: true });
-updateActiveNav();
-
+// Smooth-scroll on nav-link click
 navLinks.forEach(a => {
   a.addEventListener('click', e => {
     e.preventDefault();
@@ -66,39 +157,11 @@ navLinks.forEach(a => {
   });
 });
 
-// Floating "↓" button — scroll to the next section's title. Hides itself
-// when there's nothing left below (i.e. the user is on the last section).
-const nextBtn = document.getElementById('nextBtn');
+// Floating "↓" button click → scroll to next section's title.
 if (nextBtn) {
-  const findNext = () => {
-    const sy = window.scrollY;
-    // 4px buffer so a section already pinned to the top isn't picked.
-    for (const s of navSections) {
-      if (s.offsetTop > sy + 4) return s;
-    }
-    return null;
-  };
   nextBtn.addEventListener('click', () => {
-    findNext()?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    findNextSection(window.scrollY)?.scrollIntoView({ behavior: 'smooth', block: 'start' });
   });
-  let nextTicking = false;
-  const updateNextBtn = () => {
-    // Hide when there's no further section, or when we're effectively at
-    // the bottom of the page (the page's max-scroll can fall a few px
-    // short of contact.offsetTop on narrow viewports because the footer
-    // padding shrinks — the absolute scroll position is the safer test).
-    const maxScroll = Math.max(0,
-      document.documentElement.scrollHeight - window.innerHeight);
-    const atBottom = window.scrollY >= maxScroll - 16;
-    nextBtn.classList.toggle('hidden', findNext() === null || atBottom);
-  };
-  window.addEventListener('scroll', () => {
-    if (nextTicking) return;
-    nextTicking = true;
-    requestAnimationFrame(() => { updateNextBtn(); nextTicking = false; });
-  }, { passive: true });
-  window.addEventListener('resize', updateNextBtn, { passive: true });
-  updateNextBtn();
 }
 
 // Inline board SVG with scroll-driven progressive build.
@@ -354,16 +417,11 @@ async function loadBoard() {
     });
   }
 
-  // Recompute rects on resize (component bboxes shift with the page).
-  let resizeTick = false;
-  const refreshRects = () => {
-    compRects.forEach(c => { c.rect = c.el.getBoundingClientRect(); });
-  };
-
   // Each [data-board-step] section reveals one chunk of components, evenly
   // spread across that section's scroll range — so cadence is independent
-  // of section height.
-  const stepSections = [...document.querySelectorAll('[data-board-step]')]
+  // of section height. Assigns to the module-level `stepSections` so the
+  // shared `recomputeLayout()` can read offsetTops in one resize batch.
+  stepSections = [...document.querySelectorAll('[data-board-step]')]
     .sort((a, b) => Number(a.dataset.boardStep) - Number(b.dataset.boardStep));
 
   // Component count consumed by the end of each step (cumulative).
@@ -378,28 +436,30 @@ async function loadBoard() {
   }
   const totalComps = components.length;
 
-  function update() {
+  function updatePCBReveal(sy) {
     if (stepSections.length === 0) return;
-    const sy = window.scrollY;
+    // Once the board is fully lit and we're past the end, skip per-frame
+    // work entirely — no toggle loops, no style writes.
+    if (sy >= layout.pcbEnd && pcbFullyLit) return;
 
     // Each chunk is fully lit by the time *its* section's title hits the
     // top of the viewport — i.e. chunk[i] reveals over the scroll range
-    // ending at stepSections[i].offsetTop. The chunk for the first section
+    // ending at layout.stepOffsets[i]. The chunk for the first section
     // reveals over the home (start = 0); subsequent chunks reveal across
     // the previous section's height.
     const firstStart = 0;
-    const lastEnd = stepSections[stepSections.length - 1].offsetTop;
+    const lastEnd = layout.pcbEnd;
 
     // Fade the board in over the early portion of the home, so the chassis
     // is present before components start lighting up.
-    const fadeEnd = stepSections[0].offsetTop * 0.5;
+    const fadeEnd = layout.stepOffsets[0] * 0.5;
     let fade = sy / Math.max(1, fadeEnd);
     fade = Math.min(1, Math.max(0, fade));
     container.style.opacity = String(fade);
 
     // Adjust only the board background element's opacity based on which
     // section we're currently approaching. Start at 0.08 at the first
-    // section and increase by 0.08 per step, capped at 0.38.
+    // section and increase by 0.06 per step, capped at 0.42.
     try {
       let stepIndex = 0;
       if (sy <= 0) {
@@ -408,9 +468,7 @@ async function loadBoard() {
         stepIndex = Math.max(0, stepSections.length - 1);
       } else {
         for (let i = 0; i < stepSections.length; i++) {
-          const start = i === 0 ? 0 : stepSections[i - 1].offsetTop;
-          const end = stepSections[i].offsetTop;
-          if (sy < end) { stepIndex = i; break; }
+          if (sy < layout.stepOffsets[i]) { stepIndex = i; break; }
         }
       }
       const baseOpacity = 0.08;
@@ -429,8 +487,8 @@ async function loadBoard() {
       idx = totalComps;
     } else {
       for (let i = 0; i < stepSections.length; i++) {
-        const start = i === 0 ? 0 : stepSections[i - 1].offsetTop;
-        const end = stepSections[i].offsetTop;
+        const start = i === 0 ? 0 : layout.stepOffsets[i - 1];
+        const end = layout.stepOffsets[i];
         if (sy < end) {
           const local = (sy - start) / Math.max(1, end - start);
           const prev = i === 0 ? 0 : stepCumulative[i - 1];
@@ -456,22 +514,15 @@ async function loadBoard() {
         w.el.classList.toggle('lit', should);
       }
     });
+
+    if (idx === totalComps) pcbFullyLit = true;
   }
 
-  let rafPending = false;
-  const onScroll = () => {
-    if (rafPending) return;
-    rafPending = true;
-    requestAnimationFrame(() => { update(); rafPending = false; });
-  };
-  window.addEventListener('scroll', onScroll, { passive: true });
-  window.addEventListener('resize', () => {
-    if (resizeTick) return;
-    resizeTick = true;
-    requestAnimationFrame(() => { refreshRects(); update(); resizeTick = false; });
-  }, { passive: true });
-
-  update();
+  // stepSections is now populated — recompute layout to fill in stepOffsets,
+  // register the subscriber, and run a first paint with the current scroll.
+  recomputeLayout();
+  scrollSubscribers.push(updatePCBReveal);
+  updatePCBReveal(window.scrollY);
 }
 
 loadBoard();
