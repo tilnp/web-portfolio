@@ -81,7 +81,7 @@ body{
   height:auto;
   max-height:95vh;
   overflow:visible;
-  opacity:.45;
+  /* opacity:.45 baked into board.svg fills via tools/bake-svg-opacity.py */
 }
 /* PCB chassis: the only rectangular silhouette in the SVG. Stripping its
    stroke removes the visible "board border", and a low opacity lets the
@@ -782,17 +782,13 @@ footer{
 }
 .comp{
   opacity:0;
-  filter:blur(1px);
-  transition:
-    opacity 1.1s cubic-bezier(.16,1,.3,1),
-    filter 1.1s cubic-bezier(.16,1,.3,1);
+  transition:opacity 1.1s cubic-bezier(.16,1,.3,1);
 }
 .comp.lit{
   opacity:1;
-  filter:blur(0);
 }
 .glow-comp.lit{
-  filter:blur(0) drop-shadow(0 0 2px var(--green-glow)) drop-shadow(0 0 4px var(--green-glow));
+  filter:drop-shadow(0 0 3px var(--green-glow));
 }
 
 /* Wires: progressive draw along the path. Direction is set per wire at init
@@ -805,7 +801,6 @@ footer{
   opacity:0;
   transition:
     stroke-dashoffset 1.1s cubic-bezier(.16,1,.3,1) .15s,
-    stroke .6s ease,
     opacity .45s ease;
 }
 .trace.from-b{
@@ -829,7 +824,8 @@ footer{
   .board-bg svg{
     width:min(95vh,140vw);
     max-height:95vw;
-    opacity:.40;
+    /* .45 baked × .89 ≈ .40 visible — matches the pre-bake mobile look */
+    opacity:.89;
     transform:rotate(90deg);
   }
   .page-wrap{
@@ -910,6 +906,53 @@ footer{
   .lang-toggle{
     font-size:10px;
     padding:.2rem .4rem;
+  }
+}
+
+/* Mobile / touch-device performance overrides. backdrop-filter and CSS
+   filter()/drop-shadow() are the dominant GPU costs on phones; killing them
+   here keeps the page smooth at the cost of some glass/glow ambience. */
+@media (max-width: 900px), (any-pointer: coarse) {
+  nav,
+  .btn,
+  .next-section,
+  .about-text p,
+  [data-render="education"],
+  [data-render="languages"],
+  .skill-item,
+  .lab-item,
+  .proj-item,
+  .proj-empty,
+  .contact-link{
+    backdrop-filter:none;
+    -webkit-backdrop-filter:none;
+  }
+  /* Solid-ish fallbacks so panels don't dissolve into the background once
+     the blur is gone. */
+  nav{
+    background:rgba(10,10,11,.92);
+  }
+  .about-text p,
+  [data-render="education"],
+  [data-render="languages"],
+  .proj-empty{
+    background:rgba(17,17,19,.85);
+  }
+  .skill-item,
+  .lab-item,
+  .proj-item,
+  .contact-link{
+    background:rgba(17,17,19,.85);
+  }
+  .skill-item:hover,
+  .lab-item:hover,
+  .proj-item:hover,
+  .contact-link:hover{
+    background:rgba(24,24,27,.92);
+  }
+  /* Component glow filter is the other major mobile GPU cost. */
+  .glow-comp.lit{
+    filter:none;
   }
 }
 
