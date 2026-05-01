@@ -359,6 +359,9 @@ async function loadBoard() {
   const svgHash = await sha256Hex(svgText);
   const cached = readWireCache();
   const wires = [];
+  // Built once, used by the cache-miss from-b logic AND by the per-wire
+  // aIdx/bIdx pre-stash below so the per-frame path needs no Map lookups.
+  const labelToIdx = new Map(components.map((c, i) => [c.label, i]));
 
   if (cached && cached.hash === svgHash && Array.isArray(cached.wires)) {
     // Cache hit — re-link DOM elements by index and reapply the from-b flag.
@@ -397,7 +400,6 @@ async function loadBoard() {
     // newly-appearing one — i.e. originate at the earlier-revealed endpoint.
     // .from-b flips the dash offset to -100 so the dash retracts off the
     // path-end side instead of the path-start side.
-    const labelToIdx = new Map(components.map((c, i) => [c.label, i]));
     for (const w of wires) {
       const ai = labelToIdx.get(w.a);
       const bi = labelToIdx.get(w.b);
@@ -415,6 +417,17 @@ async function loadBoard() {
         fromB: w.el.classList.contains('from-b'),
       })),
     });
+  }
+
+  // Pre-stash each wire's endpoint indices so updatePCBReveal can do a pure
+  // index comparison per frame instead of allocating a Set + label lookups.
+  // Unresolved endpoints get Infinity so the wire stays unlit forever
+  // (matches original behaviour: lit.has(undefined) === false).
+  for (const w of wires) {
+    const ai = labelToIdx.get(w.a);
+    const bi = labelToIdx.get(w.b);
+    w.aIdx = ai != null ? ai : Infinity;
+    w.bIdx = bi != null ? bi : Infinity;
   }
 
   // Each [data-board-step] section reveals one chunk of components, evenly
@@ -499,21 +512,23 @@ async function loadBoard() {
       }
     }
 
-    const lit = new Set();
-    for (let i = 0; i < idx; i++) lit.add(components[i].label);
-
-    components.forEach(c => {
-      const should = lit.has(c.label);
+    // Index-based litness check — no per-frame Set, no per-frame closures.
+    // components are stored in reveal order, so component j is lit iff j < idx.
+    // wires carry pre-stashed aIdx/bIdx, so a wire is lit iff both endpoints are.
+    for (let i = 0; i < components.length; i++) {
+      const c = components[i];
+      const should = i < idx;
       if (c.el.classList.contains('lit') !== should) {
         c.el.classList.toggle('lit', should);
       }
-    });
-    wires.forEach(w => {
-      const should = lit.has(w.a) && lit.has(w.b);
+    }
+    for (let i = 0; i < wires.length; i++) {
+      const w = wires[i];
+      const should = w.aIdx < idx && w.bIdx < idx;
       if (w.el.classList.contains('lit') !== should) {
         w.el.classList.toggle('lit', should);
       }
-    });
+    }
 
     if (idx === totalComps) pcbFullyLit = true;
   }
