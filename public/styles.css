@@ -161,7 +161,7 @@ nav{
 .page-wrap{
   position:relative;
   z-index:2;
-  max-width:880px;
+  max-width:1040px;
   margin:0 auto;
   padding:0 clamp(1rem,1.6vw,2rem);
 }
@@ -212,7 +212,7 @@ h1 em{
 .home-sub{
   font-size:1.2rem;
   color:var(--muted2);
-  max-width:560px;
+  max-width:640px;
   line-height:1.75;
   margin-bottom:2.5rem;
 }
@@ -357,11 +357,11 @@ h2{
 
 .skills-grid{
   display:grid;
-  grid-template-columns:repeat(auto-fill,minmax(200px,1fr));
+  grid-template-columns:repeat(auto-fill,minmax(220px,1fr));
   gap:1px;
 }
 .skill-item{
-  padding:1.3rem 1.5rem;
+  padding:1.8rem 1.5rem;
   background:rgba(17,17,19,.62);
   display:flex;
   flex-direction:column;
@@ -375,13 +375,13 @@ h2{
   background:rgba(24,24,27,.78);
 }
 .skill-name{
-  font-size:16.5px;
+  font-size:18px;
   color:var(--text);
   font-weight:400;
 }
 .skill-cat{
   font-family:var(--mono);
-  font-size:12.5px;
+  font-size:14px;
   color:var(--muted2);
   letter-spacing:.06em;
 }
@@ -937,6 +937,7 @@ footer{
     height:54px;
   }
   .page-wrap{
+    max-width:880px;
     padding:0 clamp(.9rem,1.2vw,1.5rem);
   }
   section{
@@ -950,7 +951,7 @@ footer{
     padding-top:clamp(3.5rem,3.5vw,5rem);
   }
   h1{
-    font-size:clamp(2.8rem,5.2vw,4.8rem);
+    font-size:clamp(3.8rem,6vw,5.8rem);
   }
   h2{
     font-size:clamp(1.55rem,2vw,1.9rem);
@@ -958,16 +959,38 @@ footer{
   .home-sub{
     font-size:1.08em;
     line-height:1.7;
+    max-width:580px;
   }
   .section-lead{
     font-size:0.98em;
   }
   .about-text{
-    font-size:1.28rem;
+    font-size:1.18rem;
     line-height:1.72;
+    .edu-school{
+      font-size:1.08em;
+    }
+    .edu-degree{
+      font-size:0.94em;
+    }
+    .lang-name{
+      font-size:1.04em;
+    }
   }
   .about-text p{
     padding:1.5rem 1.75rem;
+  }
+  .skill-item{
+    padding:1.8rem 1.5rem;
+  }
+  .skills-grid{
+    grid-template-columns:repeat(auto-fill,minmax(180px,1fr));
+  }
+  .skill-name{
+    font-size:15px;
+  }
+  .skill-cat{
+    font-size:11.5px;
   }
   .edu-detail,
   .edu-details,
@@ -1002,5 +1025,177 @@ footer{
   .lab-title,
   .proj-title{
     font-size:0.97em;
+  }
+  .edu-school{
+    font-size:1.2em;
+  }
+  .edu-degree{
+    font-size:1em;
+  }
+  .edu-year{
+    font-size:12.5px;
+  }
+}
+
+@media (min-width: 3200px) and (min-height: 1800px) {
+  .board-bg svg{
+    width:min(2300px,98vw);
+    max-height:96vh;
+    opacity:.46;
+  }
+  html{
+    font-size:22px;
+  }
+  nav{
+    padding:0 clamp(2.5rem,0.8vw,5rem);
+    height:84px;
+  }
+  .page-wrap{
+    max-width:1700px;
+    padding:0 clamp(1.75rem,0.7vw,3.5rem);
+  }
+  .nav-logo{
+    font-size:18px;
+  }
+  .nav-links{
+    gap:2.75rem;
+  }
+  .nav-links a{
+    font-size:20px;
+  }
+  .lang-toggle{
+    font-size:19px;
+    padding:.45rem .8rem;
+    margin-left:.65rem;
+  }
+  section{
+    padding:clamp(8rem,4vw,10rem) 0 clamp(5rem,3.5vw,6.5rem);
+  }
+  section:first-child{
+    padding-top:120px;
+  }
+  .section-label{
+    font-size:16px;
+    margin-bottom:2.75rem;
+    gap:1.1rem;
+  }
+  h1{
+    font-size:clamp(5.2rem,4.2vw,8.4rem);
+  }
+  h2{
+    font-size:clamp(2.8rem,1.4vw,3.4rem);
+  }
+  .home-sub{
+    font-size:1.76rem;
+    line-height:1.86;
+    max-width:1300px;
+  }
+  .home-tag,
+  .btn{
+    font-size:18.5px;
+  }
+  .home-tag::before{
+    width:34px;
+  }
+  .next-section{
+    width:4.5rem;
+    height:4.5rem;
+    font-size:1.65rem;
+    bottom:6.5rem;
+  }
+  .section-lead{
+    font-size:1.34rem;
+    max-width:84ch;
+  }
+  .about-text{
+    font-size:1.44rem;
+    line-height:1.82;
+  }
+  .about-text p{
+    padding:2rem 2.25rem;
+  }
+  .skills-grid{
+    grid-template-columns:repeat(auto-fill,minmax(340px,1fr));
+    gap:3px;
+  }
+  .edu-item,
+  .lang-row,
+  .lab-item,
+  .proj-item,
+  .contact-link{
+    padding-top:2rem;
+    padding-bottom:2rem;
+  }
+  .skill-item{
+    padding:2.1rem 2rem;
+  }
+  .skill-name,
+  .edu-school,
+  .lang-name,
+  .lab-title,
+  .proj-title{
+    font-size:1.16em;
+  }
+  .skill-name{
+    font-size:1.24em;
+  }
+  .skill-cat{
+    font-size:1.04em;
+  }
+  .edu-school{
+    font-size:1.5em;
+  }
+  .edu-degree{
+    font-size:1.2em;
+  }
+  .lang-level,
+  .contact-platform,
+  .proj-arrow,
+  .contact-arrow{
+    font-size:1em;
+  }
+  .lang-bars{
+    gap:5px;
+  }
+  .lang-bars .bar{
+    width:28px;
+    height:7px;
+  }
+  .edu-detail,
+  .edu-details,
+  .lang-context,
+  .lang-details,
+  .lab-desc,
+  .proj-desc,
+  .proj-empty,
+  .contact-value{
+    font-size:1.24rem;
+  }
+  .edu-year{
+    font-size:20px;
+  }
+  .lab-grid,
+  .proj-grid,
+  .contact-links{
+    gap:3px;
+  }
+  .contact-link-left{
+    gap:2.75rem;
+  }
+  .contact-platform{
+    width:132px;
+  }
+  .lab-icon,
+  .proj-year,
+  .lang-cert,
+  .footer-text{
+    font-size:18px;
+  }
+  footer{
+    max-width:1720px;
+    padding:4.25rem 3.5rem 5.75rem;
+  }
+  .footer-text{
+    font-size:16px;
   }
 }
