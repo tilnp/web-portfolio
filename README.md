@@ -6,14 +6,17 @@ Personal CV / portfolio site. Single page, vanilla HTML/CSS/JS — no build step
 
 ```
 web-cv/
-├── README.md          ← project doc (this file, repo root)
-└── public/            ← serve this as the web root
+├── README.md             ← project doc (this file, repo root)
+├── scripts/
+│   └── build_wires.py    ← regenerate board.wires.json after editing board.svg
+└── public/               ← serve this as the web root
     ├── index.html
     ├── styles.css
     ├── script.js
     ├── i18n.js
     ├── board.svg
-    └── cv.pdf         ← drop the résumé here (the hero "résumé" link points to it)
+    ├── board.wires.json  ← prebuilt wire→component map (do not hand-edit)
+    └── cv.pdf            ← drop the résumé here (the hero "résumé" link points to it)
 ```
 
 Everything the browser fetches lives inside `public/`. The repo root only holds project-level files (README, future config, etc.).
@@ -57,7 +60,7 @@ How the SVG progressively builds itself as the user scrolls:
 - **Component discovery**: walks every direct child of the `components` layer. Key = `inkscape:label` (preferred) → `id` → synthetic. Each becomes a `.comp`; designated big clean-outline ones also get `.glow-comp`.
 - **Reveal ordering** (`REVEAL_CHUNKS`): six chunks, one per `[data-board-step]` section. Curated for spatial spread (each step lights up something in every part of the board) and visual cadence (USB ports last, GPIO header one step before). Anything discovered but not in the chunks falls into the last step.
 - **Scroll → reveal**: a single rAF-throttled handler maps `scrollY` to a reveal index. Each `chunk[i]` is fully lit by the moment its section's title reaches the top of the viewport — i.e. chunk[i] reveals during the scroll range *leading up to* section[i], not while the user is reading section[i]. (Chunk 0 fills in over the hero; chunk 1 fills in while scrolling out of #about toward #skills; and so on.)
-- **Wires** (`.trace`): bound to two components by transforming each path's start/end through `getScreenCTM()` and hit-testing against component `getBoundingClientRect()`s. A wire is `.lit` only when both endpoints are lit.
+- **Wires** (`.trace`): the wire→component binding is precomputed offline by `scripts/build_wires.py` (uses `svgelements` to do the hit-test in SVG coordinates) and shipped as `public/board.wires.json`, keyed by a SHA-256 hash of the SVG text. The client fetches the JSON and verifies the hash matches the live SVG; if so it skips ~71 path measurements + a forced layout. If the JSON is missing or its hash is stale (e.g. you edited `board.svg` and forgot to regenerate), the client falls back to the original runtime hit-test (transforming each path's start/end through `getScreenCTM()` against component `getBoundingClientRect()`s) and logs a one-line console hint. A wire is `.lit` only when both endpoints are lit.
 - **Progressive draw**: `stroke-dasharray:100 / stroke-dashoffset:100→0` (path uses `pathLength="100"`). Direction is per-wire: if the path-end endpoint sits on the *earlier*-revealed component, the wire gets `.from-b` (dashoffset −100), so it always draws *from the already-visible component toward the new one*. Removing `.lit` retracts in reverse along the same direction.
 - **Inkscape inline-style fix**: the Inkscape exporter dumps `style="...stroke-dasharray:none..."` on most paths, which would beat the CSS rule. JS strips that property at init so every wire animates.
 - **CSS-only blending**: chassis stroke removed and opacity dropped so the green PCB fill fades into the page bg instead of reading as a panel; a wide radial mask softens everything past the inner ~40%, so chassis, chips, and wires alike dissolve into the bg toward the edges.
@@ -66,7 +69,8 @@ How the SVG progressively builds itself as the user scrolls:
 
 ## Tweak points
 
-- Step composition: `REVEAL_CHUNKS` in `script.js`.
+- After editing `board.svg`: run `python scripts/build_wires.py` to regenerate `public/board.wires.json` (one-time `pip install svgelements`). Skipping this isn't fatal — the client falls back to runtime hit-testing — but the prebuild is the fast path.
+- Step composition: `REVEAL_CHUNKS` in `script.js`. (`build_wires.py` parses this same constant so both stay in sync — re-run the script after editing.)
 - Glow set: `GLOW` in `script.js`.
 - Reveal-cadence boundary: each chunk's range ends at its section's `offsetTop`; adjust by changing the `start` / `end` math in `update()` if a different timing is wanted.
 - Mask softness / chassis opacity: `.board-bg svg` and `.board-bg .pcb-base` in `styles.css`.

@@ -1,0 +1,359 @@
+{
+  "hash": "1cdb7188b035e68ed112ce856299db13a26304a8999011f4e2400fa85e2f0540",
+  "wires": [
+    {
+      "i": 0,
+      "a": "connector-top-right",
+      "b": "chip-3-top-right",
+      "fromB": true
+    },
+    {
+      "i": 1,
+      "a": "capacitor-top-right",
+      "b": "chip-2-top-right",
+      "fromB": true
+    },
+    {
+      "i": 2,
+      "a": "sd-card-reader",
+      "b": "chip-1-top-left",
+      "fromB": true
+    },
+    {
+      "i": 3,
+      "a": "gpio-chip-top-1",
+      "b": "cpu",
+      "fromB": true
+    },
+    {
+      "i": 4,
+      "a": "chip-1-top-left",
+      "b": "ram",
+      "fromB": false
+    },
+    {
+      "i": 5,
+      "a": "chip-1-top-left",
+      "b": "cpu",
+      "fromB": true
+    },
+    {
+      "i": 6,
+      "a": "chip-7-capacitors-bottom-left",
+      "b": "sd-card-reader",
+      "fromB": true
+    },
+    {
+      "i": 7,
+      "a": "chip-7-bottom-left",
+      "b": "chip-7-capacitors-bottom-left",
+      "fromB": false
+    },
+    {
+      "i": 8,
+      "a": "chip-7-bottom-left",
+      "b": "chip-7-capacitors-bottom-left",
+      "fromB": false
+    },
+    {
+      "i": 9,
+      "a": "chip-7-capacitors-bottom-left",
+      "b": "cpu",
+      "fromB": true
+    },
+    {
+      "i": 10,
+      "a": "chip-6-bottom-left",
+      "b": "cpu",
+      "fromB": true
+    },
+    {
+      "i": 11,
+      "a": "hdmi-1",
+      "b": "chip-5-bottom-middle",
+      "fromB": false
+    },
+    {
+      "i": 12,
+      "a": "chip-5-bottom-middle",
+      "b": "hdmi-2",
+      "fromB": true
+    },
+    {
+      "i": 13,
+      "a": "cpu",
+      "b": "connector-bottom-middle-2",
+      "fromB": false
+    },
+    {
+      "i": 14,
+      "a": "cpu",
+      "b": "connector-bottom-middle-1",
+      "fromB": false
+    },
+    {
+      "i": 15,
+      "a": "cpu",
+      "b": "gpio-chip-bottom",
+      "fromB": false
+    },
+    {
+      "i": 16,
+      "a": "eth-port",
+      "b": "chip-4-bottom-right",
+      "fromB": true
+    },
+    {
+      "i": 17,
+      "a": "cpu",
+      "b": "chip-4-bottom-right",
+      "fromB": false
+    },
+    {
+      "i": 18,
+      "a": "chip-2-top-right",
+      "b": "cpu",
+      "fromB": true
+    },
+    {
+      "i": 19,
+      "a": "chip-2-top-right",
+      "b": "gpio-chip-top-3",
+      "fromB": false
+    },
+    {
+      "i": 20,
+      "a": "gpio-chip-top-4",
+      "b": "chip-2-top-right",
+      "fromB": true
+    },
+    {
+      "i": 21,
+      "a": "usb-30",
+      "b": "chip-3-top-right",
+      "fromB": true
+    },
+    {
+      "i": 22,
+      "a": "chip-4-bottom-right",
+      "b": "usb-30",
+      "fromB": false
+    },
+    {
+      "i": 23,
+      "a": "ram",
+      "b": "cpu",
+      "fromB": true
+    },
+    {
+      "i": 24,
+      "a": "ram",
+      "b": "cpu",
+      "fromB": true
+    },
+    {
+      "i": 25,
+      "a": "ram",
+      "b": "cpu",
+      "fromB": true
+    },
+    {
+      "i": 26,
+      "a": "cpu",
+      "b": "hdmi-2",
+      "fromB": false
+    },
+    {
+      "i": 27,
+      "a": "chip-3-top-right",
+      "b": "usb-20",
+      "fromB": false
+    },
+    {
+      "i": 28,
+      "a": "chip-1-top-left",
+      "b": "ram",
+      "fromB": false
+    },
+    {
+      "i": 29,
+      "a": "power-button-top-left",
+      "b": "chip-1-top-left",
+      "fromB": true
+    },
+    {
+      "i": 30,
+      "a": "chip-7-bottom-left",
+      "b": "chip-7-capacitors-bottom-left",
+      "fromB": false
+    },
+    {
+      "i": 31,
+      "a": "chip-7-capacitors-bottom-left",
+      "b": "chip-7-bottom-left",
+      "fromB": true
+    },
+    {
+      "i": 32,
+      "a": "chip-7-bottom-left",
+      "b": "chip-7-capacitors-bottom-left",
+      "fromB": false
+    },
+    {
+      "i": 33,
+      "a": "gpio-chip-top-2",
+      "b": "ram",
+      "fromB": true
+    },
+    {
+      "i": 34,
+      "a": "ram",
+      "b": "chip-3-top-right",
+      "fromB": false
+    },
+    {
+      "i": 35,
+      "a": "chip-7-capacitors-bottom-left",
+      "b": "ram",
+      "fromB": true
+    },
+    {
+      "i": 36,
+      "a": "chip-2-top-right",
+      "b": "chip-3-top-right",
+      "fromB": false
+    },
+    {
+      "i": 37,
+      "a": "cpu",
+      "b": "hdmi-1",
+      "fromB": false
+    },
+    {
+      "i": 38,
+      "a": "gpio-top-big",
+      "b": "chip-1-top-left",
+      "fromB": true
+    },
+    {
+      "i": 39,
+      "a": "gpio-top-big",
+      "b": "chip-1-top-left",
+      "fromB": true
+    },
+    {
+      "i": 40,
+      "a": "gpio-top-big",
+      "b": "chip-1-top-left",
+      "fromB": true
+    },
+    {
+      "i": 41,
+      "a": "ram",
+      "b": "chip-2-top-right",
+      "fromB": true
+    },
+    {
+      "i": 42,
+      "a": "eth-port",
+      "b": "chip-2-top-right",
+      "fromB": true
+    },
+    {
+      "i": 43,
+      "a": "connector-bottom-left",
+      "b": "chip-7-capacitors-bottom-left",
+      "fromB": true
+    },
+    {
+      "i": 44,
+      "a": "chip-7-capacitors-bottom-left",
+      "b": "chip-7-bottom-left",
+      "fromB": true
+    },
+    {
+      "i": 45,
+      "a": "connector-bottom-left",
+      "b": "chip-7-capacitors-bottom-left",
+      "fromB": true
+    },
+    {
+      "i": 46,
+      "a": "chip-7-capacitors-bottom-left",
+      "b": "usbc-bottom-left",
+      "fromB": true
+    },
+    {
+      "i": 47,
+      "a": "chip-7-capacitors-bottom-left",
+      "b": "chip-7-bottom-left",
+      "fromB": true
+    },
+    {
+      "i": 48,
+      "a": "chip-7-bottom-left",
+      "b": "chip-7-capacitors-bottom-left",
+      "fromB": false
+    },
+    {
+      "i": 49,
+      "a": "gpio-top-big",
+      "b": "gpio-chip-top-1",
+      "fromB": false
+    },
+    {
+      "i": 50,
+      "a": "usbc-bottom-left",
+      "b": "chip-6-bottom-left",
+      "fromB": true
+    },
+    {
+      "i": 51,
+      "a": "gpio-chip-top-2",
+      "b": "ram",
+      "fromB": true
+    },
+    {
+      "i": 52,
+      "a": "gpio-top-big",
+      "b": "gpio-chip-top-2",
+      "fromB": true
+    },
+    {
+      "i": 53,
+      "a": "gpio-top-big",
+      "b": "gpio-chip-top-2",
+      "fromB": true
+    },
+    {
+      "i": 54,
+      "a": "gpio-top-big",
+      "b": "gpio-chip-top-3",
+      "fromB": false
+    },
+    {
+      "i": 55,
+      "a": "gpio-top-small",
+      "b": "gpio-chip-top-4",
+      "fromB": false
+    },
+    {
+      "i": 56,
+      "a": "gpio-chip-bottom",
+      "b": "gpio-bottom",
+      "fromB": false
+    },
+    {
+      "i": 57,
+      "a": "ram",
+      "b": "cpu",
+      "fromB": true
+    },
+    {
+      "i": 58,
+      "a": "ram",
+      "b": "cpu",
+      "fromB": true
+    }
+  ]
+}

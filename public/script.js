@@ -1,3 +1,9 @@
+// NOTE: after editing public/board.svg, regenerate public/board.wires.json:
+//   python scripts/build_wires.py
+// The hash check in loadBoard() will fall back to a runtime hit-test if the
+// JSON is missing or stale, so things still work — but the prebuild path is
+// the fast one (skips ~71 path measurements + a forced layout on first load).
+
 import { applyLocale, detectLocale, setLocale } from './i18n.js';
 
 document.getElementById('year').textContent = new Date().getFullYear();
@@ -93,15 +99,18 @@ function runAllUpdates(sy) {
 }
 
 // Single consolidated scroll listener — one rAF, one scrollY read, strict
-// read-then-write ordering across all features.
+// read-then-write ordering across all features. The rAF callback is hoisted
+// to a named function so the same Function reference is reused every frame
+// (passing an inline arrow would allocate a fresh closure per scroll event).
 let scrollTicking = false;
+function onScrollFrame() {
+  runAllUpdates(window.scrollY);
+  scrollTicking = false;
+}
 window.addEventListener('scroll', () => {
   if (scrollTicking) return;
   scrollTicking = true;
-  requestAnimationFrame(() => {
-    runAllUpdates(window.scrollY);
-    scrollTicking = false;
-  });
+  requestAnimationFrame(onScrollFrame);
 }, { passive: true });
 
 // Debounced resize — resize fires faster than layout actually settles, so
@@ -216,10 +225,12 @@ const GLOW = new Set([
 ]);
 
 // Wire→component mapping is structural (depends only on board.svg contents,
-// not viewport), so we cache it in localStorage keyed by a SHA-256 of the
-// fetched SVG text. On cache hit we skip ~71 getTotalLength/hit-test calls.
-const WIRE_CACHE_KEY = 'board.svg.wires.v1';
-
+// not viewport). It's prebuilt offline by `python scripts/build_wires.py`
+// and shipped as `public/board.wires.json`, keyed by a SHA-256 of the SVG
+// text. On hash match the client skips the entire runtime hit-test path
+// (~71 getTotalLength + 71 getScreenCTM + 71 nested hit-test calls + a
+// forced layout). On hash mismatch (e.g. someone edited board.svg without
+// regenerating) the client falls back to the runtime path and logs a hint.
 async function sha256Hex(str) {
   const buf = new TextEncoder().encode(str);
   const digest = await crypto.subtle.digest('SHA-256', buf);
@@ -227,20 +238,33 @@ async function sha256Hex(str) {
     .map(b => b.toString(16).padStart(2, '0')).join('');
 }
 
-function readWireCache() {
-  try {
-    const raw = localStorage.getItem(WIRE_CACHE_KEY);
-    return raw ? JSON.parse(raw) : null;
-  } catch { return null; }
+// Fired in parallel with board.svg so the JSON arrives "for free" while
+// the SVG is being parsed and laid out. Returns a Promise that resolves
+// to the parsed JSON object (or null on any failure). Hash verification
+// happens later, once we know the SVG's hash.
+function fetchPrebuiltWires() {
+  return fetch('board.wires.json')
+    .then(res => res.ok ? res.json() : null)
+    .catch(() => null);
 }
 
-function writeWireCache(entry) {
-  try { localStorage.setItem(WIRE_CACHE_KEY, JSON.stringify(entry)); } catch {}
+function verifyPrebuiltWires(data, svgHash) {
+  if (!data || !Array.isArray(data.wires)) return null;
+  if (data.hash !== svgHash) {
+    console.info('[board] wires.json hash stale — falling back to runtime hit-test. Re-run `python scripts/build_wires.py`.');
+    return null;
+  }
+  return data.wires;
 }
 
 async function loadBoard() {
   const container = document.getElementById('boardBg');
   if (!container) return;
+
+  // Fire the wires JSON fetch immediately, in parallel with board.svg.
+  // We await it later, once we have the SVG's hash to verify against —
+  // until then it's just a Promise riding along on a separate connection.
+  const wiresFetch = fetchPrebuiltWires();
 
   let svgText;
   try {
@@ -316,39 +340,13 @@ async function loadBoard() {
     }
   }
 
-  // Resolve wire→component mapping by endpoint hit-testing in screen space.
-  // Defer one frame so the SVG is laid out and CTMs are valid.
-  await new Promise(r => requestAnimationFrame(r));
-
-  const compRects = components.map(c => ({
-    label: c.label,
-    el: c.el,
-    rect: c.el.getBoundingClientRect(),
-  }));
-
-  const findComponentAtPoint = (x, y) => {
-    let best = null;
-    let bestArea = Infinity;
-    const margin = 8;
-    for (const c of compRects) {
-      const r = c.rect;
-      if (!r.width || !r.height) continue;
-      if (x >= r.left - margin && x <= r.right + margin &&
-          y >= r.top - margin && y <= r.bottom + margin) {
-        const area = r.width * r.height;
-        if (area < bestArea) { bestArea = area; best = c.label; }
-      }
-    }
-    return best;
-  };
-
   const traceEls = svg.querySelectorAll('.trace');
 
   // Inkscape exports most paths with inline style="...stroke-dasharray:none..."
   // which beats our CSS rule (.trace { stroke-dasharray:100 }) and turns the
   // wire into a solid line that just fades opacity. Strip the inline dash
   // properties so the CSS draw-on logic applies to every wire. Mutates the
-  // freshly-injected DOM, so it must run on every load (cache hit or miss).
+  // freshly-injected DOM, so it must run on every load.
   traceEls.forEach(t => {
     if (t.style) {
       t.style.removeProperty('stroke-dasharray');
@@ -357,23 +355,53 @@ async function loadBoard() {
   });
 
   const svgHash = await sha256Hex(svgText);
-  const cached = readWireCache();
   const wires = [];
-  // Built once, used by the cache-miss from-b logic AND by the per-wire
-  // aIdx/bIdx pre-stash below so the per-frame path needs no Map lookups.
+  // Built once, reused by the runtime-fallback from-b logic AND by the
+  // per-wire aIdx/bIdx pre-stash below so the per-frame path needs no
+  // Map lookups.
   const labelToIdx = new Map(components.map((c, i) => [c.label, i]));
 
-  if (cached && cached.hash === svgHash && Array.isArray(cached.wires)) {
-    // Cache hit — re-link DOM elements by index and reapply the from-b flag.
-    cached.wires.forEach(w => {
+  const prebuilt = verifyPrebuiltWires(await wiresFetch, svgHash);
+  if (prebuilt) {
+    // Hash-verified prebuilt mapping — re-link DOM elements by index and
+    // reapply the from-b flag. No layout reads, no path measurements.
+    for (const w of prebuilt) {
       const el = traceEls[w.i];
-      if (!el) return;
+      if (!el) continue;
       if (w.fromB) el.classList.add('from-b');
       wires.push({ el, a: w.a, b: w.b });
-    });
+    }
   } else {
-    // Cache miss — derive wire→component mapping by endpoint hit-testing in
-    // screen space, then persist the result keyed by the SVG hash.
+    // Fallback: derive wire→component mapping at runtime via screen-space
+    // endpoint hit-testing. Only reached when board.wires.json is missing
+    // or its hash doesn't match the live SVG.
+    console.info('[board] using runtime wire hit-test (prebuilt mapping unavailable). Run `python scripts/build_wires.py` to generate one.');
+
+    // Defer one frame so the SVG is laid out and CTMs are valid.
+    await new Promise(r => requestAnimationFrame(r));
+
+    const compRects = components.map(c => ({
+      label: c.label,
+      el: c.el,
+      rect: c.el.getBoundingClientRect(),
+    }));
+
+    const findComponentAtPoint = (x, y) => {
+      let best = null;
+      let bestArea = Infinity;
+      const margin = 8;
+      for (const c of compRects) {
+        const r = c.rect;
+        if (!r.width || !r.height) continue;
+        if (x >= r.left - margin && x <= r.right + margin &&
+            y >= r.top - margin && y <= r.bottom + margin) {
+          const area = r.width * r.height;
+          if (area < bestArea) { bestArea = area; best = c.label; }
+        }
+      }
+      return best;
+    };
+
     const svgPoint = svg.createSVGPoint();
     traceEls.forEach((t, i) => {
       if (typeof t.getTotalLength !== 'function') return;
@@ -407,16 +435,6 @@ async function loadBoard() {
         w.el.classList.add('from-b');
       }
     }
-
-    writeWireCache({
-      hash: svgHash,
-      wires: wires.map(w => ({
-        i: w.i,
-        a: w.a,
-        b: w.b,
-        fromB: w.el.classList.contains('from-b'),
-      })),
-    });
   }
 
   // Pre-stash each wire's endpoint indices so updatePCBReveal can do a pure
