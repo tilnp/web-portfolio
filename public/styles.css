@@ -938,6 +938,20 @@ footer{
     font-size:10px;
     padding:.2rem .4rem;
   }
+
+  /* Hide only the SVG-based graphics (board, traces, components). Keep
+     the lightweight background grid visible to preserve the subtle pattern. */
+  .board-bg,
+  .board-bg svg,
+  .trace,
+  .pcb-base,
+  .comp,
+  .glow-comp,
+  .full-glow{
+    display:none !important;
+    opacity:0 !important;
+    pointer-events:none !important;
+  }
 }
 
 /* Below 360px: very narrow phones — allow nav to wrap into 2 rows */
@@ -1251,5 +1265,40 @@ footer{
   }
   .footer-text{
     font-size:16px;
+  }
+}
+
+/* Mobile tweaks: stack education rows and hide decorative board on very narrow screens */
+@media (max-width: 440px) {
+  /* Fully hide the background board for the narrowest phones to reduce clutter */
+  .board-bg{
+    display:none !important;
+    opacity:0 !important;
+    pointer-events:none !important;
+  }
+
+  /* Stack the education / language rows so the year no longer forces a second column */
+  .edu-item,
+  .lang-row,
+  .proj-item,
+  .contact-link{
+    grid-template-columns: 1fr;
+    gap:.45rem;
+  }
+
+  /* Put the year/metadata on its own row but aligned to the right */
+  .edu-year,
+  .proj-year,
+  .lang-meta{
+    justify-self:end;
+    width:auto;
+    margin-top:.15rem;
+  }
+
+  /* Remove left indents that expected a two-column layout */
+  .edu-details,
+  .lang-details{
+    margin-left:0;
+    max-width:100%;
   }
 }

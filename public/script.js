@@ -474,4 +474,12 @@ async function loadBoard() {
   updatePCBReveal(window.scrollY);
 }
 
-loadBoard();
+// Only load the SVG board on sufficiently wide viewports to avoid fetching
+// and computing heavy SVG data on phones. Match the CSS breakpoint.
+if (!window.matchMedia('(max-width: 440px)').matches) {
+  loadBoard();
+} else {
+  // Ensure the container stays empty/hidden when we skip loading.
+  const container = document.getElementById('boardBg');
+  if (container) container.style.display = 'none';
+}
