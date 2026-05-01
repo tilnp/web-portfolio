@@ -1,7 +1,7 @@
 // NOTE: after editing public/board.svg, regenerate public/board.wires.json:
 //   python scripts/build_wires.py
 // The wire→component mapping comes ONLY from that prebuilt JSON. If its
-// hash doesn't match the live SVG, the wires don't render (components still
+// data is missing or invalid, the wires don't render (components still
 // light up). There's no runtime hit-test fallback anymore — keep the script
 // in sync with the SVG.
 
@@ -226,37 +226,13 @@ const GLOW = new Set([
   'eth-port','sd-card-reader',
 ]);
 
-// Wire→component mapping is structural (depends only on board.svg contents,
-// not viewport). It's prebuilt offline by `python scripts/build_wires.py`
-// and shipped as `public/board.wires.json`, keyed by a SHA-256 of the SVG
-// bytes. On hash match the client binds wires by index against the JSON.
-// On hash mismatch or missing JSON the wires don't render (components still
-// light up) and a console.warn points at the regenerate command — there is
-// no runtime hit-test fallback.
-async function sha256Hex(str) {
-  const buf = new TextEncoder().encode(str);
-  const digest = await crypto.subtle.digest('SHA-256', buf);
-  return [...new Uint8Array(digest)]
-    .map(b => b.toString(16).padStart(2, '0')).join('');
-}
-
 // Fired in parallel with board.svg so the JSON arrives "for free" while
 // the SVG is being parsed and laid out. Returns a Promise that resolves
-// to the parsed JSON object (or null on any failure). Hash verification
-// happens later, once we know the SVG's hash.
+// to the parsed JSON object (or null on any failure).
 function fetchPrebuiltWires() {
   return fetch('board.wires.json')
     .then(res => res.ok ? res.json() : null)
     .catch(() => null);
-}
-
-function verifyPrebuiltWires(data, svgHash) {
-  if (!data || !Array.isArray(data.wires)) return null;
-  if (data.hash !== svgHash) {
-    console.warn('[board] wires.json hash stale — wires will not render.');
-    return null;
-  }
-  return data.wires;
 }
 
 async function loadBoard() {
@@ -264,8 +240,8 @@ async function loadBoard() {
   if (!container) return;
 
   // Fire the wires JSON fetch immediately, in parallel with board.svg.
-  // We await it later, once we have the SVG's hash to verify against —
-  // until then it's just a Promise riding along on a separate connection.
+  // We await it later, after the SVG has loaded, so the fetch rides along
+  // on a separate connection.
   const wiresFetch = fetchPrebuiltWires();
 
   let svgText;
@@ -355,28 +331,26 @@ async function loadBoard() {
       t.style.removeProperty('stroke-dashoffset');
     }
   });
-
-  const svgHash = await sha256Hex(svgText);
   const wires = [];
   // Built once, used by the per-wire aIdx/bIdx pre-stash below so the
   // per-frame path needs no Map lookups.
   const labelToIdx = new Map(components.map((c, i) => [c.label, i]));
 
   // Prebuilt wires only — no runtime hit-test fallback. If the JSON is
-  // missing or its hash doesn't match the live SVG, `wires` stays empty
-  // and the .trace paths simply don't animate; components still light up
-  // as normal. Re-run `python scripts/build_wires.py` after editing
-  // public/board.svg to regenerate the mapping.
-  const prebuilt = verifyPrebuiltWires(await wiresFetch, svgHash);
-  if (prebuilt) {
-    for (const w of prebuilt) {
+  // missing or malformed, `wires` stays empty and the .trace paths simply
+  // don't animate; components still light up as normal. Re-run
+  // `python scripts/build_wires.py` after editing public/board.svg to
+  // regenerate the mapping.
+  const prebuilt = await wiresFetch;
+  if (prebuilt && Array.isArray(prebuilt.wires)) {
+    for (const w of prebuilt.wires) {
       const el = traceEls[w.i];
       if (!el) continue;
       if (w.fromB) el.classList.add('from-b');
       wires.push({ el, a: w.a, b: w.b });
     }
   } else {
-    console.warn('[board] board.wires.json missing or stale — wires will not render.');
+    console.warn('[board] board.wires.json missing or invalid — wires will not render.');
   }
 
   // Pre-stash each wire's endpoint indices so updatePCBReveal can do a pure

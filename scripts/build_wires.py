@@ -6,14 +6,11 @@ computes its bounding box in SVG coordinates, then for each .trace path
 reads its first and last point and hit-tests them against component bboxes
 (smallest containing wins, with an 8-SVG-unit slop margin). Output:
 
-    public/board.wires.json -> { "hash": <sha256>, "wires": [{i, a, b, fromB}] }
+    public/board.wires.json -> { "wires": [{i, a, b, fromB}] }
 
-The hash matches what the client computes (SHA-256 of the SVG text after
-stripping the <?xml ...?> prolog). When the client fetches this JSON it
-verifies the hash against the freshly-fetched SVG; if they match, the
-client uses the prebuilt mapping and skips the entire runtime hit-test.
-On mismatch the client falls back to the runtime path, so this script
-is advisory -- never load-breaking.
+The client uses the prebuilt mapping directly. If the JSON is missing or
+malformed, the wires simply do not render; there is no runtime hit-test
+fallback.
 
 Re-run after editing public/board.svg:
     python scripts/build_wires.py
@@ -21,7 +18,6 @@ Re-run after editing public/board.svg:
 
 from __future__ import annotations
 
-import hashlib
 import json
 import re
 import sys
@@ -33,11 +29,10 @@ except ImportError:
     sys.exit("svgelements not installed. Run: pip install svgelements")
 
 
-# svgelements stores namespaced attributes in Clark notation (i.e. with the
-# full namespace URI in braces), NOT with the source-document prefix. The
-# client SVG uses xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
-# so `inkscape:label` round-trips through this Clark form.
 INKSCAPE_LABEL = "{http://www.inkscape.org/namespaces/inkscape}label"
+
+
+# svgelements stores namespaced attributes in Clark notation (i.e. with the
 
 
 def inkscape_label(el):
@@ -82,17 +77,6 @@ def parse_reveal_chunks(script_text: str) -> list[list[str]]:
     return chunks
 
 
-def strip_xml_prolog_bytes(svg_bytes: bytes) -> bytes:
-    """Match the JS regex /^\\s*<\\?xml[^?]*\\?>\\s*/ but on raw bytes.
-
-    We hash bytes (not text) to stay byte-identical to what the browser sees
-    over HTTP. The browser fetches the file as-is from disk; if Python read
-    in text mode, Windows would silently normalize CRLF -> LF and the two
-    sides would disagree on a file nobody touched.
-    """
-    return re.sub(rb"^\s*<\?xml[^?]*\?>\s*", b"", svg_bytes)
-
-
 def has_class(el, cls: str) -> bool:
     raw = el.values.get("class") if hasattr(el, "values") else None
     if not raw:
@@ -123,13 +107,6 @@ def bbox_or_warn(el, label: str):
 
 
 def main() -> int:
-    # Read the SVG as raw bytes, NOT text -- so we hash exactly what the
-    # browser will see over HTTP. Text mode on Windows normalizes CRLF to LF
-    # in memory, which would silently desync the hash from the on-disk file
-    # whenever an editor or git autocrlf rewrites line endings.
-    svg_bytes = SVG_PATH.read_bytes()
-    svg_hash = hashlib.sha256(strip_xml_prolog_bytes(svg_bytes)).hexdigest()
-
     script_text = SCRIPT_PATH.read_text(encoding="utf-8")
     reveal_chunks = parse_reveal_chunks(script_text)
 
@@ -243,6 +220,10 @@ def main() -> int:
             point_failed += 1
             print(f"  WARNING: trace #{i}: point() failed ({e})", file=sys.stderr)
             continue
+        if p0 is None or p1 is None:
+            point_failed += 1
+            print(f"  WARNING: trace #{i}: point() returned None", file=sys.stderr)
+            continue
         a = find_component_at_point(p0.x, p0.y)
         b = find_component_at_point(p1.x, p1.y)
         if not a and not b:
@@ -269,7 +250,7 @@ def main() -> int:
         bi = label_to_idx.get(w["b"])
         w["fromB"] = ai is not None and bi is not None and bi < ai
 
-    out = {"hash": svg_hash, "wires": wires}
+    out = {"wires": wires}
     OUT_PATH.write_text(json.dumps(out, indent=2) + "\n", encoding="utf-8")
 
     # Summary — makes it obvious if an SVG edit broke references without
@@ -278,7 +259,6 @@ def main() -> int:
     total_traces = len(traces)
     print()
     print(f"  Wrote {rel}")
-    print(f"  Hash:           {svg_hash[:16]}...")
     print(f"  Components:     {len(components_in_order)}")
     print(f"  Traces in SVG:  {total_traces}")
     print(f"    both endpoints bound: {both_count}")
