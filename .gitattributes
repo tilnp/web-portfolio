@@ -1,0 +1,6 @@
+# Pin line endings for files where mismatch would silently desync the
+# wire-cache hash check (build_wires.py vs. browser fetch). The hash itself
+# is now byte-mode safe, but keeping the working tree LF avoids noisy diffs
+# across machines with different core.autocrlf settings.
+public/board.svg          text eol=lf
+public/board.wires.json   text eol=lf

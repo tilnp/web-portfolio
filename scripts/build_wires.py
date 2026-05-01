@@ -82,9 +82,15 @@ def parse_reveal_chunks(script_text: str) -> list[list[str]]:
     return chunks
 
 
-def strip_xml_prolog(svg_text: str) -> str:
-    """Match the JS regex /^\\s*<\\?xml[^?]*\\?>\\s*/ exactly."""
-    return re.sub(r"^\s*<\?xml[^?]*\?>\s*", "", svg_text)
+def strip_xml_prolog_bytes(svg_bytes: bytes) -> bytes:
+    """Match the JS regex /^\\s*<\\?xml[^?]*\\?>\\s*/ but on raw bytes.
+
+    We hash bytes (not text) to stay byte-identical to what the browser sees
+    over HTTP. The browser fetches the file as-is from disk; if Python read
+    in text mode, Windows would silently normalize CRLF -> LF and the two
+    sides would disagree on a file nobody touched.
+    """
+    return re.sub(rb"^\s*<\?xml[^?]*\?>\s*", b"", svg_bytes)
 
 
 def has_class(el, cls: str) -> bool:
@@ -117,9 +123,12 @@ def bbox_or_warn(el, label: str):
 
 
 def main() -> int:
-    svg_text_raw = SVG_PATH.read_text(encoding="utf-8")
-    svg_text = strip_xml_prolog(svg_text_raw)
-    svg_hash = hashlib.sha256(svg_text.encode("utf-8")).hexdigest()
+    # Read the SVG as raw bytes, NOT text -- so we hash exactly what the
+    # browser will see over HTTP. Text mode on Windows normalizes CRLF to LF
+    # in memory, which would silently desync the hash from the on-disk file
+    # whenever an editor or git autocrlf rewrites line endings.
+    svg_bytes = SVG_PATH.read_bytes()
+    svg_hash = hashlib.sha256(strip_xml_prolog_bytes(svg_bytes)).hexdigest()
 
     script_text = SCRIPT_PATH.read_text(encoding="utf-8")
     reveal_chunks = parse_reveal_chunks(script_text)

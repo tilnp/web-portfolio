@@ -1,8 +1,9 @@
 // NOTE: after editing public/board.svg, regenerate public/board.wires.json:
 //   python scripts/build_wires.py
-// The hash check in loadBoard() will fall back to a runtime hit-test if the
-// JSON is missing or stale, so things still work — but the prebuild path is
-// the fast one (skips ~71 path measurements + a forced layout on first load).
+// The wire→component mapping comes ONLY from that prebuilt JSON. If its
+// hash doesn't match the live SVG, the wires don't render (components still
+// light up). There's no runtime hit-test fallback anymore — keep the script
+// in sync with the SVG.
 
 import { applyLocale, detectLocale, setLocale } from './i18n.js';
 
@@ -176,16 +177,17 @@ if (nextBtn) {
 // Inline board SVG with scroll-driven progressive build.
 // Components are identified by direct-child lookup inside the components layer
 // using inkscape:label (id falls back to the same string when present).
-// Wires (.trace) bind to two components by hit-testing path endpoints in
-// screen space against component bounding boxes.
+// Wires (.trace) are bound to two components ahead of time by
+// scripts/build_wires.py and shipped as public/board.wires.json — the client
+// just looks each one up by index.
 //
-// REVEAL_CHUNKS is the curated, semantically-grouped order, split into 5
+// REVEAL_CHUNKS is the curated, semantically-grouped order, split into seven
 // chunks that align 1:1 with the [data-board-step] page sections (about →
 // contact). Each chunk is fully lit by the moment its section's title
 // reaches the top of the viewport — so chunk[i] is revealed during the
 // scroll range *leading up to* section[i], not while the user is reading
 // section[i]. (Chunk 0 fills in over the home; chunk 1 fills in while
-// scrolling out of #about toward #skills; and so on.)
+// scrolling out of #about toward #education; and so on.)
 //
 // The list is a *preference*, not a gatekeeper: at runtime we discover every
 // direct child of the components layer and append any leftover (unlabeled or
@@ -227,10 +229,10 @@ const GLOW = new Set([
 // Wire→component mapping is structural (depends only on board.svg contents,
 // not viewport). It's prebuilt offline by `python scripts/build_wires.py`
 // and shipped as `public/board.wires.json`, keyed by a SHA-256 of the SVG
-// text. On hash match the client skips the entire runtime hit-test path
-// (~71 getTotalLength + 71 getScreenCTM + 71 nested hit-test calls + a
-// forced layout). On hash mismatch (e.g. someone edited board.svg without
-// regenerating) the client falls back to the runtime path and logs a hint.
+// bytes. On hash match the client binds wires by index against the JSON.
+// On hash mismatch or missing JSON the wires don't render (components still
+// light up) and a console.warn points at the regenerate command — there is
+// no runtime hit-test fallback.
 async function sha256Hex(str) {
   const buf = new TextEncoder().encode(str);
   const digest = await crypto.subtle.digest('SHA-256', buf);
@@ -251,7 +253,7 @@ function fetchPrebuiltWires() {
 function verifyPrebuiltWires(data, svgHash) {
   if (!data || !Array.isArray(data.wires)) return null;
   if (data.hash !== svgHash) {
-    console.info('[board] wires.json hash stale — falling back to runtime hit-test. Re-run `python scripts/build_wires.py`.');
+    console.warn('[board] wires.json hash stale — wires will not render.');
     return null;
   }
   return data.wires;
@@ -356,15 +358,17 @@ async function loadBoard() {
 
   const svgHash = await sha256Hex(svgText);
   const wires = [];
-  // Built once, reused by the runtime-fallback from-b logic AND by the
-  // per-wire aIdx/bIdx pre-stash below so the per-frame path needs no
-  // Map lookups.
+  // Built once, used by the per-wire aIdx/bIdx pre-stash below so the
+  // per-frame path needs no Map lookups.
   const labelToIdx = new Map(components.map((c, i) => [c.label, i]));
 
+  // Prebuilt wires only — no runtime hit-test fallback. If the JSON is
+  // missing or its hash doesn't match the live SVG, `wires` stays empty
+  // and the .trace paths simply don't animate; components still light up
+  // as normal. Re-run `python scripts/build_wires.py` after editing
+  // public/board.svg to regenerate the mapping.
   const prebuilt = verifyPrebuiltWires(await wiresFetch, svgHash);
   if (prebuilt) {
-    // Hash-verified prebuilt mapping — re-link DOM elements by index and
-    // reapply the from-b flag. No layout reads, no path measurements.
     for (const w of prebuilt) {
       const el = traceEls[w.i];
       if (!el) continue;
@@ -372,69 +376,7 @@ async function loadBoard() {
       wires.push({ el, a: w.a, b: w.b });
     }
   } else {
-    // Fallback: derive wire→component mapping at runtime via screen-space
-    // endpoint hit-testing. Only reached when board.wires.json is missing
-    // or its hash doesn't match the live SVG.
-    console.info('[board] using runtime wire hit-test (prebuilt mapping unavailable). Run `python scripts/build_wires.py` to generate one.');
-
-    // Defer one frame so the SVG is laid out and CTMs are valid.
-    await new Promise(r => requestAnimationFrame(r));
-
-    const compRects = components.map(c => ({
-      label: c.label,
-      el: c.el,
-      rect: c.el.getBoundingClientRect(),
-    }));
-
-    const findComponentAtPoint = (x, y) => {
-      let best = null;
-      let bestArea = Infinity;
-      const margin = 8;
-      for (const c of compRects) {
-        const r = c.rect;
-        if (!r.width || !r.height) continue;
-        if (x >= r.left - margin && x <= r.right + margin &&
-            y >= r.top - margin && y <= r.bottom + margin) {
-          const area = r.width * r.height;
-          if (area < bestArea) { bestArea = area; best = c.label; }
-        }
-      }
-      return best;
-    };
-
-    const svgPoint = svg.createSVGPoint();
-    traceEls.forEach((t, i) => {
-      if (typeof t.getTotalLength !== 'function') return;
-      let len, p0, p1;
-      try {
-        len = t.getTotalLength();
-        p0 = t.getPointAtLength(0);
-        p1 = t.getPointAtLength(len);
-      } catch { return; }
-      const ctm = t.getScreenCTM();
-      if (!ctm) return;
-      svgPoint.x = p0.x; svgPoint.y = p0.y;
-      const s0 = svgPoint.matrixTransform(ctm);
-      svgPoint.x = p1.x; svgPoint.y = p1.y;
-      const s1 = svgPoint.matrixTransform(ctm);
-      const a = findComponentAtPoint(s0.x, s0.y);
-      const b = findComponentAtPoint(s1.x, s1.y);
-      if (a && b) wires.push({ el: t, i, a, b });
-      else if (a || b) wires.push({ el: t, i, a: a || b, b: a || b });
-    });
-
-    // Direction of progressive draw: path goes from "a" (start) to "b" (end).
-    // We want the line to draw *from* the already-visible component *to* the
-    // newly-appearing one — i.e. originate at the earlier-revealed endpoint.
-    // .from-b flips the dash offset to -100 so the dash retracts off the
-    // path-end side instead of the path-start side.
-    for (const w of wires) {
-      const ai = labelToIdx.get(w.a);
-      const bi = labelToIdx.get(w.b);
-      if (ai != null && bi != null && bi < ai) {
-        w.el.classList.add('from-b');
-      }
-    }
+    console.warn('[board] board.wires.json missing or stale — wires will not render.');
   }
 
   // Pre-stash each wire's endpoint indices so updatePCBReveal can do a pure
