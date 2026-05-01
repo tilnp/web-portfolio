@@ -22,13 +22,14 @@
 }
 html{
   scroll-behavior:smooth;
+  font-size:clamp(14.5px,calc(0.5vw + 9px),16px);
 }
 body{
   background:var(--bg);
   color:var(--text);
   font-family:var(--sans);
-  font-size:18px;
-  line-height:1.65;
+  font-size:1rem;
+  line-height:1.6;
   font-weight:300;
   -webkit-font-smoothing:antialiased;
   overflow-x:hidden;
@@ -77,9 +78,9 @@ body{
   box-shadow:inset 0 0 120px rgba(0,0,0,.35), inset 0 0 200px rgba(0,0,0,.15);
 }
 .board-bg svg{
-  width:min(1280px,96vw);
+  width:min(1400px,100vw);
   height:auto;
-  max-height:95vh;
+  max-height:97vh;
   overflow:visible;
   opacity:.45;
 }
@@ -103,8 +104,8 @@ nav{
   display:flex;
   align-items:center;
   justify-content:space-between;
-  padding:0 2.5rem;
-  height:58px;
+  padding:0 clamp(1.25rem,1.8vw,2.5rem);
+  height:clamp(54px,4vw,58px);
   background:rgba(10,10,11,.82);
   backdrop-filter:blur(14px);
   -webkit-backdrop-filter:blur(14px);
@@ -162,11 +163,11 @@ nav{
   z-index:2;
   max-width:880px;
   margin:0 auto;
-  padding:0 2rem;
+  padding:0 clamp(1rem,1.6vw,2rem);
 }
 
 section{
-  padding:7rem 0 4rem;
+  padding:clamp(5.5rem,5vw,7rem) 0 clamp(3rem,3.5vw,4rem);
   position:relative;
   /* One section per viewport. Content stays anchored to the top via the
      7rem padding; the min-height pushes the next section past the fold so
@@ -178,7 +179,7 @@ section:first-child{
   display:flex;
   flex-direction:column;
   justify-content:center;
-  padding-top:80px;
+  padding-top:clamp(72px,5vw,80px);
 }
 .section-label{
   font-family:var(--mono);
@@ -198,7 +199,7 @@ section:first-child{
   background:var(--border);
 }
 h1{
-  font-size:clamp(3.4rem,6.5vw,5.4rem);
+  font-size:clamp(3rem,5.8vw,5.4rem);
   font-weight:300;
   line-height:1.05;
   letter-spacing:-.03em;
@@ -279,13 +280,13 @@ h1 em{
   bottom:4rem;
   transform:translateX(-50%);
   z-index:150;
-  width:52px;
-  height:52px;
+  width:3.25rem;
+  height:3.25rem;
   display:flex;
   align-items:center;
   justify-content:center;
   font-family:var(--mono);
-  font-size:18px;
+  font-size:1.1rem;
   line-height:1;
   color:rgba(34,197,94,.75);
   background:rgba(10,15,11,.55);
@@ -316,7 +317,7 @@ h1 em{
 }
 
 h2{
-  font-size:2rem;
+  font-size:clamp(1.7rem,2.2vw,2rem);
   font-weight:400;
   letter-spacing:-.02em;
   margin-bottom:1.4rem;
@@ -399,26 +400,26 @@ h2{
   display:grid;
   grid-template-columns:1fr auto;
   align-items:start;
-  padding:1.35rem 1.65rem;
+  padding:1.45rem 1.75rem;
   border-bottom:1px solid var(--border);
 }
 .edu-item:last-child{
   border-bottom:none;
 }
 .edu-school{
-  font-size:18px;
+  font-size:19px;
   color:var(--text);
   font-weight:400;
   margin-bottom:.3rem;
 }
 .edu-degree{
-  font-size:16px;
+  font-size:17px;
   color:#c4c4c8;
   font-style:italic;
 }
 .edu-detail{
   margin-top:.35rem;
-  font-size:15px;
+  font-size:15.5px;
   color:var(--muted);
   line-height:1.6;
   max-width:52ch;
@@ -427,7 +428,7 @@ h2{
   margin:.45rem 0 0 1.1rem;
   padding:0;
   color:var(--muted);
-  font-size:15px;
+  font-size:15.5px;
   line-height:1.55;
   max-width:56ch;
 }
@@ -436,7 +437,7 @@ h2{
 }
 .edu-year{
   font-family:var(--mono);
-  font-size:14px;
+  font-size:14.5px;
   color:var(--muted2);
   padding-top:3px;
 }
@@ -919,5 +920,87 @@ footer{
   }
   html{
     scroll-behavior:auto;
+  }
+}
+
+@media (max-height: 1120px) {
+  .board-bg svg{
+    width:min(1200px,88vw);
+    max-height:86vh;
+    opacity:.38;
+  }
+  html{
+    font-size:14px;
+  }
+  nav{
+    padding:0 clamp(1rem,1.4vw,2rem);
+    height:54px;
+  }
+  .page-wrap{
+    padding:0 clamp(.9rem,1.2vw,1.5rem);
+  }
+  section{
+    padding:clamp(4.5rem,4vw,6rem) 0 clamp(2.5rem,3vw,3.5rem);
+  }
+  section:first-child{
+    padding-top:68px;
+  }
+  #contact{
+    min-height:calc(100vh - 8.25rem);
+    padding-top:clamp(3.5rem,3.5vw,5rem);
+  }
+  h1{
+    font-size:clamp(2.8rem,5.2vw,4.8rem);
+  }
+  h2{
+    font-size:clamp(1.55rem,2vw,1.9rem);
+  }
+  .home-sub{
+    font-size:1.08em;
+    line-height:1.7;
+  }
+  .section-lead{
+    font-size:0.98em;
+  }
+  .about-text{
+    font-size:1.28rem;
+    line-height:1.72;
+  }
+  .about-text p{
+    padding:1.5rem 1.75rem;
+  }
+  .edu-detail,
+  .edu-details,
+  .lab-desc,
+  .proj-desc,
+  .proj-empty,
+  .contact-value{
+    font-size:0.98em;
+  }
+  .edu-item,
+  .lang-row,
+  .lab-item,
+  .proj-item,
+  .contact-link{
+    padding-top:1.5rem;
+    padding-bottom:1.5rem;
+  }
+  .contact-link-left{
+    gap:1.65rem;
+  }
+  .contact-platform{
+    font-size:1rem;
+  }
+  .contact-value{
+    font-size:1.1rem;
+  }
+  .contact-arrow{
+    font-size:1rem;
+  }
+  .edu-school,
+  .lang-name,
+  .lab-title,
+  .proj-title{
+    font-size:0.97em;
   }
 }
