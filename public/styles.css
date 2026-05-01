@@ -828,25 +828,51 @@ footer{
    visual *height* once rotated, and vice versa). */
 @media (max-width: 900px) {
   .board-bg svg{
-    width:min(95vh,140vw);
+    width:min(120vh,160vw);
     max-height:95vw;
-    opacity:.40;
+    opacity:.48;
     transform:rotate(90deg);
   }
   .page-wrap{
     padding:0 1.25rem;
   }
   nav{
-    padding:0 1.25rem;
+    padding:0 0.9rem;
   }
   .nav-links{
-    gap:1.1rem;
+    gap:.8rem;
+    flex-wrap:nowrap;
   }
   .nav-links a{
-    font-size:13px;
+    font-size:12px;
   }
   .nav-logo{
-    font-size:13.5px;
+    font-size:13px;
+  }
+  .next-section{
+    display:none;
+  }
+  section:first-child{
+    min-height:100vh;
+  }
+  section{
+    min-height:auto;
+  }
+  .about-text{
+    font-size:0.95rem;
+    line-height:1.6;
+  }
+  .skills-grid{
+    grid-template-columns:repeat(auto-fill,minmax(140px,1fr));
+  }
+  .skill-item{
+    padding:.9rem 1rem;
+  }
+  .skill-name{
+    font-size:14px;
+  }
+  .skill-cat{
+    font-size:11px;
   }
   footer{
     padding:2.5rem 1.25rem 3rem;
@@ -911,6 +937,34 @@ footer{
   .lang-toggle{
     font-size:10px;
     padding:.2rem .4rem;
+  }
+}
+
+/* Below 360px: very narrow phones — allow nav to wrap into 2 rows */
+@media (max-width: 360px) {
+  nav{
+    height:auto;
+    padding:0.4rem 0.5rem;
+    flex-wrap:wrap;
+  }
+  .nav-logo{
+    font-size:10px;
+    flex-basis:100%;
+    order:1;
+  }
+  .nav-links{
+    order:2;
+    gap:.3rem;
+    flex-basis:100%;
+  }
+  .nav-links a{
+    font-size:9px;
+  }
+  .lang-toggle{
+    order:3;
+    font-size:8.5px;
+    padding:.15rem .25rem;
+    margin-left:0;
   }
 }
 
