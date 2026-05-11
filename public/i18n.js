@@ -14,8 +14,8 @@ export const STORAGE_KEY = 'lang';
 export const skills = [
   { name: 'C',                cat: 'language' },
   { name: 'C++',              cat: 'language' },
-  { name: 'Python',           cat: 'language' },
   { name: 'Java',             cat: 'language' },
+  { name: 'Python',           cat: 'language' },
   { name: 'HTML / CSS / JS',  cat: 'language' },
   { name: 'Linux',            cat: 'systems'  },
   { name: 'Windows',          cat: 'systems'  },
@@ -56,8 +56,8 @@ export const languageItems = [
 // `href` (optional) makes the card clickable. `tags` (optional) are
 // non-translatable.
 export const projectItems = [
-  { key: 'barkwatch', year: '2026',                  tags: ['hackathon', 'team', 'AI'] },
-  { key: 'stm32',     year: '2026', ongoing: true,   tags: ['STM32H750', 'embedded', 'CAN'] },
+  { key: 'barkwatch', year: '2026', href: 'https://github.com/tilnp/BarkWatch_Korosci-plus-Tilen_interface', tags: ['hackathon', 'team', 'AI'] },
+  { key: 'stm32',     year: '2026', href: 'https://github.com/tilnp/STM32H750B-DK_OBD2_CAN_Dashboard', tags: ['STM32H750', 'embedded', 'CAN'] },
   { key: 'homelab',   year: '2025', ongoing: true,   tags: ['proxmox', 'hardware', 'web'] },
 ];
 
@@ -94,7 +94,7 @@ export const messages = {
       tag: 'computer science student',
       firstName: 'Tilen',
       lastName: 'Pokorn',
-      sub: 'CS student building things at the intersection of systems, software, and hardware. Tinkering with whatever seems interesting this week.',
+      sub: 'CS student building things at the intersection of systems, software, and hardware.',
       cta: 'get in touch ↓',
       github: 'github',
       resume: 'résumé ↗',
@@ -135,7 +135,7 @@ export const messages = {
           school: 'University of Ljubljana',
           degree: 'BSc Computer Science',
           details: [
-            'Programming (Java, C, C++, Python)',
+            'Programming (Java, C, C++)',
             'Algorithms, data structures, and computational theory',
             'Computer systems, operating systems, and architecture',
             'Databases, networks, and information systems',
@@ -195,14 +195,14 @@ export const messages = {
                  for browsing forecasts and exploring data per forest sector.',
         },
         stm32: {
-          title: 'Vehicle Diagnostics System',
-          desc: 'Embedded system project using an STM32H750XBH6 Discovery board to interface with a vehicle via OBD-II over CAN bus. Implements data acquisition \
+          title: 'Vehicle Data Dashboard',
+          desc: 'Embedded system project using an STM32H750B-DK Discovery board to interface with a vehicle via OBD-II over CAN bus. Implements data acquisition \
                  from vehicle ECUs and real-time visualization on an integrated display or via UART.',
         },
         homelab: {
           title: 'Home lab',
           desc: 'Self-hosted Proxmox node for experimenting with virtualization, containers, networking, and self-hosted services. Planned and built the \
-                 underlying hardware system, which now hosts multiple services and web applications, including this portfolio site',
+                 underlying hardware system, which now hosts multiple services and web applications, including this portfolio site.',
         },
       },
     },
@@ -260,7 +260,7 @@ export const messages = {
       tag: 'študent računalništva in informatike',
       firstName: 'Tilen',
       lastName: 'Pokorn',
-      sub: 'Študent računalništva, ki gradi stvari na presečišču sistemov, programske in strojne opreme. Ukvarja se s tistim, kar se ta teden zdi zanimivo.',
+      sub: 'Študent računalništva, ki gradi stvari na presečišču sistemov, programske in strojne opreme.',
       cta: 'stopi v stik ↓',
       github: 'github',
       resume: 'življenjepis ↗',
@@ -301,7 +301,7 @@ export const messages = {
           school: 'Univerza v Ljubljani',
           degree: 'Računalništvo in informatika (UN)',
           details: [
-            'Programiranje (Java, C, C++, Python)',
+            'Programiranje (Java, C, C++)',
             'Algoritmi, podatkovne strukture in teorija računalništva',
             'Računalniški sistemi in njihova arhitektura, operacijski sistemi',
             'Podatkovne baze, omrežja in informacijski sistemi',
@@ -361,8 +361,8 @@ export const messages = {
                  za pregledovanje napovedi in raziskovanje podatkov po gozdnih sektorjih.',
         },
         stm32: {
-          title: 'Sistem za diagnostiko vozil',
-          desc: 'Vgrajeni sistemski projekt z uporabo STM32H750XBH6 Discovery plošče za povezavo z vozilom preko OBD-II prek CAN vodila. Omogoča zajem podatkov \
+          title: 'Nadzorna plošča s podatki o vozilu',
+          desc: 'Vgrajeni sistemski projekt z uporabo STM32H750B-DK Discovery plošče za povezavo z vozilom preko OBD-II prek CAN vodila. Omogoča zajem podatkov \
                  iz ECU enot vozila ter njihov prikaz v realnem času na integriranem zaslonu ali prek protokola UART.',
         },
         homelab: {

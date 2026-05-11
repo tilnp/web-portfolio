@@ -1041,9 +1041,6 @@ footer{
     .edu-degree{
       font-size:0.94em;
     }
-    .lang-name{
-      font-size:1.04em;
-    }
   }
   .about-text p{
     padding:1.5rem 1.75rem;
@@ -1092,7 +1089,7 @@ footer{
   .lang-name,
   .lab-title,
   .proj-title{
-    font-size:0.97em;
+    font-size:1.15em;
   }
   .edu-school{
     font-size:1.2em;
