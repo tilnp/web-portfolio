@@ -104,12 +104,13 @@ export const messages = {
       title: 'Who I am',
       lead: '',
       p1: 'I\'m a <strong>computer science student</strong> with a genuine interest in how systems work — from operating systems and networking \
-           down to the underlying hardware.',
-      p2: 'I’m comfortable working across both <strong>software and hardware</strong>: working in Linux environments, troubleshooting system issues, \
-           using the terminal, and understanding how components interact at a low level. I focus on practical problem-solving rather than just theory.',
-      p3: 'Outside of coursework I run a small home lab on Proxmox where I experiment with systems and infrastructure projects. I also build small \
-           <strong>personal projects</strong> and tools to optimise my workflow, and occasionally work on design-related tasks, including the graphics \
-           used in this website. I treat all of this as a hands-on learning environment focused on continuous skill improvement.',
+           down to the underlying hardware. I’m comfortable working across both <strong>software and hardware</strong>: working in Linux environments, \
+           troubleshooting technical issues, using the terminal, and understanding how components interact at a low level.',
+      p2: 'Outside of coursework I run a small <strong>home lab</strong> on Proxmox VE where I experiment with self-hosted services and automation projects. I also build small \
+           <strong>personal tools</strong> to improve my workflow, and occasionally work on light design-related tasks. These projects are driven by \
+           curiosity and hands-on learning.',
+      p3: 'In my free time, I enjoy staying active, mostly through running and skiing. During the winter season, I work as a ski instructor for children, \
+           which has helped me develop patience, communication skills, and confidence working with groups of different ages and personalities.',
     },
     skills: {
       label: '03 — skills',
@@ -269,13 +270,14 @@ export const messages = {
       label: '01 — o meni',
       title: 'Kdo sem',
       lead: '',
-      p1: 'Sem <strong>študent računalništva in informatike</strong> s pristnim zanimanjem za delovanje sistemov — od operacijskih sistemov in omrežij vse do \
-           strojne opreme, ki vse to poganja.',
-      p2: 'Znajdem se tako pri <strong>programski</strong> kot <strong>strojni opremi</strong>: uporaba Linux okolij, odpravljanje sistemskih težav, delo v terminalu \
-           in razumevanje interakcije komponent na nizki ravni. Osredotočam se na praktično reševanje problemov in ne le na teorijo.',
-      p3: 'Poleg študijskih obveznosti upravljam manjši home lab na Proxmoxu, kjer eksperimentiram s sistemskimi in infrastrukturnimi projekti. Razvijam tudi manjše \
-           <strong>osebne projekte</strong> in orodja za optimizacijo svojega delovnega toka, občasno pa se ukvarjam tudi z oblikovalskimi nalogami, vključno z \
-           grafiko, uporabljeno na tej spletni strani. Vse to obravnavam kot praktično učno okolje, osredotočeno na stalno izboljševanje znanja in veščin.',
+      p1: 'Sem <strong>študent računalništva in informatike</strong> s pristnim zanimanjem za delovanje sistemov — od operacijskih sistemov in omrežij do \
+           strojne opreme, ki vse to poganja. Znajdem se tako pri <strong>programski</strong> kot <strong>strojni opremi</strong>: uporaba Linux okolij, \
+           odpravljanje sistemskih težav, delo v terminalu in razumevanje interakcij komponent na nizki ravni.',
+      p2: 'Poleg študijskih obveznosti upravljam manjši <strong>home lab</strong> na Proxmox VE, kjer eksperimentiram s samogostovanjem storitev in avtomatizacijo. \
+           Ob tem razvijam tudi manjša <strong>osebna orodja</strong> za izboljšanje svojega poteka dela, občasno pa se ukvarjam tudi z lažjimi oblikovalskimi nalogami. \
+           Te projekte poganja radovednost in želja po stalnem razvijanju praktičnega znanja in veščin.',
+      p3: 'V prostem času sem rad aktiven, največkrat tečem in smučam. V zimskem času delam kot učitelj smučanja za otroke, kar mi je pomagalo razviti potrpežljivost, \
+           komunikacijske veščine ter samozavest pri delu s skupinami različnih starosti in značajev.',
     },
     skills: {
       label: '03 — veščine',
