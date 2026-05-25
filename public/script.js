@@ -21,6 +21,7 @@ document.querySelector('[data-i18n-toggle]')?.addEventListener('click', () => {
 // Element refs
 const bgGrid = document.getElementById('bgGrid');
 const navLinks = document.querySelectorAll('.nav-links a');
+const inPageLinks = document.querySelectorAll('a[href^="#"]');
 const navSections = [...document.querySelectorAll('section[id]')];
 const nextBtn = document.getElementById('nextBtn');
 
@@ -156,8 +157,8 @@ const fadeObs = new IntersectionObserver(entries => {
 }, { threshold: 0.12 });
 document.querySelectorAll('.fade-in').forEach(el => fadeObs.observe(el));
 
-// Smooth-scroll on nav-link click
-navLinks.forEach(a => {
+// Smooth-scroll on in-page anchor click without mutating the URL hash.
+inPageLinks.forEach(a => {
   a.addEventListener('click', e => {
     e.preventDefault();
     document.querySelector(a.getAttribute('href'))?.scrollIntoView({
