@@ -361,11 +361,12 @@ h2{
   gap:1px;
 }
 .skill-item{
-  padding:1.8rem 1.5rem;
+  padding:2rem 1.5rem;
   background:rgba(17,17,19,.62);
-  display:flex;
-  flex-direction:column;
-  gap:.4rem;
+  display:grid;
+  grid-template-columns:1fr auto;
+  align-items:start;
+  gap:1rem;
   transition:background .2s;
   border:1px solid var(--border);
   backdrop-filter:blur(18px) saturate(130%);
@@ -374,16 +375,29 @@ h2{
 .skill-item:hover{
   background:rgba(24,24,27,.78);
 }
+.skill-text{
+  display:flex;
+  flex-direction:column;
+  align-items:flex-start;
+  gap:.2rem;
+}
 .skill-name{
   font-size:18px;
   color:var(--text);
   font-weight:400;
 }
+.skill-meta{
+  display:flex;
+  flex-direction:column;
+  align-items:flex-end;
+  gap:.45rem;
+  justify-self:end;
+}
 .skill-cat{
   font-family:var(--mono);
-  font-size:14px;
+  font-size:12.5px;
   color:var(--muted2);
-  letter-spacing:.06em;
+  letter-spacing:.04em;
 }
 
 /* Education + Languages: same glass panel + left-stripe treatment as
@@ -495,16 +509,26 @@ h2{
   color:var(--muted);
   letter-spacing:.04em;
 }
-/* Proficiency bars: 4 pill-shaped segments stacked horizontally. The
-   `filled` count is set by the renderer from languageItems[i].bars.
-   Filled segments echo the board's PCB green with a soft halo; empty
-   ones are barely-there outlines. */
-.lang-bars{
+/* Proficiency bars: languages keep the original horizontal row, while
+  skill rankings reuse the same pill styling in a vertical stack.
+  `filled` is set by the renderer from the relevant `bars` value.
+  Filled segments echo the board's PCB green with a soft halo; empty
+  ones are barely-there outlines. */
+.lang-bars,
+.skill-bars{
   display:flex;
   gap:4px;
-  margin-top:.15rem;
+  margin-top:0;
+  align-items:flex-end;
 }
-.lang-bars .bar{
+.lang-bars{
+  flex-direction:row;
+}
+.skill-bars{
+  flex-direction:column-reverse;
+}
+.lang-bars .bar,
+.skill-bars .bar{
   position:relative;
   display:block;
   width:22px;
@@ -516,24 +540,35 @@ h2{
      the right pixel without border-related offsets. */
   box-shadow:inset 0 0 0 1px rgba(255,255,255,.1);
 }
-/* Green fill is a separate pseudo-element. Its width is `--fill`
-   (0%–100%, set inline by the renderer per segment), so any fractional
-   value down to whatever precision is wanted (1/4 bar, percentage, etc.)
-   renders cleanly. The halo lives on this element, not the parent —
-   that keeps the glow tight around just the green portion instead of
-   bleeding around the empty right end. */
+/* Green fill is a separate pseudo-element. The language bars fill left
+  to right via `width`, while the skill bars fill bottom to top via
+  `height` (0%–100%, set inline by the renderer). The halo lives on
+  this element, not the parent — that keeps the glow tight around just
+  the green portion instead of bleeding around the empty end. */
 .lang-bars .bar::before{
   content:'';
   position:absolute;
-  top:0;
   left:0;
+  top:0;
   bottom:0;
   width:var(--fill,0%);
   border-radius:999px;
   background:rgba(34,197,94,.55);
   pointer-events:none;
 }
-.lang-bars .bar.filled::before{
+.skill-bars .bar::before{
+  content:'';
+  position:absolute;
+  left:0;
+  right:0;
+  bottom:0;
+  height:var(--fill,0%);
+  border-radius:999px;
+  background:rgba(34,197,94,.55);
+  pointer-events:none;
+}
+.lang-bars .bar.filled::before,
+.skill-bars .bar.filled::before{
   box-shadow:0 0 6px rgba(34,197,94,.25);
 }
 
@@ -866,7 +901,7 @@ footer{
     grid-template-columns:repeat(auto-fill,minmax(140px,1fr));
   }
   .skill-item{
-    padding:.9rem 1rem;
+    padding:1rem 1rem;
   }
   .skill-name{
     font-size:14px;
@@ -1046,7 +1081,7 @@ footer{
     padding:1.5rem 1.75rem;
   }
   .skill-item{
-    padding:1.8rem 1.5rem;
+    padding:2rem 1.5rem;
   }
   .skills-grid{
     grid-template-columns:repeat(auto-fill,minmax(180px,1fr));
@@ -1192,7 +1227,7 @@ footer{
     padding-bottom:2rem;
   }
   .skill-item{
-    padding:2.1rem 2rem;
+    padding:2.3rem 2rem;
   }
   .skill-name,
   .edu-school,

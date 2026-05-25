@@ -12,22 +12,22 @@ export const STORAGE_KEY = 'lang';
 // ─────────────────────────────────────────────────────────────────────────────
 
 export const skills = [
-  { name: 'C',                cat: 'language' },
-  { name: 'C++',              cat: 'language' },
-  { name: 'Java',             cat: 'language' },
-  { name: 'Python',           cat: 'language' },
-  { name: 'HTML / CSS / JS',  cat: 'language' },
-  { name: 'Linux',            cat: 'systems'  },
-  { name: 'Windows',          cat: 'systems'  },
-  { name: 'Networking',       cat: 'infra'    },
-  { name: 'Virtualization',   cat: 'infra'    },
-  { name: 'Docker',           cat: 'infra'    },
-  { name: 'Nginx / NPM',      cat: 'infra'    },
-  { name: 'Git',              cat: 'tooling'  },
-  { name: 'Bash',             cat: 'scripting'},
-  { name: 'SQL',              cat: 'data'     },
-  { name: 'Embedded Systems', cat: 'hardware' },
-  { name: 'PC Assembly',      cat: 'hardware' },
+  { name: 'C',                cat: 'language', bars: 4 },
+  { name: 'C++',              cat: 'language', bars: 4 },
+  { name: 'Java',             cat: 'language', bars: 3 },
+  { name: 'Python',           cat: 'language', bars: 2 },
+  { name: 'HTML / CSS / JS',  cat: 'language', bars: 2 },
+  { name: 'Linux',            cat: 'systems',  bars: 5 },
+  { name: 'Windows',          cat: 'systems',  bars: 5 },
+  { name: 'Networking',       cat: 'infra',    bars: 3 },
+  { name: 'Virtualization',   cat: 'infra',    bars: 3 },
+  { name: 'Docker',           cat: 'infra',    bars: 3 },
+  { name: 'Nginx / NPM',      cat: 'infra',    bars: 4 },
+  { name: 'Git',              cat: 'tooling',  bars: 3 },
+  { name: 'Bash',             cat: 'scripting',bars: 3 },
+  { name: 'SQL',              cat: 'data',     bars: 3 },
+  { name: 'Embedded Systems', cat: '',         bars: 4 },
+  { name: 'PC Assembly',      cat: 'hardware', bars: 5 },
 ];
 
 // Each entry's `key` is the lookup id into messages.{en,sl}.education.items.
@@ -443,8 +443,19 @@ const RENDERERS = {
     const cats = dict.skills?.cats || {};
     el.innerHTML = skills.map(s => `
       <div class="skill-item">
-        <span class="skill-name">${esc(s.name)}</span>
-        <span class="skill-cat">${esc(cats[s.cat] || s.cat)}</span>
+        <div class="skill-text">
+          <span class="skill-name">${esc(s.name)}</span>
+          <span class="skill-cat">${esc(cats[s.cat] || s.cat)}</span>
+        </div>
+        <div class="skill-meta">
+          <div class="skill-bars" aria-hidden="true">
+            ${Array.from({ length: 5 }, (_, i) => {
+              const fill = Math.max(0, Math.min(1, (s.bars ?? 0) - i));
+              const cls = fill > 0 ? 'bar filled' : 'bar';
+              return `<span class="${cls}" style="--fill:${(fill * 100).toFixed(2)}%"></span>`;
+            }).join('')}
+          </div>
+        </div>
       </div>
     `).join('');
   },
