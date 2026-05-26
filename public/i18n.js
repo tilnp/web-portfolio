@@ -42,9 +42,9 @@ export const educationItems = [
 // translate per locale; `bars` (0–4, fractional OK) drives the proficiency
 // indicator.
 export const languageItems = [
-  { key: 'sl',                bars: 4    },
-  { key: 'en', cert: '',      bars: 3.25 },
-  { key: 'de', cert: '',      bars: 2.25  },
+  { key: 'sl',           bars: 4    },
+  { key: 'en', cert: '', bars: 3.4  },
+  { key: 'de', cert: '', bars: 2.7  },
 ];
 
 // Projects. Add entries here as projects come online; an empty array
@@ -171,13 +171,16 @@ export const messages = {
           details: [
             'Primary language for technical content',
             'Used for documentation and collaboration in software projects',
+            'B2, General Matura (2024)'
           ],
         },
         de: {
           name: 'German',
-          level: 'Conversational',
+          level: 'Conversational+',
           details: [
-            'Basic conversation and comprehension',
+            'Reading, listening, and conversational comprehension',
+            'Limited recent active use',
+            'C1, Deutsches Sprachdiplom II (2024)'
           ],
         },
       },
@@ -338,13 +341,16 @@ export const messages = {
           details: [
             'Glavni jezik za tehnične vsebine',
             'Uporaba pri dokumentaciji in sodelovanju pri projektih',
+            'B2, Splošna Matura (2024)'
           ],
         },
         de: {
           name: 'nemščina',
-          level: 'pogovorno',
+          level: 'pogovorno+',
           details: [
-            'Osnovni pogovor in razumevanje',
+            'Branje, poslušanje ter pogovorno razumevanje',
+            'Omejena aktivna uporaba v zadnjih letih',
+            'C1, Deutsches Sprachdiplom II (2024)'
           ],
         },
       },
