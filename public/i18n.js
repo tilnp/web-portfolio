@@ -71,9 +71,9 @@ export const experienceItems = [
 
 // Email/URL don't translate; the platform label does (email → e-pošta).
 export const contactLinks = [
-  { key: 'email',  value: 'tilen@pokorn.si',  href: 'mailto:tilen@pokorn.si' },
-  { key: 'github', value: 'github.com/tilnp', href: 'https://github.com/tilnp' },
-  // { key: 'linkedin', value: 'linkedin.com/in/yourusername', href: 'https://linkedin.com/in/yourusername' },
+  { key: 'email',     value: 'tilen@pokorn.si',                    href: 'mailto:tilen@pokorn.si' },
+  { key: 'github',    value: 'github.com/tilnp',                   href: 'https://github.com/tilnp' },
+  { key: 'linkedin',  value: 'www.linkedin.com/in/tilnp',  href: 'https://www.linkedin.com/in/tilnp' },
 ];
 
 export const messages = {
@@ -134,7 +134,7 @@ export const messages = {
       items: {
         uni: {
           school: 'University of Ljubljana',
-          degree: 'BSc Computer Science',
+          degree: 'Computer and Information Science (BSc)',
           details: [
             'Programming (Java, C, C++)',
             'Algorithms, data structures, and computational theory',
@@ -304,7 +304,7 @@ export const messages = {
       items: {
         uni: {
           school: 'Univerza v Ljubljani',
-          degree: 'Računalništvo in informatika (UN)',
+          degree: 'Računalništvo in informatika (UNI)',
           details: [
             'Programiranje (Java, C, C++)',
             'Algoritmi, podatkovne strukture in teorija računalništva',
@@ -565,7 +565,7 @@ const RENDERERS = {
   contact(el, dict) {
     const platforms = dict.contact?.platforms || {};
     el.innerHTML = contactLinks.map(c => `
-      <a href="${esc(c.href)}" class="contact-link">
+      <a href="${esc(c.href)}" class="contact-link" target="_blank" rel="noopener noreferrer">
         <div class="contact-link-left">
           <span class="contact-platform">${esc(platforms[c.key] || c.key)}</span>
           <span class="contact-value">${esc(c.value)}</span>
