@@ -2,8 +2,7 @@
 //   python scripts/build_wires.py
 // The wire→component mapping comes ONLY from that prebuilt JSON. If its
 // data is missing or invalid, the wires don't render (components still
-// light up). There's no runtime hit-test fallback anymore — keep the script
-// in sync with the SVG.
+// light up).
 
 import { applyLocale, detectLocale, setLocale } from './i18n.js';
 
