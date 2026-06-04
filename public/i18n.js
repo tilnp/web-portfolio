@@ -64,7 +64,7 @@ export const projectItems = [
 // Keys + tags don't translate; title/desc do.
 // key is used for item icon
 export const experienceItems = [
-  { key: 'net', tags: ['https', 'firewall', 'tls', 'dns'] },
+  { key: 'net', tags: ['https', 'firewall', 'tls', 'nginx'] },
   { key: 'adm', tags: ['admin', 'linux', 'shell', 'log'] },
   { key: 'emb', tags: ['STM32', 'GPIO', 'C/C++', 'embedded'] },
 ];
@@ -217,7 +217,7 @@ export const messages = {
       items: {
         net: {
           title: 'Networking & services',
-          desc: 'Configuring network services including reverse proxy (Nginx Proxy Manager), private DNS server, firewall rules, and internal service deployment.'
+          desc: 'Configuring network services including reverse proxy (Nginx Proxy Manager), firewall, and internal service deployment.'
         },
         adm: { 
           title: 'System administration',
@@ -387,7 +387,7 @@ export const messages = {
       items: {
         net: {
           title: 'Omrežje in storitve',
-          desc: 'Vzpostavitev reverznega proxyja (Nginx Proxy Manager), zasebnega DNS strežnika in notranjih storitev.'
+          desc: 'Vzpostavitev reverznega proxyja (Nginx Proxy Manager), požarnega zidu in notranjih storitev.'
         },
         adm: {
           title: 'Sistemska administracija',
