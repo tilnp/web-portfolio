@@ -12,22 +12,18 @@ export const STORAGE_KEY = 'lang';
 // ─────────────────────────────────────────────────────────────────────────────
 
 export const skills = [
-  { name: 'C',                cat: 'language', bars: 4 },
-  { name: 'C++',              cat: 'language', bars: 4 },
-  { name: 'Java',             cat: 'language', bars: 3 },
-  { name: 'Python',           cat: 'language', bars: 2 },
-  { name: 'HTML / CSS / JS',  cat: 'language', bars: 2 },
-  { name: 'Linux',            cat: 'systems',  bars: 4 },
-  { name: 'Windows',          cat: 'systems',  bars: 4 },
-  { name: 'Networking',       cat: 'infra',    bars: 3 },
-  { name: 'Virtualization',   cat: 'infra',    bars: 3 },
-  { name: 'Docker',           cat: 'infra',    bars: 3 },
-  { name: 'Nginx / NPM',      cat: 'infra',    bars: 4 },
-  { name: 'Git',              cat: 'tooling',  bars: 3 },
-  { name: 'Bash',             cat: 'scripting',bars: 3 },
-  { name: 'SQL',              cat: 'data',     bars: 3 },
-  { name: 'Embedded Systems', cat: '',         bars: 4 },
-  { name: 'PC Assembly',      cat: 'hardware', bars: 5 },
+  { name: 'C',                cat: 'language', bars: 4   },
+  { name: 'C++',              cat: 'language', bars: 3.5 },
+  { name: 'Java',             cat: 'language', bars: 3   },
+  { name: 'Python',           cat: 'language', bars: 2   },
+  { name: 'HTML / CSS / JS',  cat: 'language', bars: 2   },
+  { name: 'Linux',            cat: 'systems',  bars: 4   },
+  { name: 'Windows',          cat: 'systems',  bars: 3   },
+  { name: 'Networking',       cat: 'infra',    bars: 3   },
+  { name: 'Bash',             cat: 'scripting',bars: 3.5 },
+  { name: 'SQL',              cat: 'data',     bars: 3   },
+  { name: 'Embedded Systems', cat: '',         bars: 4   },
+  { name: 'PC Assembly',      cat: 'hardware', bars: 5   },
 ];
 
 // Each entry's `key` is the lookup id into messages.{en,sl}.education.items.
