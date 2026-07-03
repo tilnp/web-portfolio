@@ -469,7 +469,7 @@ const RENDERERS = {
         : toBulletItems(tx.detail);
       return `
         <div class="edu-item">
-          <div class="edu-node" aria-hidden="true"></div>
+          <div class="edu-node pulse" aria-hidden="true"></div>
           <div class="edu-year">${esc(years)}</div>
           <div class="edu-body">
             <div class="edu-school">${esc(tx.school)}</div>
