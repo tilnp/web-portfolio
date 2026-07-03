@@ -103,12 +103,11 @@ function findNextSection(sy) {
 }
 
 function updateNextBtn(sy) {
-  // Hide when there's no further section, or when we're effectively at
-  // the bottom of the page (the page's max-scroll can fall a few px
-  // short of contact.offsetTop on narrow viewports because the footer
-  // padding shrinks — the absolute scroll position is the safer test).
-  const atBottom = sy >= layout.maxScroll - 16;
-  nextBtn.classList.toggle('hidden', findNextSection(sy) === null || atBottom);
+  // Sections now flow continuously (no more one-per-viewport paging), so
+  // the jump button only makes sense on the home section — hide it as
+  // soon as the user scrolls into the second section.
+  const homeEnd = navSections.length > 1 ? layout.navOffsets[1] : layout.maxScroll;
+  nextBtn.classList.toggle('hidden', sy >= homeEnd - 4);
 }
 
 function runAllUpdates(sy) {
@@ -323,38 +322,22 @@ if (nextBtn) {
 // scripts/build_wires.py and shipped as public/board.wires.json — the client
 // just looks each one up by index.
 //
-// REVEAL_CHUNKS is the curated, semantically-grouped order, split into seven
-// chunks that align 1:1 with the [data-board-step] page sections (about →
-// contact). Each chunk is fully lit by the moment its section's title
-// reaches the top of the viewport — so chunk[i] is revealed during the
-// scroll range *leading up to* section[i], not while the user is reading
-// section[i]. (Chunk 0 fills in over the home; chunk 1 fills in while
-// scrolling out of #about toward #education; and so on.)
+// REVEAL_ORDER is the curated component reveal order (flat — no longer
+// grouped per [data-board-step] section). Components light up in this order,
+// spread evenly across the whole scroll range, independent of section
+// titles/boundaries.
 //
 // The list is a *preference*, not a gatekeeper: at runtime we discover every
 // direct child of the components layer and append any leftover (unlabeled or
-// future-added) groups to the last chunk so nothing is ever skipped.
-const REVEAL_CHUNKS = [
-  // step 0 — about
-  ['cpu','chip-1-top-left','chip-2-top-right'],
-
-  // step 1 — education
-  ['ram','chip-3-top-right','capacitor-top-right','gpio-chip-bottom','gpio-bottom','chip-6-bottom-left'],
-
-  // step 2 — skills
-  ['power-button-top-left','sd-card-reader','chip-4-bottom-right','gpio-chip-top-2','hdmi-2'],
-
-  // step 3 — projects
-  ['gpio-top-big','capacitors-top-left-1','gpio-chip-top-3','usbc-bottom-left','capacitors-bottom-right'],
-
-  // step 4 — experience
-  ['hdmi-1','chip-5-bottom-middle','chip-7-bottom-left','gpio-top-small','usb-30'],
-
-  // step 5 — languages
-  ['connector-top-right','chip-7-capacitors-bottom-left','gpio-chip-top-1','connector-bottom-middle-1','eth-port'],
-
-  // step 6 — contact
-  ['connector-bottom-middle-2','gpio-chip-top-4','connector-bottom-left','capacitors-top-left-2','usb-20','screw-holes']
+// future-added) groups to the end so nothing is ever skipped.
+const REVEAL_ORDER = [
+  'cpu','chip-1-top-left','chip-2-top-right',
+  'ram','chip-3-top-right','capacitor-top-right','gpio-chip-bottom','gpio-bottom','chip-6-bottom-left',
+  'power-button-top-left','sd-card-reader','chip-4-bottom-right','gpio-chip-top-2','hdmi-2',
+  'gpio-top-big','capacitors-top-left-1','gpio-chip-top-3','usbc-bottom-left','capacitors-bottom-right',
+  'hdmi-1','chip-5-bottom-middle','chip-7-bottom-left','gpio-top-small','usb-30',
+  'connector-top-right','chip-7-capacitors-bottom-left','gpio-chip-top-1','connector-bottom-middle-1','eth-port',
+  'connector-bottom-middle-2','gpio-chip-top-4','connector-bottom-left','capacitors-top-left-2','usb-20','screw-holes'
 ];
 
 // Big components with clean outlines get a soft glow. Dense pin-clusters
@@ -425,16 +408,13 @@ async function loadBoard() {
     }
   }
 
-  // Build the final per-step chunk list: curated chunks first, then any
-  // discovered component not in the curation appended to the last chunk.
-  const curatedKeys = new Set(REVEAL_CHUNKS.flat());
+  // Build the final flat reveal order: curated order first, then any
+  // discovered component not in the curation appended to the end.
+  const curatedKeys = new Set(REVEAL_ORDER);
   const leftoverKeys = discovered
     .map(d => d.key)
     .filter(k => !curatedKeys.has(k));
-  const chunks = REVEAL_CHUNKS.map(c => c.slice());
-  if (leftoverKeys.length) {
-    chunks[chunks.length - 1] = chunks[chunks.length - 1].concat(leftoverKeys);
-  }
+  const order = REVEAL_ORDER.concat(leftoverKeys);
 
   // Resolver: discovered map first, then svg-wide id / inkscape:label fallback
   // (covers components that might live outside the components layer).
@@ -445,19 +425,17 @@ async function loadBoard() {
 
   const components = [];
   const usedKeys = new Set();
-  for (const chunk of chunks) {
-    for (const key of chunk) {
-      if (usedKeys.has(key)) continue;
-      const el = byKey(key);
-      if (!el) {
-        console.warn('[board] missing component:', key);
-        continue;
-      }
-      el.classList.add('comp');
-      if (GLOW.has(key)) el.classList.add('glow-comp');
-      components.push({ label: key, el });
-      usedKeys.add(key);
+  for (const key of order) {
+    if (usedKeys.has(key)) continue;
+    const el = byKey(key);
+    if (!el) {
+      console.warn('[board] missing component:', key);
+      continue;
     }
+    el.classList.add('comp');
+    if (GLOW.has(key)) el.classList.add('glow-comp');
+    components.push({ label: key, el });
+    usedKeys.add(key);
   }
 
   const traceEls = svg.querySelectorAll('.trace');
@@ -513,16 +491,6 @@ async function loadBoard() {
   stepSections = [...document.querySelectorAll('[data-board-step]')]
     .sort((a, b) => Number(a.dataset.boardStep) - Number(b.dataset.boardStep));
 
-  // Component count consumed by the end of each step (cumulative).
-  // Built against the merged chunks (curated + leftovers) so auto-discovered
-  // components contribute to step progression.
-  const resolvedKeys = new Set(components.map(c => c.label));
-  const stepCumulative = [];
-  let acc = 0;
-  for (const chunk of chunks) {
-    acc += chunk.filter(k => resolvedKeys.has(k)).length;
-    stepCumulative.push(acc);
-  }
   const totalComps = components.length;
 
   function updatePCBReveal(sy) {
@@ -531,11 +499,9 @@ async function loadBoard() {
     // work entirely — no toggle loops, no style writes.
     if (sy >= layout.pcbEnd && pcbFullyLit) return;
 
-    // Each chunk is fully lit by the time *its* section's title hits the
-    // top of the viewport — i.e. chunk[i] reveals over the scroll range
-    // ending at layout.stepOffsets[i]. The chunk for the first section
-    // reveals over the home (start = 0); subsequent chunks reveal across
-    // the previous section's height.
+    // Components reveal in curated order, evenly across the entire scroll
+    // range from the top of the page (0) to lastEnd — not bound to any
+    // section's title/boundary.
     const firstStart = 0;
     const lastEnd = layout.pcbEnd;
 
@@ -567,25 +533,17 @@ async function loadBoard() {
       // defensive: never throw from rendering logic
     }
 
-    // Find which step the viewport currently sits in and how far through it
-    // we are. idx accumulates: 0 at firstStart, totalComps at lastEnd.
+    // Components reveal evenly across the whole scroll range (firstStart →
+    // lastEnd), independent of section boundaries. idx accumulates: 0 at
+    // firstStart, totalComps at lastEnd.
     let idx = 0;
     if (sy <= firstStart) {
       idx = 0;
     } else if (sy >= lastEnd) {
       idx = totalComps;
     } else {
-      for (let i = 0; i < stepSections.length; i++) {
-        const start = i === 0 ? 0 : layout.stepOffsets[i - 1];
-        const end = layout.stepOffsets[i];
-        if (sy < end) {
-          const local = (sy - start) / Math.max(1, end - start);
-          const prev = i === 0 ? 0 : stepCumulative[i - 1];
-          const target = stepCumulative[i];
-          idx = Math.round(prev + local * (target - prev));
-          break;
-        }
-      }
+      const local = (sy - firstStart) / Math.max(1, lastEnd - firstStart);
+      idx = Math.round(local * totalComps);
     }
 
     // Index-based litness check — no per-frame Set, no per-frame closures.

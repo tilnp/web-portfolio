@@ -43,9 +43,11 @@ body{
 /* Contact is the last section. Stretch it so the page's max-scroll lands
    exactly where #contact sits at viewport top (where the nav button anchors
    to) — the footer fills the remaining space below. 7.5rem ≈ footer height
-   (2.5rem + 3.5rem padding + content + border). */
+   (2.5rem + 3.5rem padding + content + border). margin-bottom:0 overrides
+   the inter-section gap since nothing follows contact but the footer. */
 #contact{
   min-height:calc(100vh - 7.5rem);
+  margin-bottom:0;
 }
 
 .bg-grid{
@@ -197,17 +199,17 @@ nav{
 section{
   padding:clamp(5.5rem,5vw,7rem) 0 clamp(3rem,3.5vw,4rem);
   position:relative;
-  /* One section per viewport. Content stays anchored to the top via the
-     7rem padding; the min-height pushes the next section past the fold so
-     the user sees exactly one at a time. #contact keeps its own (smaller)
-     min-height so the footer can share its viewport. */
-  min-height:100vh;
+  /* Continuous scroll: sections size to their content, with a gap below
+     to separate them. Home (:first-child) and #contact opt back into a
+     full-viewport min-height below. */
+  margin-bottom:clamp(2rem,4vw,4.5rem);
 }
 section:first-child{
   display:flex;
   flex-direction:column;
   justify-content:center;
   padding-top:clamp(72px,5vw,80px);
+  min-height:100vh;
 }
 .section-label{
   font-family:var(--mono);
@@ -1200,4 +1202,3 @@ footer{
     max-width:1760px;
   }
 }
-
