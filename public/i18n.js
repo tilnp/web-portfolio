@@ -11,6 +11,18 @@ export const STORAGE_KEY = 'lang';
 // without rendering blank.
 // ─────────────────────────────────────────────────────────────────────────────
 
+// Icons (no color, inherits currentColor) for GitHub email / LinkedIn — 
+// shared between the hero quick-links and the contact section so the
+// markup lives in exactly one place. 16x16 viewBox, 1.6 stroke weight
+// to match the rest of the site's restrained line-weight.
+export const ICONS = {
+  github: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M9 19c-4.3 1.4-4.3-2.5-6-3m12 5v-3.5c0-1 .1-1.4-.5-2 2.8-.3 5.5-1.4 5.5-6a4.6 4.6 0 0 0-1.3-3.2 4.2 4.2 0 0 0-.1-3.2s-1.4-.4-3.1 1.2a11.5 11.5 0 0 0-6 0C8 2.7 6.6 3.1 6.6 3.1A4.2 4.2 0 0 0 6.5 6.3 4.6 4.6 0 0 0 5.2 9.5c0 4.6 2.7 5.7 5.5 6-.6.6-.6 1.2-.5 2V21"/></svg>',
+  email: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="m3 7 9 6 9-6"/></svg>',
+  linkedin: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M8 11v5M8 8v.01M12 16v-3a2 2 0 0 1 4 0v3M12 13v3"/></svg>',
+};
+
+export const SITE_UPDATED = '2026-06-25';
+
 export const skills = [
   { name: 'C',                     cat: 'language', bars: 4   },
   { name: 'C++',                   cat: 'language', bars: 3   },

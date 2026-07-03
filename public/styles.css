@@ -27,7 +27,7 @@
 }
 html{
   scroll-behavior:smooth;
-  font-size:clamp(14.5px,calc(0.5vw + 9px),16px);
+  font-size:clamp(12.5px, calc(100vw / 142), 22px);
 }
 body{
   background:var(--bg);
@@ -49,22 +49,15 @@ body{
 
 .bg-grid{
   position:fixed;
-  /* Extend the grid well beyond the viewport so the scroll-driven
-     translate can keep moving without clipping the pattern at the edges. */
-  inset:-175vh 0;
+  inset:0;
   z-index:0;
   pointer-events:none;
   background-image:
+    linear-gradient(to bottom,rgba(10,10,11,0) 0%,rgba(10,10,11,0) 52vh,rgba(10,10,11,.42) 72vh,rgba(10,10,11,.9) 88vh,var(--bg) 100%),
     linear-gradient(var(--border) 1.5px,transparent 1.5px),
     linear-gradient(90deg,var(--border) 1.5px,transparent 1.5px);
-  background-size:48px 48px;
-  background-repeat:repeat;
-  will-change:transform;
-  /* Fade grid to transparent at edges using a radial mask with many intermediate
-     stops so the grid lines smoothly blend into the plain background without
-     visible banding. */
-  -webkit-mask-image:radial-gradient(ellipse 85% 60% at 50% 50%,#000 0%,#000 40%,rgba(0,0,0,.85) 55%,rgba(0,0,0,.6) 65%,rgba(0,0,0,.3) 80%,transparent 100%);
-  mask-image:radial-gradient(ellipse 85% 60% at 50% 50%,#000 0%,#000 40%,rgba(0,0,0,.85) 55%,rgba(0,0,0,.6) 65%,rgba(0,0,0,.3) 80%,transparent 100%);
+  background-size:100% 100%,48px 48px,48px 48px;
+  background-repeat:no-repeat,repeat,repeat;
 }
 
 .board-bg{
@@ -130,7 +123,7 @@ nav{
   min-width:max-content;
   white-space:nowrap;
   font-family:var(--mono);
-  font-size:14.5px;
+  font-size:.85rem;
   color:var(--green);
   letter-spacing:.05em;
 }
@@ -149,7 +142,7 @@ nav{
   flex:0 0 auto;
   white-space:nowrap;
   font-family:var(--mono);
-  font-size:14px;
+  font-size:.8rem;
   color:var(--green-glow);
   text-decoration:none;
   letter-spacing:.04em;
@@ -164,7 +157,7 @@ nav{
 
 .lang-toggle{
   font-family:var(--mono);
-  font-size:14px;
+  font-size:.85rem;
   letter-spacing:.06em;
   display:inline-flex;
   align-items:center;
@@ -214,7 +207,7 @@ section:first-child{
 }
 .section-label{
   font-family:var(--mono);
-  font-size:12.5px;
+  font-size:.85rem;
   color:var(--muted2);
   letter-spacing:.1em;
   margin-bottom:2.5rem;
@@ -248,7 +241,7 @@ h1 em{
 }
 .home-tag{
   font-family:var(--mono);
-  font-size:13.5px;
+  font-size:.85rem;
   color:var(--muted);
   letter-spacing:.08em;
   margin-bottom:1.2rem;
@@ -263,6 +256,52 @@ h1 em{
   height:1px;
   background:var(--muted);
 }
+
+/* Animated terminal block. Fixed height Sized for the actual 11-row sequence
+   (6 commands + their output rows + the trailing `clear`) at this
+   font-size/line-height, with overflow:hidden as a safety net against
+   any future row-count growth. */
+.hero-term{
+  font-family:var(--mono);
+  font-size:.85rem;
+  line-height:1.7;
+  color:var(--muted2);
+  border:1px solid var(--border);
+  border-radius:var(--r);
+  background:rgba(255,255,255,.02);
+  backdrop-filter:blur(8px);
+  -webkit-backdrop-filter:blur(8px);
+  padding:1.1rem 1.4rem;
+  margin-bottom:1.75rem;
+  max-width:100%;
+  height:24em;
+  overflow:hidden;
+}
+.hero-term .term-row{
+  display:flex;
+  align-items: center;
+  gap:.5rem;
+  white-space:pre-wrap;
+  word-break:break-word;
+}
+.hero-term .prompt{
+  color:var(--green);
+  flex-shrink:0;
+}
+.hero-term .term-out{
+  color:var(--muted);
+}
+.hero-term .cursor{
+  display:inline-block;
+  width:6px;
+  vertical-align: middle;
+  height:1.1em;
+  background:var(--green);
+  margin-left:2px;
+  animation:cursor-blink 1s steps(1,end) infinite;
+}
+@keyframes cursor-blink { 50% { opacity: 0; } }
+
 .home-links{
   display:flex;
   gap:.75rem;

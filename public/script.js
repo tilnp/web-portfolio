@@ -4,7 +4,7 @@
 // data is missing or invalid, the wires don't render (components still
 // light up).
 
-import { applyLocale, detectLocale, setLocale } from './i18n.js';
+import { applyLocale, detectLocale, setLocale, SITE_UPDATED } from './i18n.js';
 
 document.getElementById('year').textContent = new Date().getFullYear();
 
@@ -16,6 +16,30 @@ document.querySelector('[data-i18n-toggle]')?.addEventListener('click', () => {
   const cur = document.documentElement.lang || 'en';
   setLocale(cur === 'en' ? 'sl' : 'en');
 });
+
+const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+const isMobile = window.matchMedia('(max-width: 440px)').matches;
+
+// Uptime Kuma badge endpoint — single source of truth, used by the
+// terminal's "uptime" command (#4 feedback: defined as a constant rather
+// than inlined where it's used). Monitor id 10 = combined/primary
+// service per your example; swap the id if a different monitor should
+// represent "overall" uptime.
+const KUMA_URL = 'https://adela.pokorn.si/api/badge/13/uptime/744';
+
+// Converts the SITE_UPDATED constant (an ISO date string, hand-bumped in
+// i18n.js whenever a meaningful change ships) into a relative "X days
+// ago" label instead of a literal date. Always English — the terminal's
+// content doesn't follow the site's language toggle (#1 feedback).
+function daysAgoLabel(isoDate) {
+  const d = new Date(isoDate);
+  if (isNaN(d)) return isoDate;
+  const diffMs = Date.now() - d.getTime();
+  const days = Math.max(0, Math.round(diffMs / 86400000));
+  if (days === 0) return 'today';
+  if (days === 1) return '1 day ago';
+  return `${days} days ago`;
+}
 
 // Element refs
 const bgGrid = document.getElementById('bgGrid');
@@ -54,11 +78,6 @@ function recomputeLayout() {
     : 0;
 }
 
-// Pure update functions — take sy, read from `layout`, write only.
-function updateParallax(sy) {
-  bgGrid.style.transform = `translateY(${sy * 0.25}px)`;
-}
-
 let activeNavId = null;
 function updateActiveNav(sy) {
   if (navSections.length === 0) return;
@@ -93,7 +112,6 @@ function updateNextBtn(sy) {
 }
 
 function runAllUpdates(sy) {
-  updateParallax(sy);
   updateActiveNav(sy);
   if (nextBtn) updateNextBtn(sy);
   for (let i = 0; i < scrollSubscribers.length; i++) scrollSubscribers[i](sy);
@@ -173,6 +191,130 @@ if (nextBtn) {
     findNextSection(window.scrollY)?.scrollIntoView({ behavior: 'smooth', block: 'start' });
   });
 }
+
+// ─────────────────────────────────────────────────────────────────────────
+// Hero terminal — typed, multi-line, looping. Types out a fixed command
+// sequence (character by character), including two commands that resolve
+// real data (site uptime via Kuma, last-updated as a relative "X days
+// ago"), then runs `clear`, waits 2s on an empty screen, and restarts the
+// whole sequence from the top — forever. Box itself has a fixed height
+// (see .hero-term in styles.css) so the loop never changes the hero's
+// layout height (#3 feedback). Respects prefers-reduced-motion by
+// rendering the sequence once, fully typed, with no loop/clear.
+// ─────────────────────────────────────────────────────────────────────────
+(function setupHeroTerminal() {
+  const el = document.getElementById('heroTerm');
+  if (!el) return;
+
+  // Resolved ONCE on page load — not re-fetched/recomputed every time the
+  // terminal loop reaches these lines (#2 feedback). The terminal simply
+  // reads whatever these resolved to for the rest of the page's lifetime.
+  let cachedUptimeText = null;
+  let cachedDaysAgoText = null;
+  const uptimeReady = fetchUptimeText().then(text => { cachedUptimeText = text; });
+  cachedDaysAgoText = daysAgoLabel(SITE_UPDATED);
+
+  // Each row's `text` can be a plain string or a function returning a
+  // string — used by the two "live-data" commands, which now just read
+  // the cached values resolved once above rather than doing real work
+  // per lap.
+  function buildRows() {
+    return [
+      { prompt: '$', text: 'whoami' },
+      { out: true, text: 'tilen_pokorn — cs student @ uni-lj' },
+      { prompt: '$', text: 'uname -a' },
+      { out: true, text: 'homelab-n150 6.x-proxmox x86_64 GNU/Linux' },
+      { prompt: '$', text: 'ls ~/projects' },
+      { out: true, text: 'barkwatch/  stm32-can-dash/  homelab/  sd-prompt-gen/' },
+      { prompt: '$', text: 'uptime --site --month' },
+      { out: true, text: () => cachedUptimeText ?? 'unknown' },
+      { prompt: '$', text: 'last-updated' },
+      { out: true, text: () => cachedDaysAgoText },
+      { prompt: '$', text: 'clear' },
+    ];
+  }
+
+  // Resolves the Kuma badge into plain text ("100.0%" / "unavailable")
+  // for the terminal row — same parsing approach as the original
+  // status-line implementation, just feeding a typed terminal row
+  // instead of a separate status widget. Called once on load only.
+  async function fetchUptimeText() {
+    try {
+      const res = await fetch(KUMA_URL, { cache: 'no-store' });
+      if (!res.ok) throw new Error('bad status');
+      const svgText = await res.text();
+      const matches = [...svgText.matchAll(/<text[^>]*>([^<]*)<\/text>/g)].map(m => m[1]);
+      const pct = matches.reverse().find(t => /%/.test(t));
+      if (!pct) throw new Error('no percentage found');
+      return pct;
+    } catch {
+      return 'unavailable';
+    }
+  }
+
+  if (reduceMotion) {
+    uptimeReady.then(() => {
+      const rows = buildRows().filter(r => r.text !== 'clear');
+      el.innerHTML = rows.map(r => {
+        const text = typeof r.text === 'function' ? r.text() : r.text;
+        return r.prompt
+          ? `<div class="term-row"><span class="prompt">${r.prompt}</span><span>${text}</span></div>`
+          : `<div class="term-row term-out">${text}</div>`;
+      }).join('');
+    });
+    return;
+  }
+
+  let cancelled = false;
+  el.innerHTML = '';
+
+  function wait(ms) { return new Promise(r => setTimeout(r, ms)); }
+
+  function appendRow(out) {
+    const rowEl = document.createElement('div');
+    rowEl.className = out ? 'term-row term-out' : 'term-row';
+    rowEl.innerHTML = out
+      ? '<span class="typed"></span><span class="cursor"></span>'
+      : '<span class="prompt">$</span><span class="typed"></span><span class="cursor"></span>';
+    el.appendChild(rowEl);
+    return rowEl;
+  }
+
+  async function typeText(rowEl, text) {
+    const typedSpan = rowEl.querySelector('.typed');
+    for (let i = 1; i <= text.length; i++) {
+      if (cancelled) return;
+      typedSpan.textContent = text.slice(0, i);
+      await wait(24 + Math.random() * 22);
+    }
+  }
+
+  async function runLoop() {
+    while (!cancelled) {
+      el.innerHTML = '';
+      for (const row of buildRows()) {
+        if (cancelled) return;
+        const isClear = row.text === 'clear';
+        const rowEl = appendRow(row.out);
+
+        if (isClear) {
+          await wait(2000); // pause on the fully-populated screen before clearing
+          await typeText(rowEl, 'clear');
+          rowEl.querySelector('.cursor')?.remove();
+          await wait(280); // brief beat after "clear" is typed
+          el.innerHTML = '';
+          break; // restart outer while-loop
+        }
+
+        const text = typeof row.text === 'function' ? row.text() : row.text;
+        await typeText(rowEl, text);
+        rowEl.querySelector('.cursor')?.remove();
+        await wait(row.out ? 360 : 620);
+      }
+    }
+  }
+  runLoop();
+})();
 
 // Inline board SVG with scroll-driven progressive build.
 // Components are identified by direct-child lookup inside the components layer
