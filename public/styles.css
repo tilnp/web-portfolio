@@ -24,6 +24,7 @@
      999px radius defined locally; these tokens are for cards/buttons only. */
   --r-sm:3px;
   --r:5px;
+  --grid-cell: clamp(30px, 2.6vw, 40px);
 }
 html{
   scroll-behavior:smooth;
@@ -56,7 +57,10 @@ body{
     linear-gradient(to bottom,rgba(10,10,11,0) 0%,rgba(10,10,11,0) 52vh,rgba(10,10,11,.42) 72vh,rgba(10,10,11,.9) 88vh,var(--bg) 100%),
     linear-gradient(var(--border) 1.5px,transparent 1.5px),
     linear-gradient(90deg,var(--border) 1.5px,transparent 1.5px);
-  background-size:100% 100%,48px 48px,48px 48px;
+  background-size:
+    100% 100%,
+    var(--grid-cell) var(--grid-cell),
+    var(--grid-cell) var(--grid-cell);
   background-repeat:no-repeat,repeat,repeat;
 }
 
