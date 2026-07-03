@@ -453,6 +453,33 @@ const toBulletItems = value => {
 // Renderers combine shared structure (module-scope arrays) with active-locale
 // text (passed in via dict). Each renderer owns the inner DOM of its target.
 const RENDERERS = {
+  education(el, dict) {
+    const t = dict.education?.items || {};
+    const present = dict.education?.present || '';
+    // Rendered as a vertical timeline: one checkpoint (dot on the rail) per
+    // entry, in array order (educationItems is already newest-first). The
+    // rail itself is a single ::before-positioned line drawn by .edu-timeline
+    // in CSS; each .edu-item just needs to sit relative to it.
+    el.classList.add('edu-timeline');
+    el.innerHTML = educationItems.map(e => {
+      const tx = t[e.key] || {};
+      const years = `${e.start} — ${e.end === 0 ? present : e.end}`;
+      const details = toBulletItems(tx.details).length
+        ? toBulletItems(tx.details)
+        : toBulletItems(tx.detail);
+      return `
+        <div class="edu-item">
+          <div class="edu-node" aria-hidden="true"></div>
+          <div class="edu-year">${esc(years)}</div>
+          <div class="edu-body">
+            <div class="edu-school">${esc(tx.school)}</div>
+            <div class="edu-degree">${esc(tx.degree)}</div>
+            ${details.length ? `<ul class="edu-details">${details.map(d => `<li>${esc(d)}</li>`).join('')}</ul>` : ''}
+          </div>
+        </div>
+      `;
+    }).join('');
+  },
   skills(el, dict) {
     const cats = dict.skills?.cats || {};
     el.innerHTML = skills.map(s => `
@@ -472,56 +499,6 @@ const RENDERERS = {
         </div>
       </div>
     `).join('');
-  },
-  education(el, dict) {
-    const t = dict.education?.items || {};
-    const present = dict.education?.present || '';
-    el.innerHTML = educationItems.map(e => {
-      const tx = t[e.key] || {};
-      const years = `${e.start} — ${e.end === 0 ? present : e.end}`;
-      const details = toBulletItems(tx.details).length
-        ? toBulletItems(tx.details)
-        : toBulletItems(tx.detail);
-      return `
-        <div class="edu-item">
-          <div>
-            <div class="edu-school">${esc(tx.school)}</div>
-            <div class="edu-degree">${esc(tx.degree)}</div>
-            ${details.length ? `<ul class="edu-details">${details.map(d => `<li>${esc(d)}</li>`).join('')}</ul>` : ''}
-          </div>
-          <div class="edu-year">${esc(years)}</div>
-        </div>
-      `;
-    }).join('');
-  },
-  languages(el, dict) {
-    const t = dict.languages?.items || {};
-    el.innerHTML = languageItems.map(l => {
-      const tx = t[l.key] || {};
-      const filled = Math.max(0, Math.min(4, l.bars ?? 0));
-      const bars = Array.from({ length: 4 }, (_, i) => {
-        const fill = Math.max(0, Math.min(1, filled - i));
-        const cls = fill > 0 ? 'bar filled' : 'bar';
-        return `<span class="${cls}" style="--fill:${(fill * 100).toFixed(2)}%"></span>`;
-      }).join('');
-      const cert = l.cert || tx.cert || '';
-      const details = toBulletItems(tx.details).length
-        ? toBulletItems(tx.details)
-        : toBulletItems(tx.context);
-      return `
-        <div class="lang-row">
-          <div>
-            <div class="lang-name">${esc(tx.name)}</div>
-            ${details.length ? `<ul class="lang-details">${details.map(d => `<li>${esc(d)}</li>`).join('')}</ul>` : ''}
-          </div>
-          <div class="lang-meta">
-            <span class="lang-level">${esc(tx.level)}</span>
-            <div class="lang-bars" aria-hidden="true">${bars}</div>
-            ${cert ? `<span class="lang-cert">${esc(cert)}</span>` : ''}
-          </div>
-        </div>
-      `;
-    }).join('');
   },
   projects(el, dict) {
     const t = dict.projects?.items || {};
@@ -570,18 +547,50 @@ const RENDERERS = {
       `;
     }).join('');
   },
-  contact(el, dict) {
-    const platforms = dict.contact?.platforms || {};
-    el.innerHTML = contactLinks.map(c => `
-      <a href="${esc(c.href)}" class="contact-link" target="_blank" rel="noopener noreferrer">
-        <div class="contact-link-left">
-          <span class="contact-platform">${esc(platforms[c.key] || c.key)}</span>
-          <span class="contact-value">${esc(c.value)}</span>
+  languages(el, dict) {
+    const t = dict.languages?.items || {};
+    el.innerHTML = languageItems.map(l => {
+      const tx = t[l.key] || {};
+      const filled = Math.max(0, Math.min(4, l.bars ?? 0));
+      const bars = Array.from({ length: 4 }, (_, i) => {
+        const fill = Math.max(0, Math.min(1, filled - i));
+        const cls = fill > 0 ? 'bar filled' : 'bar';
+        return `<span class="${cls}" style="--fill:${(fill * 100).toFixed(2)}%"></span>`;
+      }).join('');
+      const cert = l.cert || tx.cert || '';
+      const details = toBulletItems(tx.details).length
+        ? toBulletItems(tx.details)
+        : toBulletItems(tx.context);
+      return `
+        <div class="lang-row">
+          <div>
+            <div class="lang-name">${esc(tx.name)}</div>
+            ${details.length ? `<ul class="lang-details">${details.map(d => `<li>${esc(d)}</li>`).join('')}</ul>` : ''}
+          </div>
+          <div class="lang-meta">
+            <span class="lang-level">${esc(tx.level)}</span>
+            <div class="lang-bars" aria-hidden="true">${bars}</div>
+            ${cert ? `<span class="lang-cert">${esc(cert)}</span>` : ''}
+          </div>
         </div>
-        <span class="contact-arrow">→</span>
-      </a>
-    `).join('');
+      `;
+    }).join('');
   },
+  contact(el, dict) {
+      const platforms = dict.contact?.platforms || {};
+      el.innerHTML = contactLinks.map(c => `
+        <a href="${esc(c.href)}" class="contact-link" target="_blank" rel="noopener noreferrer">
+          <div class="contact-link-left">
+            <span class="contact-icon" aria-hidden="true">${ICONS[c.key] || ''}</span>
+            <div class="contact-link-text">
+              <span class="contact-platform">${esc(platforms[c.key] || c.key)}</span>
+              <span class="contact-value">${esc(c.value)}</span>
+            </div>
+          </div>
+          <span class="contact-arrow">→</span>
+        </a>
+      `).join('');
+    },
 };
 
 export function detectLocale() {

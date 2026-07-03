@@ -354,7 +354,7 @@ const REVEAL_CHUNKS = [
   ['connector-top-right','chip-7-capacitors-bottom-left','gpio-chip-top-1','connector-bottom-middle-1','eth-port'],
 
   // step 6 — contact
-  ['connector-bottom-middle-2','gpio-chip-top-4','connector-bottom-left','capacitors-top-left-2','usb-20','screw-holes'],
+  ['connector-bottom-middle-2','gpio-chip-top-4','connector-bottom-left','capacitors-top-left-2','usb-20','screw-holes']
 ];
 
 // Big components with clean outlines get a soft glow. Dense pin-clusters
