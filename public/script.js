@@ -56,13 +56,11 @@ const scrollSubscribers = [];
 // Resize-cached layout values — avoids per-frame getBoundingClientRect /
 // offsetTop / innerHeight reads that would otherwise force layout flushes
 // during scroll. Repopulated on resize (debounced) and after the PCB IIFE.
-let stepSections = [];
 let pcbFullyLit = false;
 const layout = {
   innerHeight: 0,
   maxScroll: 0,
   navOffsets: [],
-  stepOffsets: [],
   pcbStart: 0,
   pcbEnd: 0,
 };
@@ -71,10 +69,11 @@ function recomputeLayout() {
   layout.maxScroll = Math.max(0,
     document.documentElement.scrollHeight - layout.innerHeight);
   layout.navOffsets = navSections.map(s => s.offsetTop);
-  layout.stepOffsets = stepSections.map(s => s.offsetTop);
   layout.pcbStart = 0;
-  layout.pcbEnd = layout.stepOffsets.length
-    ? layout.stepOffsets[layout.stepOffsets.length - 1]
+  // Reveal runs the length of the page: navSections' last entry is #contact
+  // (the last section[id] in the document).
+  layout.pcbEnd = layout.navOffsets.length
+    ? layout.navOffsets[layout.navOffsets.length - 1]
     : 0;
 }
 
@@ -323,7 +322,7 @@ if (nextBtn) {
 // just looks each one up by index.
 //
 // REVEAL_ORDER is the curated component reveal order (flat — no longer
-// grouped per [data-board-step] section). Components light up in this order,
+// grouped per section). Components light up in this order,
 // spread evenly across the whole scroll range, independent of section
 // titles/boundaries.
 //
@@ -484,17 +483,10 @@ async function loadBoard() {
     w.bIdx = bi != null ? bi : Infinity;
   }
 
-  // Each [data-board-step] section reveals one chunk of components, evenly
-  // spread across that section's scroll range — so cadence is independent
-  // of section height. Assigns to the module-level `stepSections` so the
-  // shared `recomputeLayout()` can read offsetTops in one resize batch.
-  stepSections = [...document.querySelectorAll('[data-board-step]')]
-    .sort((a, b) => Number(a.dataset.boardStep) - Number(b.dataset.boardStep));
-
   const totalComps = components.length;
 
   function updatePCBReveal(sy) {
-    if (stepSections.length === 0) return;
+    if (layout.pcbEnd <= 0) return;
     // Once the board is fully lit and we're past the end, skip per-frame
     // work entirely — no toggle loops, no style writes.
     if (sy >= layout.pcbEnd && pcbFullyLit) return;
@@ -507,27 +499,19 @@ async function loadBoard() {
 
     // Fade the board in over the early portion of the home, so the chassis
     // is present before components start lighting up.
-    const fadeEnd = layout.stepOffsets[0] * 0.5;
+    const fadeEnd = layout.innerHeight * 0.5;
     let fade = sy / Math.max(1, fadeEnd);
     fade = Math.min(1, Math.max(0, fade));
     container.style.opacity = String(fade);
 
-    // Adjust only the board background element's opacity based on which
-    // section we're currently approaching. Start at 0.08 at the first
-    // section and increase by 0.06 per step, capped at 0.42.
+    // Darken/brighten the board background continuously with scroll
+    // progress (0 at the top, 1 at lastEnd) — no more discrete per-section
+    // steps, since sections no longer page one-at-a-time.
     try {
-      let stepIndex = 0;
-      if (sy <= 0) {
-        stepIndex = 0;
-      } else if (sy >= lastEnd) {
-        stepIndex = Math.max(0, stepSections.length - 1);
-      } else {
-        for (let i = 0; i < stepSections.length; i++) {
-          if (sy < layout.stepOffsets[i]) { stepIndex = i; break; }
-        }
-      }
+      const progress = Math.min(1, Math.max(0, sy / lastEnd));
       const baseOpacity = 0.08;
-      const bgOpacity = Math.min(0.42, baseOpacity + 0.06 * stepIndex);
+      const maxOpacity = 0.42;
+      const bgOpacity = baseOpacity + (maxOpacity - baseOpacity) * progress;
       if (pcbBase) pcbBase.style.opacity = String(bgOpacity);
     } catch (e) {
       // defensive: never throw from rendering logic
@@ -567,8 +551,9 @@ async function loadBoard() {
     if (idx === totalComps) pcbFullyLit = true;
   }
 
-  // stepSections is now populated — recompute layout to fill in stepOffsets,
-  // register the subscriber, and run a first paint with the current scroll.
+  // pcbEnd is derived from navSections (already populated at module scope)
+  // rather than a separate board-specific attribute — recompute layout to
+  // pick up final offsets, register the subscriber, and run a first paint.
   recomputeLayout();
   scrollSubscribers.push(updatePCBReveal);
   updatePCBReveal(window.scrollY);
