@@ -12,18 +12,18 @@ export const STORAGE_KEY = 'lang';
 // ─────────────────────────────────────────────────────────────────────────────
 
 export const skills = [
-  { name: 'C',                cat: 'language', bars: 4   },
-  { name: 'C++',              cat: 'language', bars: 3.5 },
-  { name: 'Java',             cat: 'language', bars: 3   },
-  { name: 'Python',           cat: 'language', bars: 2   },
-  { name: 'HTML / CSS / JS',  cat: 'language', bars: 2   },
-  { name: 'Linux',            cat: 'systems',  bars: 4   },
-  { name: 'Windows',          cat: 'systems',  bars: 3   },
-  { name: 'Networking',       cat: 'infra',    bars: 3   },
-  { name: 'Bash',             cat: 'scripting',bars: 3.5 },
-  { name: 'SQL',              cat: 'data',     bars: 3   },
-  { name: 'Embedded Systems', cat: '',         bars: 4   },
-  { name: 'PC Assembly',      cat: 'hardware', bars: 5   },
+  { name: 'C',                     cat: 'language', bars: 4   },
+  { name: 'C++',                   cat: 'language', bars: 3   },
+  { name: 'Java',                  cat: 'language', bars: 2.5 },
+  { name: 'Python',                cat: 'language', bars: 2   },
+  { name: 'HTML / CSS / JS',       cat: 'language', bars: 2   },
+  { name: 'Linux',                 cat: 'systems',  bars: 4   },
+  { name: 'Windows',               cat: 'systems',  bars: 3   },
+  { name: 'Networking',            cat: 'infra',    bars: 3   },
+  { name: 'Bash',                  cat: 'scripting',bars: 3.5 },
+  { name: 'System administration', cat: '',         bars: 4   },
+  { name: 'Embedded Systems',      cat: '',         bars: 4   },
+  { name: 'PC Assembly',           cat: 'hardware', bars: 5   },
 ];
 
 // Each entry's `key` is the lookup id into messages.{en,sl}.education.items.
@@ -201,8 +201,8 @@ export const messages = {
         },
         homelab: {
           title: 'Home lab',
-          desc: 'Self-hosted Proxmox node for experimenting with virtualization, containers, networking, and self-hosted services. Planned and built the \
-                 underlying hardware system, which now hosts multiple services and web applications, including this portfolio site.',
+          desc: 'Self-hosted Proxmox node for virtualization, containers, networking, and services. Running 24/7 alongside a Raspberry Pi 4B. \
+                 Assembled and configured the system, which now hosts multiple services and this portfolio site.',
         },
       },
     },
@@ -371,8 +371,8 @@ export const messages = {
         },
         homelab: {
           title: 'Home lab',
-          desc: 'Samogostovano Proxmox vozlišče za eksperimentiranje z virtualizacijo, kontejnerji, omrežji in samogostovanimi storitvami. Načrtovan in zgrajen \
-                 je bil osnovni strojni sistem, ki zdaj poganja več storitev in spletnih aplikacij, vklučno s tem spletnim portfeljem.',
+          desc: 'Samogostovano Proxmox vozlišče za virtualizacijo, kontejnerje in samogostovane storitve. Deluje 24/7 skupaj z Raspberry Pi 4B. \
+                 Sestavil in konfiguriral sistem, ki zdaj gosti več storitev in to portfolio spletno stran.',
         },
       },
     },
@@ -611,7 +611,10 @@ export function applyLocale(lang) {
     });
   });
   document.querySelectorAll('[data-i18n-toggle]').forEach(el => {
-    el.textContent = lang === 'en' ? 'SL' : 'EN';
+    el.innerHTML = `
+      <span class="lang-option${lang === 'en' ? ' is-active' : ''}">EN</span>
+      <span class="lang-option${lang === 'sl' ? ' is-active' : ''}">SL</span>
+    `;
     el.setAttribute('aria-label', dict.toggle.switchTo);
     el.setAttribute('title', dict.toggle.switchTo);
   });
