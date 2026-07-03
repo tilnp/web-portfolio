@@ -103,10 +103,11 @@ function findNextSection(sy) {
 
 function updateNextBtn(sy) {
   // Sections now flow continuously (no more one-per-viewport paging), so
-  // the jump button only makes sense on the home section — hide it as
-  // soon as the user scrolls into the second section.
+  // the jump button only makes sense on the home section — hide it a bit
+  // before the second section starts.
   const homeEnd = navSections.length > 1 ? layout.navOffsets[1] : layout.maxScroll;
-  nextBtn.classList.toggle('hidden', sy >= homeEnd - 4);
+  const hideLead = Math.min(layout.innerHeight * 0.9, 1000);
+  nextBtn.classList.toggle('hidden', sy >= homeEnd - hideLead);
 }
 
 function runAllUpdates(sy) {
