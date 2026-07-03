@@ -191,6 +191,66 @@ if (nextBtn) {
 }
 
 // ─────────────────────────────────────────────────────────────────────────
+// Crawling Borders Scroll Animation Fallback (Firefox / Safari)
+// ─────────────────────────────────────────────────────────────────────────
+if (!CSS.supports('animation-timeline', 'scroll()')) {
+  const borderOne = document.querySelector('.crawling-border.one');
+  const borderTwo = document.querySelector('.crawling-border.two');
+
+  if (borderOne && borderTwo) {
+    // Disable the native time-based CSS fallback so it doesn't fight JS inline styles
+    borderOne.style.animation = 'none';
+    borderTwo.style.animation = 'none';
+
+    scrollSubscribers.push((sy) => {
+      if (layout.maxScroll <= 0) return;
+      const progress = Math.min(1, Math.max(0, sy / layout.maxScroll));
+
+      // Border One logic (0% to 50% of total page scroll)
+      if (progress <= 0.5) {
+        const localProg = progress / 0.5; // Scale to 0-1 range
+        borderOne.style.visibility = progress > 0.01 ? 'visible' : 'hidden';
+        
+        if (localProg <= 0.5) {
+          // 0% to 25% of timeline: animate width from 0 to 100%
+          borderOne.style.width = `${localProg * 2 * 100}%`;
+          borderOne.style.height = '0px';
+        } else {
+          // 25% to 50% of timeline: width stays 100%, animate height from 0 to 100%
+          borderOne.style.width = '100%';
+          borderOne.style.height = `${(localProg - 0.5) * 2 * 100}%`;
+        }
+      } else {
+        // Post 50% scroll: Border One stays fully expanded
+        borderOne.style.visibility = 'visible';
+        borderOne.style.width = '100%';
+        borderOne.style.height = '100%';
+      }
+
+      // Border Two logic (50% to 100% of total page scroll)
+      if (progress < 0.5) {
+        borderTwo.style.visibility = 'hidden';
+        borderTwo.style.width = '0px';
+        borderTwo.style.height = '0px';
+      } else {
+        const localProg = (progress - 0.5) / 0.5; // Scale to 0-1 range
+        borderTwo.style.visibility = progress > 0.51 ? 'visible' : 'hidden';
+
+        if (localProg <= 0.5) {
+          // 50% to 75% of timeline: animate width from 0 to 100%
+          borderTwo.style.width = `${localProg * 2 * 100}%`;
+          borderTwo.style.height = '0px';
+        } else {
+          // 75% to 100% of timeline: width stays 100%, animate height from 0 to 100%
+          borderTwo.style.width = '100%';
+          borderTwo.style.height = `${(localProg - 0.5) * 2 * 100}%`;
+        }
+      }
+    });
+  }
+}
+
+// ─────────────────────────────────────────────────────────────────────────
 // Hero terminal — typed, multi-line, looping. Types out a fixed command
 // sequence (character by character), including two commands that resolve
 // real data (site uptime via Kuma, last-updated as a relative "X days
