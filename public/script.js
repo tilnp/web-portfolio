@@ -278,15 +278,16 @@ if (!CSS.supports('animation-timeline', 'scroll()')) {
   // per lap.
   function buildRows() {
     return [
-      { prompt: '$', text: 'whoami' },
-      { out: true, text: 'tilen_pokorn — cs student @ uni-lj' },
-      { prompt: '$', text: 'uname -a' },
-      { out: true, text: 'homelab-n150 6.x-proxmox x86_64 GNU/Linux' },
-      { prompt: '$', text: 'ls ~/projects' },
-      { out: true, text: 'barkwatch/  stm32-can-dash/  homelab/  sd-prompt-gen/' },
-      { prompt: '$', text: 'uptime --site --month' },
-      { out: true, text: () => cachedUptimeText ?? 'unknown' },
-      { prompt: '$', text: 'last-updated' },
+      { prompt: '$', text: 'ssh tilen.pokorn.si' },
+      { out: true, text: 'Connection established.' },
+      { prompt: '$', text: 'id' },
+      { out: true, text: 'uid=1000(tilen) groups=student,developer,homelab,music' },
+      { prompt: '$', text: 'traceroute tilen' },
+      { out: true, text: 'Europe, Slovenia' },
+      { prompt: '$', text: 'uptime --portfolio' },
+      { out: true, text: () => `Uptime (31d): ${cachedUptimeText ?? 'unknown'}`},
+      { out: true, text: 'Status: Up' },
+      { prompt: '$', text: 'last-updated index.html' },
       { out: true, text: () => cachedDaysAgoText },
       { prompt: '$', text: 'clear' },
     ];
@@ -359,7 +360,7 @@ if (!CSS.supports('animation-timeline', 'scroll()')) {
           await wait(2000); // pause on the fully-populated screen before clearing
           await typeText(rowEl, 'clear');
           rowEl.querySelector('.cursor')?.remove();
-          await wait(280); // brief beat after "clear" is typed
+          await wait(700); // brief beat after "clear" is typed
           el.innerHTML = '';
           break; // restart outer while-loop
         }
@@ -367,7 +368,7 @@ if (!CSS.supports('animation-timeline', 'scroll()')) {
         const text = typeof row.text === 'function' ? row.text() : row.text;
         await typeText(rowEl, text);
         rowEl.querySelector('.cursor')?.remove();
-        await wait(row.out ? 360 : 620);
+        await wait(row.out ? 240 : 380);
       }
     }
   }

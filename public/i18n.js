@@ -21,7 +21,7 @@ export const ICONS = {
   linkedin: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M8 11v5M8 8v.01M12 16v-3a2 2 0 0 1 4 0v3M12 13v3"/></svg>',
 };
 
-export const SITE_UPDATED = '2026-06-25';
+export const SITE_UPDATED = '2026-07-03';
 
 export const skills = [
   { name: 'C',                     cat: 'language', bars: 4   },

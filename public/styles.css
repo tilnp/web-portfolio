@@ -1015,7 +1015,7 @@ footer{
 /* Crawling border */
 .crawling-border {
   --border-color: oklch(60% 0.25 142);
-  --border-width: .5vmin;
+  --border-width: .25vmin;
   border: var(--border-width) solid var(--border-color);
   pointer-events: none;
   position: fixed;
@@ -1023,6 +1023,7 @@ footer{
   height: 0;
   visibility: hidden;
   z-index: 10;
+  will-change: width, height;
 }
 /* Changing the direction is a matter of swapping around the values here */
 .one {
