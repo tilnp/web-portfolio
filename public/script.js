@@ -106,7 +106,7 @@ function updateNextBtn(sy) {
   // the jump button only makes sense on the home section — hide it a bit
   // before the second section starts.
   const homeEnd = navSections.length > 1 ? layout.navOffsets[1] : layout.maxScroll;
-  const hideLead = Math.min(layout.innerHeight * 0.9, 1000);
+  const hideLead = layout.innerHeight * 0.9;
   nextBtn.classList.toggle('hidden', sy >= homeEnd - hideLead);
 }
 
