@@ -284,7 +284,7 @@ if (!CSS.supports('animation-timeline', 'scroll()')) {
       { out: true, text: 'uid=1000(tilen) groups=student,developer,homelab,music' },
       { prompt: '$', text: 'traceroute tilen' },
       { out: true, text: 'Europe, Slovenia' },
-      { prompt: '$', text: 'uptime --portfolio' },
+      { prompt: '$', text: 'uptime website' },
       { out: true, text: () => `Uptime (31d): ${cachedUptimeText ?? 'unknown'}`},
       { out: true, text: 'Status: Up' },
       { prompt: '$', text: 'last-updated index.html' },

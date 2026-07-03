@@ -112,13 +112,13 @@ export const messages = {
       title: 'Who I am',
       lead: '',
       p1: 'I\'m a <strong>computer science student</strong> with a genuine interest in how systems work — from operating systems and networking \
-           down to the underlying hardware. I’m comfortable working across both <strong>software and hardware</strong>: working in Linux environments, \
+           down to the underlying hardware. My experience spans both <strong>software and hardware</strong>: working in Linux environments, \
            troubleshooting technical issues, using the terminal, and understanding how components interact at a low level.',
-      p2: 'Outside of coursework I run a small <strong>home lab</strong> on Proxmox VE where I experiment with self-hosted services and automation projects. I also build small \
-           <strong>personal tools</strong> to improve my workflow, and occasionally work on light design-related tasks. These projects are driven by \
-           curiosity and hands-on learning.',
-      p3: 'In my free time, I enjoy staying active, mostly through running and skiing. During the winter season, I work as a ski instructor for children, \
-           which has helped me develop patience, communication skills, and confidence working with groups of different ages and personalities.',
+      p2: 'I\'m a <strong>tech and music enthusiast</strong>, always staying up to date with developments in the tech world. \
+           I enjoy exploring local LLMs and image generation models to understand how they work. A small <strong>home lab</strong> on Proxmox VE \
+           tends to take up a lot of my free time, serving as a space for self-hosted services and automation projects.',
+      p3: 'In my free time away from the Grid, I enjoy staying <strong>active</strong>, mostly through running and skiing. During the winter season, I work as a ski instructor for children, \
+           which has helped me develop patience, <strong>communication skills</strong>, and confidence working with groups of different ages and personalities.',
     },
     skills: {
       label: '03 — skills',
@@ -284,11 +284,11 @@ export const messages = {
       p1: 'Sem <strong>študent računalništva in informatike</strong> s pristnim zanimanjem za delovanje sistemov — od operacijskih sistemov in omrežij do \
            strojne opreme, ki vse to poganja. Znajdem se tako pri <strong>programski</strong> kot <strong>strojni opremi</strong>: uporaba Linux okolij, \
            odpravljanje sistemskih težav, delo v terminalu in razumevanje interakcij komponent na nizki ravni.',
-      p2: 'Poleg študijskih obveznosti upravljam manjši <strong>home lab</strong> na Proxmox VE, kjer eksperimentiram s samogostovanjem storitev in avtomatizacijo. \
-           Ob tem razvijam tudi manjša <strong>osebna orodja</strong> za izboljšanje svojega poteka dela, občasno pa se ukvarjam tudi z lažjimi oblikovalskimi nalogami. \
-           Te projekte poganja radovednost in želja po stalnem razvijanju praktičnega znanja in veščin.',
-      p3: 'V prostem času sem rad aktiven, največkrat tečem in smučam. V zimskem času delam kot učitelj smučanja za otroke, kar mi je pomagalo razviti potrpežljivost, \
-           komunikacijske veščine ter samozavest pri delu s skupinami različnih starosti in značajev.',
+      p2: 'Sem <strong>navdušenec nad tehnologijo in glasbo</strong>, ki redno spremlja razvoj v svetu računalništva. Rad preizkušam lokalne LLM modele \
+           in modele za generiranje slik, da razumem, kako delujejo. Majhen <strong>homelab</strong> na Proxmox VE mi pogosto vzame precej prostega časa \
+           in služi kot okolje za samogostovane storitve in projekte avtomatizacije.',
+      p3: 'V prostem času, stran od Mreže, sem rad <strong>aktiven</strong>, največkrat tečem in smučam. V zimskem času delam kot učitelj smučanja za otroke, \
+           kar mi je pomagalo razviti potrpežljivost, <strong>komunikacijske veščine</strong> ter samozavest pri delu s skupinami različnih starosti in značajev.',
     },
     skills: {
       label: '03 — veščine',
