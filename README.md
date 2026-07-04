@@ -7,7 +7,7 @@ Personal CV / portfolio site. Single page, vanilla HTML/CSS/JS.
 ```
 web-cv/
 ├── README.md
-├── .gitattributes        ← pins board.svg / board.wires.json to LF line endings
+├── .gitattributes
 ├── .gitignore
 ├── scripts/
 │   └── build_wires.py    ← regenerate board.wires.json after editing board.svg
