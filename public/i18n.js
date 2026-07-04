@@ -21,7 +21,7 @@ export const ICONS = {
   linkedin: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M8 11v5M8 8v.01M12 16v-3a2 2 0 0 1 4 0v3M12 13v3"/></svg>',
 };
 
-export const SITE_UPDATED = '2026-07-03';
+export const SITE_UPDATED = '2026-07-04';
 
 export const skills = [
   { name: 'C',                     cat: 'language', bars: 4   },
@@ -99,10 +99,10 @@ export const messages = {
     },
     home: {
       lead: '',
-      tag: 'computer science student',
+      tag: 'Hello, I\'m',
       firstName: 'Tilen',
       lastName: 'Pokorn',
-      sub: 'CS student building things at the intersection of systems, software, and hardware.',
+      sub: '— CS student building things at the intersection of systems, software, and hardware.',
       cta: 'get in touch ↓',
       github: 'github',
       resume: 'résumé ↗',
@@ -239,7 +239,7 @@ export const messages = {
     },
     contact: {
       label: '07 — contact',
-      title: 'Get in touch',
+      title: 'Socials',
       lead: '',
       platforms: {
         email:    'email',
@@ -269,10 +269,10 @@ export const messages = {
     },
     home: {
       lead: '',
-      tag: 'študent računalništva in informatike',
+      tag: 'Živjo, jaz sem',
       firstName: 'Tilen',
       lastName: 'Pokorn',
-      sub: 'Študent računalništva, ki gradi stvari na presečišču sistemov, programske in strojne opreme.',
+      sub: '— Študent računalništva, ki gradi stvari na presečišču sistemov, programske in strojne opreme.',
       cta: 'stopi v stik ↓',
       github: 'github',
       resume: 'življenjepis ↗',
@@ -409,7 +409,7 @@ export const messages = {
     },
     contact: {
       label: '07 — kontakt',
-      title: 'Stopi v stik',
+      title: 'Socialna omrežja',
       lead: '',
       platforms: {
         email:    'e-pošta',
