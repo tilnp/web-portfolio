@@ -113,6 +113,7 @@ nav{
   border-bottom:1px solid var(--border);
 }
 .nav-logo{
+  text-decoration:none;
   display:inline-flex;
   align-items:center;
   gap:.25rem;
@@ -200,6 +201,7 @@ section:first-child{
   justify-content:center;
   padding-top:clamp(72px,5vw,80px);
   min-height:100vh;
+  min-height:100dvh;
 }
 .section-label{
   font-family:var(--mono);
@@ -1144,6 +1146,9 @@ footer{
 @media (max-width: 860px) {
   .page-wrap{
     padding:0 1.25rem;
+  }
+  section:first-child{
+    justify-content:flex-start;
   }
   nav{
     padding:0 0.9rem;
