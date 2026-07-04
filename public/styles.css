@@ -241,28 +241,7 @@ section:first-child{
   grid-area:links;
   justify-self:center;
 }
-@media (max-width:860px){
-  .hero-grid{
-    grid-template-columns:1fr;
-    grid-template-areas:
-      "name"
-      "term"
-      "sub"
-      "links";
-  }
-  h1 > span{
-    color:var(--green) !important;
-    -webkit-text-stroke:0 !important;
-  }
-  .home-links{ 
-    justify-self:stretch;
-  }
-  .home-sub{ 
-    text-align:left !important;
-    margin-left:0 !important;
-  }
-}
-/* end Layout */
+
 
 .hero-col-text .home-tag,
 .hero-col-text h1{
@@ -603,7 +582,7 @@ h2{
   border-radius:var(--r);
   display:grid;
   grid-template-columns:1fr auto;
-  align-items:start;
+  align-items:center;
   gap:1rem;
   transition:background .2s,border-color .2s,transform .2s;
   border:1px solid var(--border);
@@ -1162,7 +1141,7 @@ footer{
   }
 }
 
-@media (max-width: 900px) {
+@media (max-width: 860px) {
   .page-wrap{
     padding:0 1.25rem;
   }
@@ -1182,15 +1161,45 @@ footer{
   .nav-logo{
     font-size:13px;
   }
-  .next-section{
+  .next-section-wrap{
     display:none;
   }
+
+  /* home page */
+  .hero-grid{
+    grid-template-columns:1fr;
+    grid-template-areas:
+      "name"
+      "sub"
+      "term"
+      "links";
+  }
+  h1{
+    margin-bottom:0 !important;
+  }
+  .home-sub{
+    margin-bottom:.5rem !important;
+  }
+  .hero-term{
+    /* font-size:12px; */
+    margin-bottom:.5rem !important;
+  }
+  h1 > span{
+    color:var(--green) !important;
+    -webkit-text-stroke:0 !important;
+  }
+  .home-sub{ 
+    text-align:left !important;
+    margin-left:0 !important;
+  }
+
+  /* other sections */
   .about-text{
     font-size:0.95rem;
     line-height:1.6;
   }
   .skills-grid{
-    grid-template-columns:repeat(auto-fill,minmax(180px,1fr));
+    grid-template-columns:repeat(auto-fill,minmax(140px,1fr));
   }
   .skill-item{
     padding:1rem 1rem;
@@ -1204,10 +1213,6 @@ footer{
   }
   footer{
     padding:2.5rem 1.25rem 3rem;
-  }
-  .hero-term{
-    font-size:12px;
-    max-width:100%;
   }
 }
 
@@ -1291,6 +1296,7 @@ footer{
   }
 }
 
+/* 1080p screens */
 @media (max-height: 1120px) and (min-width: 901px) {
   .page-wrap{
     max-width:1050px;
@@ -1312,6 +1318,7 @@ footer{
   }
 }
 
+/* 4k screens */
 @media (min-width: 3200px) and (min-height: 1800px) {
   .page-wrap{
     max-width:2240px;
