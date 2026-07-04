@@ -4,7 +4,7 @@
 // data is missing or invalid, the wires don't render (components still
 // light up).
 
-import { applyLocale, detectLocale, setLocale, SITE_UPDATED } from './i18n.js';
+import { applyLocale, detectLocale, setLocale } from './i18n.js';
 
 document.getElementById('year').textContent = new Date().getFullYear();
 
@@ -20,17 +20,34 @@ document.querySelector('[data-i18n-toggle]')?.addEventListener('click', () => {
 const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 const isMobile = window.matchMedia('(max-width: 440px)').matches;
 
-// Uptime Kuma badge endpoint — single source of truth, used by the
-// terminal's "uptime" command (#4 feedback: defined as a constant rather
-// than inlined where it's used). Monitor id 10 = combined/primary
-// service per your example; swap the id if a different monitor should
-// represent "overall" uptime.
+// Uptime Kuma badge endpoint — used by the terminal's "uptime" command
 const KUMA_URL = 'https://adela.pokorn.si/api/badge/13/uptime/744';
 
-// Converts the SITE_UPDATED constant (an ISO date string, hand-bumped in
-// i18n.js whenever a meaningful change ships) into a relative "X days
-// ago" label instead of a literal date. Always English — the terminal's
-// content doesn't follow the site's language toggle (#1 feedback).
+const GITHUB_CACHE_KEY = 'gh-last-commit';
+const GITHUB_CACHE_TTL = 3600000; // github has 60 req/hr unauth limit
+
+async function getLastCommitDate() {
+  const cached = localStorage.getItem(GITHUB_CACHE_KEY);
+  if (cached) {
+    const { date, ts } = JSON.parse(cached);
+    if (Date.now() - ts < GITHUB_CACHE_TTL) return date;
+  }
+
+  try {
+    const res = await fetch('https://api.github.com/repos/tilnp/web-portfolio/commits?sha=main&per_page=1', {
+      headers: { Accept: 'application/vnd.github+json' }
+    });
+    if (!res.ok) throw new Error(`GitHub API ${res.status}`);
+    const [commit] = await res.json();
+    const date = commit.commit.author.date;
+    localStorage.setItem(GITHUB_CACHE_KEY, JSON.stringify({ date, ts: Date.now() }));
+    return date;
+  } catch (err) {
+    console.warn('[github] fetch failed, using stale cache if any:', err);
+    return cached ? JSON.parse(cached).date : null;
+  }
+}
+
 function daysAgoLabel(isoDate) {
   const d = new Date(isoDate);
   if (isNaN(d)) return isoDate;
@@ -262,10 +279,12 @@ if (!CSS.supports('animation-timeline', 'scroll()')) {
   // Resolved ONCE on page load — not re-fetched/recomputed every time the
   // terminal loop reaches these lines (#2 feedback). The terminal simply
   // reads whatever these resolved to for the rest of the page's lifetime.
-  let cachedUptimeText = null;
-  let cachedDaysAgoText = null;
+  let cachedUptimeText = 'unknown';
+  let cachedDaysAgoText = 'unknown';
   const uptimeReady = fetchUptimeText().then(text => { cachedUptimeText = text; });
-  cachedDaysAgoText = daysAgoLabel(SITE_UPDATED);
+  const daysAgoReady = getLastCommitDate().then(isoDate => {
+    cachedDaysAgoText = isoDate ? daysAgoLabel(isoDate) : 'unknown';
+  });
 
   // Each row's `text` can be a plain string or a function returning a
   // string — used by the two "live-data" commands, which now just read
@@ -280,7 +299,7 @@ if (!CSS.supports('animation-timeline', 'scroll()')) {
       { prompt: '$', text: 'traceroute tilen' },
       { out: true, text: 'Europe, Slovenia' },
       { prompt: '$', text: 'uptime website --live' },
-      { out: true, text: () => `Uptime (31d): ${cachedUptimeText ?? 'unknown'}`},
+      { out: true, text: () => `Uptime (31d): ${cachedUptimeText}`},
       { out: true, text: 'Status: Up' },
       { prompt: '$', text: 'last-updated index.html' },
       { out: true, text: () => cachedDaysAgoText },
@@ -307,7 +326,7 @@ if (!CSS.supports('animation-timeline', 'scroll()')) {
   }
 
   if (reduceMotion) {
-    uptimeReady.then(() => {
+    Promise.all([uptimeReady, daysAgoReady]).then(() => {
       const rows = buildRows().filter(r => r.text !== 'clear');
       el.innerHTML = rows.map(r => {
         const text = typeof r.text === 'function' ? r.text() : r.text;

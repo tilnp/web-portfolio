@@ -4,24 +4,21 @@ export const STORAGE_KEY = 'lang';
 
 // ─── Architecture ────────────────────────────────────────────────────────────
 // Structural data (item order, ids, hrefs, icons, tags, skill names) lives
-// at module scope as plain exports — single source of truth, edit once.
+// at module scope as plain exports.
 // Translatable text (titles, descriptions, category labels) lives inside
 // `messages.{en,sl}` keyed by the same id. applyLocale deep-merges the active
 // locale onto `en`, so any field missing from sl falls back to its en value
 // without rendering blank.
 // ─────────────────────────────────────────────────────────────────────────────
 
-// Icons (no color, inherits currentColor) for GitHub email / LinkedIn — 
-// shared between the hero quick-links and the contact section so the
-// markup lives in exactly one place. 16x16 viewBox, 1.6 stroke weight
-// to match the rest of the site's restrained line-weight.
+// Icons (no color, inherits currentColor) for GitHub, email, LinkedIn
+// 16x16 viewBox, 1.6 stroke weight to match the rest of the site's 
+// restrained line-weight.
 export const ICONS = {
   github: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M9 19c-4.3 1.4-4.3-2.5-6-3m12 5v-3.5c0-1 .1-1.4-.5-2 2.8-.3 5.5-1.4 5.5-6a4.6 4.6 0 0 0-1.3-3.2 4.2 4.2 0 0 0-.1-3.2s-1.4-.4-3.1 1.2a11.5 11.5 0 0 0-6 0C8 2.7 6.6 3.1 6.6 3.1A4.2 4.2 0 0 0 6.5 6.3 4.6 4.6 0 0 0 5.2 9.5c0 4.6 2.7 5.7 5.5 6-.6.6-.6 1.2-.5 2V21"/></svg>',
   email: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="m3 7 9 6 9-6"/></svg>',
   linkedin: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M8 11v5M8 8v.01M12 16v-3a2 2 0 0 1 4 0v3M12 13v3"/></svg>',
 };
-
-export const SITE_UPDATED = '2026-07-04';
 
 export const skills = [
   { name: 'C',                     cat: 'language', bars: 4   },
@@ -55,12 +52,12 @@ export const languageItems = [
   { key: 'de', cert: '', bars: 2.7  },
 ];
 
-// Projects. Add entries here as projects come online; an empty array
-// renders the section's empty-state message instead of cards.
+// Projects. An empty array renders the section's empty-state message
+// instead of cards.
 // `key` is the lookup id into messages.{en,sl}.projects.items.
 // `year` (optional) shows in the mono badge column.
-// `ongoing: true` appends a green "→" inside the year chip with a
-// localized "ongoing" tooltip — use this instead of writing " ->" by hand.
+// `ongoing: true` appends a "→" inside the year chip with a
+// localized "ongoing" tooltip.
 // `href` (optional) makes the card clickable. `tags` (optional) are
 // non-translatable.
 export const projectItems = [
