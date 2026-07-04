@@ -880,6 +880,8 @@ a.proj-item:hover .proj-arrow{
   gap:.2rem;
 }
 .contact-link{
+  position:relative;
+  padding-right:3.5rem;
   display:flex;
   align-items:center;
   justify-content:space-between;
@@ -931,6 +933,10 @@ a.proj-item:hover .proj-arrow{
   color:var(--text);
 }
 .contact-arrow{
+  position:absolute;
+  right:1.85rem;
+  top:50%;
+  transform:translateY(-50%);
   font-family:var(--mono);
   font-size:1.1rem;
   color:var(--border2);
@@ -938,7 +944,7 @@ a.proj-item:hover .proj-arrow{
 }
 .contact-link:hover .contact-arrow{
   color:var(--muted2);
-  transform:translateX(3px);
+  transform:translateY(-50%) translateX(3px);
 }
 
 /* ── Footer ──────────────────────────────────────────────────────────── */
