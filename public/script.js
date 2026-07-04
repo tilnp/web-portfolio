@@ -46,6 +46,7 @@ const bgGrid = document.getElementById('bgGrid');
 const navLinks = document.querySelectorAll('.nav-links a');
 const inPageLinks = document.querySelectorAll('a[href^="#"]');
 const navSections = [...document.querySelectorAll('section[id]')];
+const aboutSection = document.getElementById('about');
 const nextBtn = document.getElementById('nextBtn');
 const nextBtnWrap = nextBtn.closest('.next-section-wrap');
 
@@ -92,14 +93,6 @@ function updateActiveNav(sy) {
   activeNavId = active.id;
   navLinks.forEach(a => a.classList.toggle('active',
     a.getAttribute('href') === '#' + active.id));
-}
-
-// 4px buffer so a section already pinned to the top isn't picked.
-function findNextSection(sy) {
-  for (let i = 0; i < navSections.length; i++) {
-    if (layout.navOffsets[i] > sy + 4) return navSections[i];
-  }
-  return null;
 }
 
 function updateNextBtnWrap(sy) {
@@ -188,7 +181,7 @@ inPageLinks.forEach(a => {
 // Floating "↓" button click → scroll to next section's title.
 if (nextBtnWrap) {
   nextBtnWrap.addEventListener('click', () => {
-    findNextSection(window.scrollY)?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    aboutSection?.scrollIntoView({ behavior: 'smooth', block: 'start' });
   });
 }
 
