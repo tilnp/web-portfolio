@@ -358,7 +358,7 @@ if (!CSS.supports('animation-timeline', 'scroll()')) {
         const rowEl = appendRow(row.out);
 
         if (isClear) {
-          await wait(2000); // pause on the fully-populated screen before clearing
+          await wait(1200); // pause on the fully-populated screen before clearing
           await typeText(rowEl, 'clear');
           rowEl.querySelector('.cursor')?.remove();
           await wait(700); // brief beat after "clear" is typed
@@ -383,10 +383,8 @@ if (!CSS.supports('animation-timeline', 'scroll()')) {
 // scripts/build_wires.py and shipped as public/board.wires.json — the client
 // just looks each one up by index.
 //
-// REVEAL_ORDER is the curated component reveal order (flat — no longer
-// grouped per section). Components light up in this order,
-// spread evenly across the whole scroll range, independent of section
-// titles/boundaries.
+// REVEAL_ORDER is the curated component reveal order. Components light 
+// up in this order, spread evenly across the whole scroll range.
 //
 // The list is a *preference*, not a gatekeeper: at runtime we discover every
 // direct child of the components layer and append any leftover (unlabeled or
