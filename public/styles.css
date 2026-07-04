@@ -609,7 +609,7 @@ h2{
   border:1px solid var(--border);
 }
 .skill-item:hover{
-  background: linear-gradient(180deg, rgba(25,25,27,1), rgba(25,25,27,.8));
+  background: linear-gradient(180deg, rgba(25,25,27,1), rgba(25,25,27,.9));
   border-color:var(--border2);
   transform:translateY(-0.08rem);
 }
@@ -711,7 +711,7 @@ h2{
   border:1px solid var(--border);
 }
 .proj-item:hover{
-  background: linear-gradient(180deg, rgba(25,25,27,1), rgba(25,25,27,.8));
+  background: linear-gradient(180deg, rgba(25,25,27,1), rgba(25,25,27,.9));
   transform:translateY(-0.1rem);
 }
 .proj-year{
@@ -938,7 +938,7 @@ a.proj-item:hover .proj-arrow{
   border:1px solid var(--border);
 }
 .contact-link:hover{
-  background: linear-gradient(180deg, rgba(25,25,27,1), rgba(25,25,27,.8));
+  background: linear-gradient(180deg, rgba(25,25,27,1), rgba(25,25,27,.9));
   transform:translateY(-0.08rem);
 }
 .contact-link-left{
