@@ -47,6 +47,7 @@ const navLinks = document.querySelectorAll('.nav-links a');
 const inPageLinks = document.querySelectorAll('a[href^="#"]');
 const navSections = [...document.querySelectorAll('section[id]')];
 const nextBtn = document.getElementById('nextBtn');
+const nextBtnWrap = nextBtn.closest('.next-section-wrap');
 
 // Subscribers added by lazily-loaded modules (e.g. PCB SVG IIFE).
 // Iterated by the consolidated scroll listener; empty-array case is the
@@ -101,18 +102,18 @@ function findNextSection(sy) {
   return null;
 }
 
-function updateNextBtn(sy) {
+function updateNextBtnWrap(sy) {
   // Sections now flow continuously (no more one-per-viewport paging), so
   // the jump button only makes sense on the home section — hide it a bit
   // before the second section starts.
   const homeEnd = navSections.length > 1 ? layout.navOffsets[1] : layout.maxScroll;
   const hideLead = layout.innerHeight * 0.9;
-  nextBtn.classList.toggle('hidden', sy >= homeEnd - hideLead);
+  nextBtnWrap.classList.toggle('hidden', sy >= homeEnd - hideLead);
 }
 
 function runAllUpdates(sy) {
   updateActiveNav(sy);
-  if (nextBtn) updateNextBtn(sy);
+  if (nextBtnWrap) updateNextBtnWrap(sy);
   for (let i = 0; i < scrollSubscribers.length; i++) scrollSubscribers[i](sy);
 }
 
@@ -185,8 +186,8 @@ inPageLinks.forEach(a => {
 });
 
 // Floating "↓" button click → scroll to next section's title.
-if (nextBtn) {
-  nextBtn.addEventListener('click', () => {
+if (nextBtnWrap) {
+  nextBtnWrap.addEventListener('click', () => {
     findNextSection(window.scrollY)?.scrollIntoView({ behavior: 'smooth', block: 'start' });
   });
 }

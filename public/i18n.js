@@ -96,6 +96,7 @@ export const messages = {
       experience: 'experience',
       languages: 'languages',
       contact: 'contact',
+      next: 'About me',
     },
     home: {
       lead: '',
@@ -266,6 +267,7 @@ export const messages = {
       experience: 'izkušnje',
       languages: 'jeziki',
       contact: 'kontakt',
+      next: 'O meni',
     },
     home: {
       lead: '',
