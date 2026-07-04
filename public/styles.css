@@ -201,7 +201,6 @@ section:first-child{
   justify-content:center;
   padding-top:clamp(72px,5vw,80px);
   min-height:100vh;
-  min-height:100dvh;
 }
 .section-label{
   font-family:var(--mono);

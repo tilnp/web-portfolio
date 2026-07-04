@@ -146,15 +146,8 @@ window.addEventListener('scroll', () => {
 // rAF-throttling still recomputes far more than needed. 150ms lets the
 // drag finish before paying for offsetTop reads. After recompute, read
 // scrollY fresh (the user may have scrolled during the debounce window).
-// Width-gated: mobile address bar show/hide on scroll fires a height-only
-// resize, which was triggering recomputeLayout() mid-scroll and corrupting
-// section offsets. Only true width changes (rotation, desktop resize)
-// trigger a recompute.
-let lastWidth = window.innerWidth;
 let resizeTimer = null;
 window.addEventListener('resize', () => {
-  if (window.innerWidth === lastWidth) return;
-  lastWidth = window.innerWidth;
   if (resizeTimer) clearTimeout(resizeTimer);
   resizeTimer = setTimeout(() => {
     recomputeLayout();
