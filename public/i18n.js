@@ -634,6 +634,7 @@ export function applyLocale(lang) {
   document.querySelectorAll('[data-i18n-toggle]').forEach(el => {
     el.innerHTML = `
       <span class="lang-option${lang === 'en' ? ' is-active' : ''}">EN</span>
+      <span class="lang-sep">|</span>
       <span class="lang-option${lang === 'sl' ? ' is-active' : ''}">SL</span>
     `;
     el.setAttribute('aria-label', dict.toggle.switchTo);

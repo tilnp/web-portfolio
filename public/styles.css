@@ -167,7 +167,7 @@ nav{
   letter-spacing:.06em;
   display:inline-flex;
   align-items:center;
-  gap:.55rem;
+  gap:.4rem;
   margin-left:auto;
   padding:0;
   border:0;
@@ -183,7 +183,6 @@ nav{
 }
 .lang-toggle .lang-option.is-active{
   color:var(--text);
-  text-decoration:underline;
   text-underline-offset:.18em;
   text-decoration-thickness:1.5px;
 }
