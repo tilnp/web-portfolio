@@ -112,7 +112,9 @@ nav{
   flex-wrap:nowrap;
   padding:0 clamp(1.25rem,1.8vw,2.5rem);
   height: clamp(40px, 2vw, 72px);
-  background:rgba(12, 12, 12, 0.9);
+  background:rgba(10,10,11,.82);
+  backdrop-filter:blur(14px);
+  -webkit-backdrop-filter:blur(14px);
   border-bottom:1px solid var(--border);
 }
 .nav-logo{
@@ -319,7 +321,9 @@ h1 em{
   color:var(--muted2);
   border:1px solid var(--border);
   border-radius:var(--r);
-  background:rgba(12, 12, 12, 0.8);
+  background:rgba(100,100,100,.02);
+  backdrop-filter:blur(8px);
+  -webkit-backdrop-filter:blur(8px);
   padding:1.1rem 1.4rem;
   margin-bottom:1.75rem;
   max-width:100%;
