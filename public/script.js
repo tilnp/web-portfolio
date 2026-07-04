@@ -282,7 +282,7 @@ if (!CSS.supports('animation-timeline', 'scroll()')) {
       { prompt: '$', text: 'ssh tilen.pokorn.si' },
       { out: true, text: 'Connection established.' },
       { prompt: '$', text: 'id' },
-      { out: true, text: 'uid=1000(tilen) groups= student, developer, homelab, music' },
+      { out: true, text: 'uid=1000(tilen) groups= student, developer, homelab, music, sport' },
       { prompt: '$', text: 'traceroute tilen' },
       { out: true, text: 'Europe, Slovenia' },
       { prompt: '$', text: 'uptime website --live' },
