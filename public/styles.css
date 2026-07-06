@@ -402,6 +402,7 @@ h1 em{
   font-size:.75rem;
   letter-spacing:.08em;
   color:var(--muted);
+  cursor:pointer;
 }
 .next-section{
   position:static;

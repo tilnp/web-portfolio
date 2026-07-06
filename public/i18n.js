@@ -222,16 +222,19 @@ export const messages = {
       lead: '',
       items: {
         net: {
-          title: 'Networking & services',
-          desc: 'Configuring network services including reverse proxy (Nginx Proxy Manager), firewall, and internal service deployment.'
+          title: 'Self-hosting & Networking',
+          desc: 'Self-hosting and maintaining services such as Home Assistant, Nginx Proxy Manager, Node.js applications, Uptime Kuma (monitoring), \
+                 File Browser (personal cloud storage), and more. Configuring firewall and internal network.'
         },
         adm: { 
           title: 'System administration',
-          desc: 'Working in Linux environments using the terminal for system configuration, debugging, package management, and routine maintenance tasks.'
+          desc: 'Working in Linux environments using the terminal for system configuration, debugging, package management, and routine \
+                 maintenance tasks.'
         },
         emb: {
           title: 'Embedded systems',
-          desc: 'Developing firmware for STM32 microcontrollers, focusing on hardware interfacing, sensor data acquisition, and real-time embedded system integration.',
+          desc: 'Developing firmware for STM32 microcontrollers, focusing on hardware interfacing, sensor data acquisition, and real-time \
+                 embedded system integration.',
         },
       },
     },
@@ -393,8 +396,9 @@ export const messages = {
       lead: '',
       items: {
         net: {
-          title: 'Omrežje in storitve',
-          desc: 'Vzpostavitev reverznega proxyja (Nginx Proxy Manager), požarnega zidu in notranjih storitev.'
+          title: 'Samogostovanje & Omrežja',
+          desc: 'Gostovanje in vzdrževanje storitev, med drugimi Home Assistant, Nginx Proxy Manager, aplikacije Node.js, Uptime Kuma (monitoring), \
+                 File Browser (osebna shramba v oblaku). Konfiguracija požarnega zidu ter notranjega omrežja.'
         },
         adm: {
           title: 'Sistemska administracija',
