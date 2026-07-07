@@ -27,3 +27,8 @@ Everything the browser fetches lives inside `public/`. The repo root only holds 
 Serving `public/` over HTTP — `file://` won't work because `script.js` fetches `board.svg` and `board.wires.json`.
 
 - `python3 -m http.server -d public` → open <http://localhost:8000>
+
+## License
+
+The source code is licensed under the [MIT License](LICENSE).\
+Personal content, images, and branding are excluded and remain the property of the author.
