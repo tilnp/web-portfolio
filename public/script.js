@@ -108,8 +108,11 @@ function updateActiveNav(sy) {
   }
   if (active.id === activeNavId) return;
   activeNavId = active.id;
-  navLinks.forEach(a => a.classList.toggle('active',
-    a.getAttribute('href') === '#' + active.id));
+  navLinks.forEach(a => {
+    const on = a.getAttribute('href') === '#' + active.id;
+    a.classList.toggle('active', on);
+    on ? a.setAttribute('aria-current', 'location') : a.removeAttribute('aria-current');
+  });
 }
 
 function updateNextBtnWrap(sy) {
@@ -185,22 +188,20 @@ const fadeObs = new IntersectionObserver(entries => {
 document.querySelectorAll('.fade-in').forEach(el => fadeObs.observe(el));
 
 // Smooth-scroll on in-page anchor click without mutating the URL hash.
+function goTo(target) {
+  if (!target) return;
+  target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  if (!target.hasAttribute('tabindex')) target.setAttribute('tabindex', '-1');
+  target.focus({ preventScroll: true });
+}
 inPageLinks.forEach(a => {
   a.addEventListener('click', e => {
     e.preventDefault();
-    document.querySelector(a.getAttribute('href'))?.scrollIntoView({
-      behavior: 'smooth',
-      block: 'start',
-    });
+    goTo(document.querySelector(a.getAttribute('href')));
   });
 });
-
 // Floating "↓" button click → scroll to next section's title.
-if (nextBtnWrap) {
-  nextBtnWrap.addEventListener('click', () => {
-    aboutSection?.scrollIntoView({ behavior: 'smooth', block: 'start' });
-  });
-}
+nextBtnWrap?.addEventListener('click', () => goTo(aboutSection));
 
 // ─────────────────────────────────────────────────────────────────────────
 // Crawling Borders Scroll Animation Fallback (Firefox / Safari)
