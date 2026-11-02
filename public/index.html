@@ -4,44 +4,41 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Tilen Pokorn — Portfolio</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Geist+Mono:wght@400;500&family=Geist:wght@300;400;500&display=swap" rel="stylesheet">
+<link rel="preload" href="fonts/geist-latin-wght-normal.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="fonts/geist-mono-latin-wght-normal.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="stylesheet" href="styles.css">
 </head>
 <body>
 
-<div class="crawling-border one"></div>
-<div class="crawling-border two"></div>
-
-<div class="bg-grid" id="bgGrid"></div>
-
+<div class="crawling-border one" aria-hidden="true"></div>
+<div class="crawling-border two" aria-hidden="true"></div>
+<div class="bg-grid" id="bgGrid" aria-hidden="true"></div>
 <div class="board-bg" id="boardBg" aria-hidden="true"></div>
 
-<nav>
-  <a class="nav-logo" href="#home"><span>Tilen Pokorn</span> <span data-i18n="nav.logoSuffix"></span></a>
-  <div class="nav-links">
-    <a href="#home" data-i18n="nav.home"></a>
-    <a href="#about" data-i18n="nav.about"></a>
-    <a href="#education" data-i18n="nav.education"></a>
-    <a href="#skills" data-i18n="nav.skills"></a>
-    <a href="#projects" data-i18n="nav.projects"></a>
-    <a href="#experience" data-i18n="nav.experience"></a>
-    <a href="#languages" data-i18n="nav.languages"></a>
-    <a href="#contact" data-i18n="nav.contact"></a>
-  </div>
-  <div>
+<header>
+  <nav data-i18n-attr="aria-label:nav.primary">
+    <a class="nav-logo" href="#home"><span>Tilen Pokorn</span> <span data-i18n="nav.logoSuffix"></span></a>
+    <ul class="nav-links">
+      <li><a href="#home" data-i18n="nav.home"></a></li>
+      <li><a href="#about" data-i18n="nav.about"></a></li>
+      <li><a href="#education" data-i18n="nav.education"></a></li>
+      <li><a href="#skills" data-i18n="nav.skills"></a></li>
+      <li><a href="#projects" data-i18n="nav.projects"></a></li>
+      <li><a href="#experience" data-i18n="nav.experience"></a></li>
+      <li><a href="#languages" data-i18n="nav.languages"></a></li>
+      <li><a href="#contact" data-i18n="nav.contact"></a></li>
+    </ul>
     <button class="lang-toggle" data-i18n-toggle type="button"></button>
-  </div>
-</nav>
+  </nav>
+</header>
 
-<div class="page-wrap">
+<main class="page-wrap">
 
-  <section id="home">
+  <section id="home" aria-labelledby="home-title">
     <div class="hero-grid">
       <div class="hero-name">
-        <div class="home-tag fade-in" data-i18n="home.tag"></div>
-        <h1 class="fade-in d1"><span data-i18n="home.firstName"></span><br><em data-i18n="home.lastName"></em></h1>
+        <p class="home-tag fade-in" data-i18n="home.tag"></p>
+        <h1 id="home-title" class="fade-in d1"><span class="first-name" data-i18n="home.firstName"></span><br><span class="last-name" data-i18n="home.lastName"></span></h1>
       </div>
       <div class="hero-term fade-in d1" id="heroTerm" aria-hidden="true"></div>
       <p class="home-sub fade-in d2" data-i18n="home.sub"></p>
@@ -50,15 +47,15 @@
         <a href="https://github.com/tilnp" class="btn btn-ghost btn-icon" target="_blank" rel="noopener noreferrer">
           <svg class="btn-github-icon" aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M9 19c-4.3 1.4-4.3-2.5-6-3m12 5v-3.5c0-1 .1-1.4-.5-2 2.8-.3 5.5-1.4 5.5-6a4.6 4.6 0 0 0-1.3-3.2 4.2 4.2 0 0 0-.1-3.2s-1.4-.4-3.1 1.2a11.5 11.5 0 0 0-6 0C8 2.7 6.6 3.1 6.6 3.1A4.2 4.2 0 0 0 6.5 6.3 4.6 4.6 0 0 0 5.2 9.5c0 4.6 2.7 5.7 5.5 6-.6.6-.6 1.2-.5 2V21"/></svg>
           <span data-i18n="home.github"></span>
-          <!-- <a href="cv.pdf" id="btn-resume" class="btn btn-ghost" data-i18n="home.resume"></a> -->
         </a>
+        <!-- <a href="cv.pdf" id="btn-resume" class="btn btn-ghost" data-i18n="home.resume"></a> -->
       </div>
     </div>
   </section>
 
-  <section id="about">
-    <div class="section-label" data-i18n="about.label"></div>
-    <h2 class="fade-in" data-i18n="about.title"></h2>
+  <section id="about" aria-labelledby="about-title">
+    <p class="section-label" data-i18n="about.label"></p>
+    <h2 id="about-title" class="fade-in" data-i18n="about.title"></h2>
     <div class="about-text fade-in d1">
       <p data-i18n-html="about.p1"></p>
       <p data-i18n-html="about.p2"></p>
@@ -66,50 +63,50 @@
     </div>
   </section>
 
-  <section id="education">
-    <div class="section-label" data-i18n="education.label"></div>
-    <h2 class="fade-in" data-i18n="education.title"></h2>
+  <section id="education" aria-labelledby="education-title">
+    <p class="section-label" data-i18n="education.label"></p>
+    <h2 id="education-title" class="fade-in" data-i18n="education.title"></h2>
     <p class="section-lead fade-in d1" data-i18n="education.lead"></p>
-    <div class="fade-in d1" data-render="education"></div>
+    <ol class="fade-in d1" data-render="education"></ol>
   </section>
 
-  <section id="skills">
-    <div class="section-label" data-i18n="skills.label"></div>
-    <h2 class="fade-in" data-i18n="skills.title"></h2>
-    <div class="skills-grid fade-in d1" data-render="skills"></div>
+  <section id="skills" aria-labelledby="skills-title">
+    <p class="section-label" data-i18n="skills.label"></p>
+    <h2 id="skills-title" class="fade-in" data-i18n="skills.title"></h2>
+    <ul class="skills-grid fade-in d1" data-render="skills"></ul>
   </section>
 
-  <section id="projects">
-    <div class="section-label" data-i18n="projects.label"></div>
-    <h2 class="fade-in" data-i18n="projects.title"></h2>
+  <section id="projects" aria-labelledby="projects-title">
+    <p class="section-label" data-i18n="projects.label"></p>
+    <h2 id="projects-title" class="fade-in" data-i18n="projects.title"></h2>
     <p class="section-lead fade-in d1" data-i18n="projects.lead"></p>
-    <div class="proj-grid fade-in d1" data-render="projects"></div>
+    <ul class="proj-grid fade-in d1" data-render="projects"></ul>
   </section>
 
-  <section id="experience">
-    <div class="section-label" data-i18n="experience.label"></div>
-    <h2 class="fade-in" data-i18n="experience.title"></h2>
-    <div class="lab-grid fade-in d1" data-render="experience"></div>
+  <section id="experience" aria-labelledby="experience-title">
+    <p class="section-label" data-i18n="experience.label"></p>
+    <h2 id="experience-title" class="fade-in" data-i18n="experience.title"></h2>
+    <ul class="lab-grid fade-in d1" data-render="experience"></ul>
   </section>
 
-  <section id="languages">
-    <div class="section-label" data-i18n="languages.label"></div>
-    <h2 class="fade-in" data-i18n="languages.title"></h2>
+  <section id="languages" aria-labelledby="languages-title">
+    <p class="section-label" data-i18n="languages.label"></p>
+    <h2 id="languages-title" class="fade-in" data-i18n="languages.title"></h2>
     <p class="section-lead fade-in d1" data-i18n="languages.lead"></p>
-    <div class="fade-in d1" data-render="languages"></div>
+    <ul class="fade-in d1" data-render="languages"></ul>
   </section>
 
-  <section id="contact">
-    <div class="section-label" data-i18n="contact.label"></div>
-    <h2 class="fade-in" data-i18n="contact.title"></h2>
-    <div class="contact-links fade-in d1" data-render="contact"></div>
+  <section id="contact" aria-labelledby="contact-title">
+    <p class="section-label" data-i18n="contact.label"></p>
+    <h2 id="contact-title" class="fade-in" data-i18n="contact.title"></h2>
+    <ul class="contact-links fade-in d1" data-render="contact"></ul>
   </section>
 
-</div>
+</main>
 
 <div class="next-section-wrap">
   <span class="next-section-label" data-i18n="nav.next"></span>
-  <button class="next-section" type="button" id="nextBtn" aria-label="Next section">↓</button>
+  <button class="next-section" type="button" id="nextBtn" data-i18n-attr="aria-label:nav.nextAria">↓</button>
 </div>
 
 <footer>

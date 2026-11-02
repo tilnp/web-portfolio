@@ -84,6 +84,8 @@ export const contactLinks = [
 export const messages = {
   en: {
     nav: {
+      primary: 'Primary',
+      nextAria: 'Next section',
       logoSuffix: '/ cs',
       home: 'home',
       about: 'about',
@@ -258,6 +260,8 @@ export const messages = {
 
   sl: {
     nav: {
+      primary: 'Glavna navigacija',
+      nextAria: 'Naslednji razdelek',
       logoSuffix: '/ cs',
       home: 'domov',
       about: 'o meni',
@@ -471,22 +475,22 @@ const RENDERERS = {
         ? toBulletItems(tx.details)
         : toBulletItems(tx.detail);
       return `
-        <div class="edu-item">
+        <li class="edu-item">
           <div class="edu-node pulse" aria-hidden="true"></div>
-          <div class="edu-year">${esc(years)}</div>
+          <p class="edu-year">${esc(years)}</p>
           <div class="edu-body">
-            <div class="edu-school">${esc(tx.school)}</div>
-            <div class="edu-degree">${esc(tx.degree)}</div>
+            <h3 class="edu-school">${esc(tx.school)}</h3>
+            <p class="edu-degree">${esc(tx.degree)}</p>
             ${details.length ? `<ul class="edu-details">${details.map(d => `<li>${esc(d)}</li>`).join('')}</ul>` : ''}
           </div>
-        </div>
+        </li>
       `;
     }).join('');
   },
   skills(el, dict) {
     const cats = dict.skills?.cats || {};
     el.innerHTML = skills.map(s => `
-      <div class="skill-item">
+      <li class="skill-item">
         <div class="skill-text">
           <span class="skill-name">${esc(s.name)}</span>
           <span class="skill-cat">${esc(cats[s.cat] || s.cat)}</span>
@@ -500,7 +504,7 @@ const RENDERERS = {
             }).join('')}
           </div>
         </div>
-      </div>
+      </li>
     `).join('');
   },
   projects(el, dict) {
@@ -508,7 +512,7 @@ const RENDERERS = {
     if (!projectItems.length) {
       const empty = dict.projects?.empty || '';
       el.innerHTML = empty
-        ? `<div class="proj-empty">${esc(empty)}</div>`
+        ? `<li class="proj-empty">${esc(empty)}</li>`
         : '';
       return;
     }
@@ -524,14 +528,14 @@ const RENDERERS = {
       const inner = `
         ${(p.year || p.ongoing) ? `<div class="proj-year">${yearInner}</div>` : ''}
         <div class="proj-body">
-          <div class="proj-title">${esc(tx.title)}${p.href ? ' <span class="proj-arrow">↗</span>' : ''}</div>
+          <h3 class="proj-title">${esc(tx.title)}${p.href ? ' <span class="proj-arrow" aria-hidden="true">↗</span>' : ''}</h3>
           <div class="proj-desc">${esc(tx.desc)}</div>
           ${tagsHtml}
         </div>
       `;
-      return p.href
+      return `<li>${p.href
         ? `<a class="proj-item" href="${esc(p.href)}" target="_blank" rel="noopener">${inner}</a>`
-        : `<div class="proj-item">${inner}</div>`;
+        : `<div class="proj-item">${inner}</div>`}</li>`;
     }).join('');
   },
   experience(el, dict) {
@@ -539,14 +543,14 @@ const RENDERERS = {
     el.innerHTML = experienceItems.map(l => {
       const tx = t[l.key] || {};
       return `
-        <div class="lab-item">
-          <div class="lab-icon">${esc(l.key)}</div>
+        <li class="lab-item">
+          <div class="lab-icon" aria-hidden="true">${esc(l.key)}</div>
           <div>
-            <div class="lab-title">${esc(tx.title)}</div>
+            <h3 class="lab-title">${esc(tx.title)}</h3>
             <div class="lab-desc">${esc(tx.desc)}</div>
             ${(l.tags?.length ? `<div class="lab-tags">${l.tags.map(t => `<span class="tag">${esc(t)}</span>`).join('')}</div>` : '')}
           </div>
-        </div>
+        </li>
       `;
     }).join('');
   },
@@ -565,7 +569,7 @@ const RENDERERS = {
         ? toBulletItems(tx.details)
         : toBulletItems(tx.context);
       return `
-        <div class="lang-row">
+        <li class="lang-row">
           <div>
             <div class="lang-name">${esc(tx.name)}</div>
             ${details.length ? `<ul class="lang-details">${details.map(d => `<li>${esc(d)}</li>`).join('')}</ul>` : ''}
@@ -575,23 +579,25 @@ const RENDERERS = {
             <div class="lang-bars" aria-hidden="true">${bars}</div>
             ${cert ? `<span class="lang-cert">${esc(cert)}</span>` : ''}
           </div>
-        </div>
+        </li>
       `;
     }).join('');
   },
   contact(el, dict) {
       const platforms = dict.contact?.platforms || {};
       el.innerHTML = contactLinks.map(c => `
-        <a href="${esc(c.href)}" class="contact-link" target="_blank" rel="noopener noreferrer">
-          <div class="contact-link-left">
-            <span class="contact-icon" aria-hidden="true">${ICONS[c.key] || ''}</span>
-            <div class="contact-link-text">
-              <span class="contact-platform">${esc(platforms[c.key] || c.key)}</span>
-              <span class="contact-value">${esc(c.value)}</span>
+        <li>
+          <a href="${esc(c.href)}" class="contact-link" target="_blank" rel="noopener noreferrer">
+            <div class="contact-link-left">
+              <span class="contact-icon" aria-hidden="true">${ICONS[c.key] || ''}</span>
+              <div class="contact-link-text">
+                <span class="contact-platform">${esc(platforms[c.key] || c.key)}</span>
+                <span class="contact-value">${esc(c.value)}</span>
+              </div>
             </div>
-          </div>
-          <span class="contact-arrow">→</span>
-        </a>
+            <span class="contact-arrow" aria-hidden="true">→</span>
+          </a>
+        </li>
       `).join('');
     },
 };
