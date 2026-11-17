@@ -51,19 +51,18 @@ docker build -t web-portfolio:1.0 .
 
 Add `--platform linux/amd64` (or `linux/arm64`) if the build machine and server architectures differ.
 
-### Security and configuration
+### Security
 
 The Docker image uses:
 
 - Node.js 24 Alpine.
 - Non-root `node` user.
-- Production environment.
 - Read-only filesystem.
-- Dropped Linux capabilities.
-- Disabled privilege escalation.
-- Limited container resources.
+- All Linux capabilities dropped.
+- Privilege escalation disabled.
+- Docker init process enabled through Compose.
 
-Container resource limits:
+### Resource limits
 
 | Resource | Limit |
 |---|---:|
@@ -78,7 +77,7 @@ Container resource limits:
 - `200 ok` when the server is running.
 - `503 shutting down` when graceful shutdown begins.
 
-The Dockerfile defines a `HEALTHCHECK` that polls this endpoint every 30 seconds.
+The Dockerfile defines a `HEALTHCHECK` that polls this endpoint.
 
 Configuration:
 
@@ -87,7 +86,7 @@ Configuration:
 - Start period: 5 seconds
 - Retries: 3
 
-Check health using:
+Check health:
 
 ```bash
 docker inspect --format='{{.State.Health.Status}}' web-portfolio
@@ -105,33 +104,40 @@ Create the deployment directory:
 ssh user@server 'mkdir -p /opt/web-portfolio'
 ```
 
-### Build and deploy
+### One-time build machine setup
 
-Build the image with a version tag:
-
-```bash
-docker build -t web-portfolio:1.0 .
-```
-
-Transfer the image to the server:
+Copy the deployment script:
 
 ```bash
-docker save web-portfolio:1.0 | gzip | ssh user@server 'docker load'
+cp deploy.sh.example deploy.sh
+chmod +x deploy.sh
 ```
 
-Copy `docker-compose.yaml` to the server:
+Edit `deploy.sh` and configure:
 
 ```bash
-scp docker-compose.yaml user@server:/opt/web-portfolio/
+HOST=user@server
+DIR=/opt/web-portfolio
 ```
 
-Start the container:
+Ensure SSH key authentication is configured and the remote user has permission to run Docker commands.
+
+### Deploy a new version
+
+Use a unique version tag for each release:
 
 ```bash
-ssh user@server 'cd /opt/web-portfolio && TAG=1.0 docker compose up -d'
+./deploy.sh 1.0
 ```
 
-The Compose configuration uses the image tag supplied through the `TAG` environment variable.
+The script automatically:
+
+1. Builds the Docker image locally.
+2. Exports and compresses the image.
+3. Transfers it to the server over SSH.
+4. Imports the image on the server.
+5. Copies `docker-compose.yaml` to the deployment directory.
+6. Starts or updates the container using the specified image tag.
 
 ### Check deployment
 
@@ -147,13 +153,13 @@ ssh user@server 'docker logs -f web-portfolio'
 
 ### Rollback
 
-Deploy a previous image version:
+Deploy a previously uploaded image version:
 
 ```bash
 ssh user@server 'cd /opt/web-portfolio && TAG=1.0 docker compose up -d'
 ```
 
-The previous image must still exist on the server.
+Previous image versions remain available on the server unless manually removed.
 
 ## Networking
 
