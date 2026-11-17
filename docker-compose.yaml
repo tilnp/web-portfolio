@@ -1,10 +1,11 @@
 services:
   web:
-    image: mysite:1.0
+    image: web-portfolio:${TAG}
+    container_name: web-portfolio
     restart: unless-stopped
     read_only: true
     cap_drop: [ALL]
     security_opt: [no-new-privileges:true]
     mem_limit: 128m
     stop_grace_period: 15s
-    expose: ["3000"]
+    ports: ["3000:3000"]
