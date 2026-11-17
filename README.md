@@ -1,10 +1,10 @@
 # web-portfolio
 
-Personal CV / portfolio site. Single page, vanilla HTML/CSS/JS, served by a small dependency-free Node server and shipped as a Docker image.
+Personal CV / portfolio site. Single page, vanilla HTML/CSS/JS, served by a small dependency-free Node.js server and shipped as a Docker image.
 
 ## Repo layout
 
-```
+```text
 web-portfolio/
 ├── README.md
 ├── LICENSE
@@ -12,74 +12,191 @@ web-portfolio/
 ├── .gitignore
 ├── .dockerignore
 ├── Dockerfile
-├── docker-compose.yaml   ← copied to the host on deploy
-├── deploy.sh.example     ← copy to deploy.sh (gitignored) and set HOST
-├── package.json          ← fonts only (@fontsource-variable)
+├── docker-compose.yaml
+├── deploy.sh.example
+├── package.json
 ├── package-lock.json
-├── server.js             ← static file server (no dependencies)
+├── server.js
 ├── scripts/
-│   └── build_wires.py    ← regenerate board.wires.json after editing board.svg
-└── public/               ← web root
+│   └── build_wires.py
+└── public/
     ├── index.html
     ├── styles.css
     ├── script.js
     ├── i18n.js
     ├── board.svg
-    ├── board.wires.json  ← prebuilt wire→component
-    └── fonts/            ← Geist woff2 files, committed
+    ├── board.wires.json
+    └── fonts/
 ```
 
-Everything the browser fetches lives inside `public/`. The repo root only holds server, build and project-level files.
+Everything the browser fetches lives inside `public/`. The repository root contains server, build and project-level files.
 
 ## Run locally
 
 ```bash
-node server.js   # http://localhost:3000 (PORT env var overrides)
+node server.js
 ```
+
+Available at `http://localhost:3000`.
+
+The `PORT` environment variable overrides the default port. The server listens on `0.0.0.0`.
 
 ## Docker
 
-Build:
+### Build
 
 ```bash
 docker build -t web-portfolio:1.0 .
 ```
 
-Add `--platform linux/amd64` (or `linux/arm64`) if the build machine and server architectures differ. `deploy.sh` runs this automatically on release.
+Add `--platform linux/amd64` (or `linux/arm64`) if the build machine and server architectures differ.
+
+### Security and configuration
+
+The Docker image uses:
+
+- Node.js 24 Alpine.
+- Non-root `node` user.
+- Production environment.
+- Read-only filesystem.
+- Dropped Linux capabilities.
+- Disabled privilege escalation.
+- Limited container resources.
+
+Container resource limits:
+
+| Resource | Limit |
+|---|---:|
+| Memory | 128 MB |
+| CPU | 0.5 cores |
+| Processes | 50 |
 
 ### Health check
 
-`GET /healthz` returns `200 ok`, or `503` while shutting down. The Dockerfile's `HEALTHCHECK` polls it. Status shows as `(healthy)` in `docker compose ps` on the server.
+`GET /healthz` returns:
+
+- `200 ok` when the server is running.
+- `503 shutting down` when graceful shutdown begins.
+
+The Dockerfile defines a `HEALTHCHECK` that polls this endpoint every 30 seconds.
+
+Configuration:
+
+- Interval: 30 seconds
+- Timeout: 5 seconds
+- Start period: 5 seconds
+- Retries: 3
+
+Check health using:
+
+```bash
+docker inspect --format='{{.State.Health.Status}}' web-portfolio
+```
+
+Possible statuses: `starting`, `healthy`, `unhealthy`.
 
 ## Deploy
 
-One-time, on the server:
+### One-time server setup
+
+Create the deployment directory:
 
 ```bash
 ssh user@server 'mkdir -p /opt/web-portfolio'
 ```
 
-One-time, on the build machine:
+### Build and deploy
+
+Build the image with a version tag:
 
 ```bash
-cp deploy.sh.example deploy.sh && chmod +x deploy.sh   # then set HOST in deploy.sh
+docker build -t web-portfolio:1.0 .
 ```
 
-Then, with a new version tag per release:
+Transfer the image to the server:
 
 ```bash
-./deploy.sh 1.1
+docker save web-portfolio:1.0 | gzip | ssh user@server 'docker load'
 ```
 
-The script builds the image, copies it and `docker-compose.yaml` to the host over SSH, and runs `docker compose up -d`. Check status with `ssh user@server 'cd /opt/web-portfolio && docker compose ps'`.
+Copy `docker-compose.yaml` to the server:
 
-Rollback: `ssh user@server 'cd /opt/web-portfolio && TAG=1.0 docker compose up -d'`
+```bash
+scp docker-compose.yaml user@server:/opt/web-portfolio/
+```
 
-The container serves plain HTTP on port 3000. Point the reverse proxy at `<host-ip>:3000`; TLS is handled there.
+Start the container:
+
+```bash
+ssh user@server 'cd /opt/web-portfolio && TAG=1.0 docker compose up -d'
+```
+
+The Compose configuration uses the image tag supplied through the `TAG` environment variable.
+
+### Check deployment
+
+```bash
+ssh user@server 'cd /opt/web-portfolio && docker compose ps'
+```
+
+View logs:
+
+```bash
+ssh user@server 'docker logs -f web-portfolio'
+```
+
+### Rollback
+
+Deploy a previous image version:
+
+```bash
+ssh user@server 'cd /opt/web-portfolio && TAG=1.0 docker compose up -d'
+```
+
+The previous image must still exist on the server.
+
+## Networking
+
+The container serves plain HTTP on port `3000`.
+
+The Compose configuration binds the port to the specified server IP:
+
+```yaml
+ports:
+  - "192.168.64.X:3000:3000"
+```
+
+Replace `X` with the server's actual IP address.
+
+Point Nginx Proxy Manager at:
+
+```text
+Scheme: http
+Forward Hostname / IP: <server-ip>
+Forward Port: 3000
+```
+
+TLS termination is handled by the reverse proxy.
+
+Port 3000 should only be accessible from trusted infrastructure, particularly the reverse proxy. Do not expose it directly to the internet.
 
 ## Updating fonts
 
-Fonts are committed in `public/fonts/`. To update them, run `npm update`, then copy the needed `.woff2` files from `node_modules/@fontsource-variable/*/files/` into `public/fonts/`.
+Fonts are committed in `public/fonts/`.
+
+To update them, run:
+
+```bash
+npm update
+```
+
+Then copy the needed `.woff2` files from:
+
+```text
+node_modules/@fontsource-variable/*/files/
+```
+
+into `public/fonts/`.
 
 ## Editing the board
 
@@ -89,7 +206,10 @@ After changing `public/board.svg`, regenerate the wire map:
 python3 scripts/build_wires.py
 ```
 
+Commit both `board.svg` and the regenerated `board.wires.json`.
+
 ## License
 
-The source code is licensed under the [MIT License](LICENSE).\
-Personal content, images, and branding are excluded and remain the property of the author.
+The source code is licensed under the [MIT License](LICENSE).
+
+Personal content, images and branding are excluded and remain the property of the author.
