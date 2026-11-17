@@ -17,4 +17,4 @@ services:
     stop_grace_period: 15s
 
     ports:
-      - "192.168.64.205:3000:3000"
+      - "3000:3000"
