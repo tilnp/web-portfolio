@@ -2,35 +2,6 @@
 
 Personal CV / portfolio site. Single page, vanilla HTML/CSS/JS, served by a small dependency-free Node.js server and shipped as a Docker image.
 
-## Repo layout
-
-```text
-web-portfolio/
-├── README.md
-├── LICENSE
-├── .gitattributes
-├── .gitignore
-├── .dockerignore
-├── Dockerfile
-├── docker-compose.yaml
-├── deploy.sh.example
-├── package.json
-├── package-lock.json
-├── server.js
-├── scripts/
-│   └── build_wires.py
-└── public/
-    ├── index.html
-    ├── styles.css
-    ├── script.js
-    ├── i18n.js
-    ├── board.svg
-    ├── board.wires.json
-    └── fonts/
-```
-
-Everything the browser fetches lives inside `public/`. The repository root contains server, build and project-level files.
-
 ## Run locally
 
 ```bash
@@ -67,7 +38,7 @@ The Docker image uses:
 | Resource | Limit |
 |---|---:|
 | Memory | 128 MB |
-| CPU | 0.5 cores |
+| CPU | 1.0 core |
 | Processes | 50 |
 
 ### Health check
@@ -160,31 +131,6 @@ ssh user@server 'cd /opt/web-portfolio && TAG=1.0 docker compose up -d'
 ```
 
 Previous image versions remain available on the server unless manually removed.
-
-## Networking
-
-The container serves plain HTTP on port `3000`.
-
-The Compose configuration binds the port to the specified server IP:
-
-```yaml
-ports:
-  - "192.168.64.X:3000:3000"
-```
-
-Replace `X` with the server's actual IP address.
-
-Point Nginx Proxy Manager at:
-
-```text
-Scheme: http
-Forward Hostname / IP: <server-ip>
-Forward Port: 3000
-```
-
-TLS termination is handled by the reverse proxy.
-
-Port 3000 should only be accessible from trusted infrastructure, particularly the reverse proxy. Do not expose it directly to the internet.
 
 ## Updating fonts
 
