@@ -1,5 +1,5 @@
 services:
-  web:
+  portfolio:
     image: web-portfolio:${TAG}
     container_name: web-portfolio
 
@@ -11,8 +11,8 @@ services:
     security_opt: [no-new-privileges:true]
 
     mem_limit: 128m
-    cpus: 0.50
-    pids_limit: 50
+    cpus: 1.0
+    pids_limit: 100
 
     stop_grace_period: 15s
 
