@@ -1,0 +1,20 @@
+services:
+  portfolio:
+    image: web-portfolio:${TAG}
+    container_name: web-portfolio
+
+    restart: unless-stopped
+    init: true
+
+    read_only: true
+    cap_drop: [ALL]
+    security_opt: [no-new-privileges:true]
+
+    mem_limit: 128m
+    cpus: 1.0
+    pids_limit: 50
+
+    stop_grace_period: 15s
+
+    ports:
+      - "3000:3000"

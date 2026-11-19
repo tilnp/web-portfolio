@@ -1,34 +1,167 @@
 # web-portfolio
 
-Personal CV / portfolio site. Single page, vanilla HTML/CSS/JS.
+Personal CV / portfolio site. Single page, vanilla HTML/CSS/JS, served by a small dependency-free Node.js server and shipped as a Docker image.
 
-## Repo layout
+## Run locally
 
-```
-web-cv/
-├── README.md
-├── .gitattributes
-├── .gitignore
-├── scripts/
-│   └── build_wires.py    ← regenerate board.wires.json after editing board.svg
-└── public/               ← web root
-    ├── index.html
-    ├── styles.css
-    ├── script.js
-    ├── i18n.js
-    ├── board.svg
-    └── board.wires.json  ← prebuilt wire→component
+```bash
+node server.js
 ```
 
-Everything the browser fetches lives inside `public/`. The repo root only holds project-level files.
+Available at `http://localhost:3000`.
 
-## Run it
+The `PORT` environment variable overrides the default port. The server listens on `0.0.0.0`.
 
-Serving `public/` over HTTP — `file://` won't work because `script.js` fetches `board.svg` and `board.wires.json`.
+## Docker
 
-- `python3 -m http.server -d public` → open <http://localhost:8000>
+### Build
+
+```bash
+docker build -t web-portfolio:1.0 .
+```
+
+Add `--platform linux/amd64` (or `linux/arm64`) if the build machine and server architectures differ.
+
+### Security
+
+The Docker image uses:
+
+- Node.js 24 Alpine.
+- Non-root `node` user.
+- Read-only filesystem.
+- All Linux capabilities dropped.
+- Privilege escalation disabled.
+- Docker init process enabled through Compose.
+
+### Resource limits
+
+| Resource | Limit |
+|---|---:|
+| Memory | 128 MB |
+| CPU | 1.0 core |
+| Processes | 50 |
+
+### Health check
+
+`GET /healthz` returns:
+
+- `200 ok` when the server is running.
+- `503 shutting down` when graceful shutdown begins.
+
+The Dockerfile defines a `HEALTHCHECK` that polls this endpoint.
+
+Configuration:
+
+- Interval: 30 seconds
+- Timeout: 5 seconds
+- Start period: 5 seconds
+- Retries: 3
+
+Check health:
+
+```bash
+docker inspect --format='{{.State.Health.Status}}' web-portfolio
+```
+
+Possible statuses: `starting`, `healthy`, `unhealthy`.
+
+## Deploy
+
+### One-time server setup
+
+Create the deployment directory:
+
+```bash
+ssh user@server 'mkdir -p /opt/web-portfolio'
+```
+
+### One-time build machine setup
+
+Copy the deployment script:
+
+```bash
+cp deploy.sh.example deploy.sh
+chmod +x deploy.sh
+```
+
+Edit `deploy.sh` and configure:
+
+```bash
+HOST=user@server
+DIR=/opt/web-portfolio
+```
+
+Ensure SSH key authentication is configured and the remote user has permission to run Docker commands.
+
+### Deploy a new version
+
+Use a unique version tag for each release:
+
+```bash
+./deploy.sh 1.0
+```
+
+The script automatically:
+
+1. Builds the Docker image locally.
+2. Exports and compresses the image.
+3. Transfers it to the server over SSH.
+4. Imports the image on the server.
+5. Copies `docker-compose.yaml` to the deployment directory.
+6. Starts or updates the container using the specified image tag.
+
+### Check deployment
+
+```bash
+ssh user@server 'cd /opt/web-portfolio && docker compose ps'
+```
+
+View logs:
+
+```bash
+ssh user@server 'docker logs -f web-portfolio'
+```
+
+### Rollback
+
+Deploy a previously uploaded image version:
+
+```bash
+ssh user@server 'cd /opt/web-portfolio && TAG=1.0 docker compose up -d'
+```
+
+Previous image versions remain available on the server unless manually removed.
+
+## Updating fonts
+
+Fonts are committed in `public/fonts/`.
+
+To update them, run:
+
+```bash
+npm update
+```
+
+Then copy the needed `.woff2` files from:
+
+```text
+node_modules/@fontsource-variable/*/files/
+```
+
+into `public/fonts/`.
+
+## Editing the board
+
+After changing `public/board.svg`, regenerate the wire map:
+
+```bash
+python3 scripts/build_wires.py
+```
+
+Commit both `board.svg` and the regenerated `board.wires.json`.
 
 ## License
 
-The source code is licensed under the [MIT License](LICENSE).\
-Personal content, images, and branding are excluded and remain the property of the author.
+The source code is licensed under the [MIT License](LICENSE).
+
+Personal content, images and branding are excluded and remain the property of the author.

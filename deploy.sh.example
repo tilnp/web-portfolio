@@ -1,0 +1,13 @@
+#!/usr/bin/env bash
+# deploy.sh
+set -euo pipefail
+
+TAG=${1:?usage: ./deploy.sh <tag>}
+HOST=user@server
+DIR=/opt/web-portfolio
+IMAGE=web-portfolio:$TAG
+
+docker build -t "$IMAGE" .
+docker save "$IMAGE" | gzip | ssh "$HOST" 'gunzip | docker load'
+scp docker-compose.yaml "$HOST:$DIR/"
+ssh "$HOST" "cd $DIR && TAG=$TAG docker compose up -d"
